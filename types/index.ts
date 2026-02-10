@@ -23,12 +23,17 @@ export interface Product {
 
 // ── Pedidos ──
 export type OrderStatus = 'new' | 'confirmed' | 'completed' | 'cancelled';
+export type DeliveryMethod = 'pickup' | 'delivery';
+export type PaymentMethod = 'cash' | 'transfer';
 
 export interface Order {
   id: string;
   branch_id: string;
   customer_name: string;
   notes: string | null;
+  delivery_method: DeliveryMethod;
+  address: string | null;
+  payment_method: PaymentMethod;
   total_price: number;
   status: OrderStatus;
   created_at: string;
@@ -58,5 +63,8 @@ export interface CartItem {
 export interface OrderFormData {
   customer_name: string;
   notes: string;
+  delivery_method: DeliveryMethod;
+  address: string;
+  payment_method: PaymentMethod;
 }
 
