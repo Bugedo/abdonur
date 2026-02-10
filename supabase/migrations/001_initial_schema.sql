@@ -30,13 +30,16 @@ CREATE TABLE IF NOT EXISTS products (
 
 -- Pedidos
 CREATE TABLE IF NOT EXISTS orders (
-  id            UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  branch_id     UUID NOT NULL REFERENCES branches(id) ON DELETE CASCADE,
-  customer_name TEXT NOT NULL,
-  notes         TEXT DEFAULT '',
-  total_price   NUMERIC(10,2) NOT NULL DEFAULT 0,
-  status        TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'confirmed', 'completed', 'cancelled')),
-  created_at    TIMESTAMPTZ DEFAULT now()
+  id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  branch_id       UUID NOT NULL REFERENCES branches(id) ON DELETE CASCADE,
+  customer_name   TEXT NOT NULL,
+  notes           TEXT DEFAULT '',
+  delivery_method TEXT NOT NULL DEFAULT 'pickup' CHECK (delivery_method IN ('pickup', 'delivery')),
+  address         TEXT DEFAULT '',
+  payment_method  TEXT NOT NULL DEFAULT 'cash' CHECK (payment_method IN ('cash', 'transfer')),
+  total_price     NUMERIC(10,2) NOT NULL DEFAULT 0,
+  status          TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'confirmed', 'completed', 'cancelled')),
+  created_at      TIMESTAMPTZ DEFAULT now()
 );
 
 -- Items del pedido

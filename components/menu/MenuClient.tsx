@@ -1,7 +1,6 @@
 'use client';
 
 import { Product } from '@/types';
-import { CartProvider } from '@/components/cart/CartProvider';
 import CartSummary from '@/components/cart/CartSummary';
 import ProductCard from '@/components/ui/ProductCard';
 
@@ -12,7 +11,7 @@ interface MenuClientProps {
 
 export default function MenuClient({ products, branchId }: MenuClientProps) {
   return (
-    <CartProvider>
+    <>
       {/* Listado de productos */}
       {products.length > 0 ? (
         <div className="mt-6 space-y-3 pb-32">
@@ -28,7 +27,6 @@ export default function MenuClient({ products, branchId }: MenuClientProps) {
 
       {/* Barra fija del carrito */}
       <CartSummary branchId={branchId} />
-    </CartProvider>
+    </>
   );
 }
-
