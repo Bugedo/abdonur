@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { Branch, Product } from '@/types';
-import ProductCard from '@/components/ui/ProductCard';
+import MenuClient from '@/components/menu/MenuClient';
 
 interface MenuPageProps {
   params: Promise<{ id: string }>;
@@ -56,23 +56,8 @@ export default async function MenuPage({ params }: MenuPageProps) {
         <p className="mt-1 text-stone-500">{branch.name} — Elegí tus empanadas</p>
       </div>
 
-      {/* Listado de productos */}
-      {products.length > 0 ? (
-        <div className="mt-6 space-y-3">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      ) : (
-        <div className="mt-8 rounded-xl border border-dashed border-stone-300 bg-stone-50 p-12 text-center text-stone-400">
-          <p>No hay productos disponibles en este momento.</p>
-        </div>
-      )}
-
-      {/* Nota: el carrito se implementa en el Paso 6 */}
-      <div className="mt-8 rounded-xl border border-dashed border-brand-300 bg-brand-50 p-6 text-center text-sm text-brand-700">
-        🛒 El carrito para agregar productos se implementa en el próximo paso.
-      </div>
+      {/* Parte interactiva: productos + carrito */}
+      <MenuClient products={products} branchId={branch.id} />
     </section>
   );
 }
