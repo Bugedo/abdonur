@@ -42,3 +42,4 @@ export default function BranchCard({ branch }: BranchCardProps) {
   );
 }
 
+
