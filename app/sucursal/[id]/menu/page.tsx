@@ -1,11 +1,22 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { Metadata } from 'next';
 import { supabase } from '@/lib/supabaseClient';
 import { Branch, Product } from '@/types';
 import MenuClient from '@/components/menu/MenuClient';
 
 interface MenuPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: MenuPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const branch = await getBranch(id);
+  if (!branch) return { title: 'Menú no encontrado' };
+  return {
+    title: `Menú — ${branch.name} — Empanadas Abdonur`,
+    description: `Elegí tus empanadas en ${branch.name}. Pedido mínimo: 8 empanadas.`,
+  };
 }
 
 async function getBranch(id: string): Promise<Branch | null> {

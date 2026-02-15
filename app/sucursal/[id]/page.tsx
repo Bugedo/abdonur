@@ -1,10 +1,21 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { Metadata } from 'next';
 import { supabase } from '@/lib/supabaseClient';
 import { Branch } from '@/types';
 
 interface BranchPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: BranchPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const branch = await getBranch(id);
+  if (!branch) return { title: 'Sucursal no encontrada' };
+  return {
+    title: `${branch.name} — Empanadas Abdonur`,
+    description: `Pedí empanadas en ${branch.name}. ${branch.address}. Horarios: ${branch.opening_hours}`,
+  };
 }
 
 async function getBranch(id: string): Promise<Branch | null> {

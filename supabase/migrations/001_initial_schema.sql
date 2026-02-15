@@ -85,9 +85,21 @@ ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "branches_public_read" ON branches
   FOR SELECT USING (is_active = true);
 
+-- BRANCHES: admins pueden ver todas (incluso inactivas)
+CREATE POLICY "branches_admin_read" ON branches
+  FOR SELECT USING (
+    auth.uid() IN (SELECT user_id FROM admin_users)
+  );
+
 -- PRODUCTS: cualquiera puede leer los activos
 CREATE POLICY "products_public_read" ON products
   FOR SELECT USING (is_active = true);
+
+-- PRODUCTS: admins pueden ver todos (incluso inactivos)
+CREATE POLICY "products_admin_read" ON products
+  FOR SELECT USING (
+    auth.uid() IN (SELECT user_id FROM admin_users)
+  );
 
 -- ORDERS: cualquiera puede crear pedidos (anon insert)
 CREATE POLICY "orders_public_insert" ON orders
@@ -99,8 +111,6 @@ CREATE POLICY "orders_admin_read" ON orders
     branch_id IN (
       SELECT branch_id FROM admin_users WHERE user_id = auth.uid()
     )
-    -- También permitir lectura pública recién creados (para confirmación)
-    OR true
   );
 
 -- ORDERS: admins pueden actualizar pedidos de SU sucursal
@@ -115,9 +125,15 @@ CREATE POLICY "orders_admin_update" ON orders
 CREATE POLICY "order_items_public_insert" ON order_items
   FOR INSERT WITH CHECK (true);
 
--- ORDER_ITEMS: lectura pública (para confirmación y admin)
-CREATE POLICY "order_items_public_read" ON order_items
-  FOR SELECT USING (true);
+-- ORDER_ITEMS: solo admins de la sucursal pueden leer
+CREATE POLICY "order_items_admin_read" ON order_items
+  FOR SELECT USING (
+    order_id IN (
+      SELECT o.id FROM orders o
+      JOIN admin_users au ON au.branch_id = o.branch_id
+      WHERE au.user_id = auth.uid()
+    )
+  );
 
 -- ADMIN_USERS: solo el propio admin puede leer su registro
 CREATE POLICY "admin_users_self_read" ON admin_users
