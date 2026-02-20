@@ -2,17 +2,31 @@ import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { createSupabaseServerClient } from '@/lib/supabaseAuthServer';
 import { supabaseAdmin } from '@/lib/supabaseServer';
-import { Order, OrderItem } from '@/types';
+import { Order, OrderItem, AdminRole } from '@/types';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import OrderActions from '@/components/admin/OrderActions';
 
-async function getOrderWithItems(orderId: string, branchId: string) {
-  const { data: order, error: orderError } = await supabaseAdmin
-    .from('orders')
-    .select('*')
-    .eq('id', orderId)
-    .eq('branch_id', branchId)
+async function getAdminInfo(userId: string) {
+  const { data } = await supabaseAdmin
+    .from('admin_users')
+    .select('branch_id, role')
+    .eq('user_id', userId)
     .single();
+  return data as { branch_id: string | null; role: AdminRole } | null;
+}
+
+async function getOrderWithItems(orderId: string, branchId: string | null) {
+  // Super admin can see any order; branch admin can only see their branch's
+  let query = supabaseAdmin
+    .from('orders')
+    .select('*, branches(name)')
+    .eq('id', orderId);
+
+  if (branchId) {
+    query = query.eq('branch_id', branchId);
+  }
+
+  const { data: order, error: orderError } = await query.single();
 
   if (orderError || !order) return null;
 
@@ -21,7 +35,10 @@ async function getOrderWithItems(orderId: string, branchId: string) {
     .select('*, products(name)')
     .eq('order_id', orderId);
 
-  return { order: order as Order, items: (items ?? []) as (OrderItem & { products: { name: string } })[] };
+  return {
+    order: order as Order & { branches?: { name: string } },
+    items: (items ?? []) as (OrderItem & { products: { name: string } })[],
+  };
 }
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -31,16 +48,13 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/admin/login');
 
-  // Verificar admin y obtener branch
-  const { data: adminUser } = await supabaseAdmin
-    .from('admin_users')
-    .select('branch_id')
-    .eq('user_id', user.id)
-    .single();
+  const adminInfo = await getAdminInfo(user.id);
+  if (!adminInfo) redirect('/admin/login');
 
-  if (!adminUser) redirect('/admin/login');
+  const isSuperAdmin = adminInfo.role === 'super_admin';
 
-  const result = await getOrderWithItems(id, adminUser.branch_id);
+  // Super admin passes null to see any order, branch admin passes their branch_id
+  const result = await getOrderWithItems(id, isSuperAdmin ? null : adminInfo.branch_id);
   if (!result) notFound();
 
   const { order, items } = result;
@@ -74,6 +88,11 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               <p className="mt-1 text-sm text-stone-500">
                 #{order.id.slice(0, 8).toUpperCase()} · {formattedDate}
               </p>
+              {isSuperAdmin && order.branches?.name && (
+                <p className="mt-1 text-sm font-medium text-brand-600">
+                  🏪 {order.branches.name}
+                </p>
+              )}
             </div>
             <OrderStatusBadge status={order.status} />
           </div>

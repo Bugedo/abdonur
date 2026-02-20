@@ -52,10 +52,13 @@ CREATE TABLE IF NOT EXISTS order_items (
 );
 
 -- Admins vinculados a sucursales (usa auth.users de Supabase)
+-- role: 'branch_admin' (ve solo su sucursal) | 'super_admin' (ve todo)
+-- branch_id es NULL para super_admin
 CREATE TABLE IF NOT EXISTS admin_users (
   id         UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id    UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  branch_id  UUID NOT NULL REFERENCES branches(id) ON DELETE CASCADE,
+  branch_id  UUID REFERENCES branches(id) ON DELETE CASCADE,
+  role       TEXT NOT NULL DEFAULT 'branch_admin' CHECK (role IN ('branch_admin', 'super_admin')),
   created_at TIMESTAMPTZ DEFAULT now(),
   UNIQUE(user_id)
 );
