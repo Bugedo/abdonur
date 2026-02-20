@@ -109,7 +109,7 @@ export default async function SuperAdminPage() {
             return (
               <Link
                 key={branch.id}
-                href={`/admin/sucursal/${branch.id}`}
+                href={`/admin/sucursal/${branch.slug}`}
                 className="rounded-xl border border-surface-600 bg-surface-800 p-5 transition-all hover:border-brand-600"
               >
                 <div className="flex items-start justify-between">

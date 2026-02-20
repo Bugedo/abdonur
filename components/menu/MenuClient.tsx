@@ -7,6 +7,7 @@ import ProductCard from '@/components/ui/ProductCard';
 interface MenuClientProps {
   products: Product[];
   branchId: string;
+  branchSlug: string;
 }
 
 const categoryTitles: Record<ProductCategory, string> = {
@@ -17,7 +18,7 @@ const categoryTitles: Record<ProductCategory, string> = {
 
 const categoryOrder: ProductCategory[] = ['empanadas', 'comidas', 'postres'];
 
-export default function MenuClient({ products, branchId }: MenuClientProps) {
+export default function MenuClient({ products, branchId, branchSlug }: MenuClientProps) {
   const productsByCategory = products.reduce((acc, product) => {
     (acc[product.category] = acc[product.category] || []).push(product);
     return acc;
@@ -48,7 +49,7 @@ export default function MenuClient({ products, branchId }: MenuClientProps) {
         </div>
       )}
 
-      <CartSummary branchId={branchId} />
+      <CartSummary branchId={branchId} branchSlug={branchSlug} />
     </>
   );
 }

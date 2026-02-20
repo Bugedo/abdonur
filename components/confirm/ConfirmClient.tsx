@@ -113,7 +113,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
       <div className="mt-8 rounded-xl border border-dashed border-surface-500 bg-surface-800 p-12 text-center">
         <p className="text-stone-500">Tu carrito está vacío.</p>
         <Link
-          href={`/sucursal/${branch.id}/menu`}
+          href={`/sucursal/${branch.slug}/menu`}
           className="mt-4 inline-block rounded-lg bg-brand-600 px-6 py-2 text-sm font-bold text-white hover:bg-brand-700"
         >
           Ir al menú
@@ -146,7 +146,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
           </div>
         </div>
         <Link
-          href={`/sucursal/${branch.id}/menu`}
+          href={`/sucursal/${branch.slug}/menu`}
           className="mt-3 inline-block text-sm text-brand-400 hover:underline"
         >
           ← Modificar pedido

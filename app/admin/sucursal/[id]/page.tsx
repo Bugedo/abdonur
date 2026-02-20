@@ -6,11 +6,15 @@ import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 
 // ── Helpers ──
 
-async function getBranch(branchId: string): Promise<Branch | null> {
+// Supports both slug (e.g. "san-vicente") and UUID lookups
+async function getBranch(idOrSlug: string): Promise<Branch | null> {
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+  const column = isUuid ? 'id' : 'slug';
+
   const { data } = await supabaseAdmin
     .from('branches')
     .select('*')
-    .eq('id', branchId)
+    .eq(column, idOrSlug)
     .single();
   return data as Branch | null;
 }

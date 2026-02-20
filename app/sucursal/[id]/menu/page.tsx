@@ -19,11 +19,15 @@ export async function generateMetadata({ params }: MenuPageProps): Promise<Metad
   };
 }
 
-async function getBranch(id: string): Promise<Branch | null> {
+// Supports both slug (e.g. "san-vicente") and UUID lookups
+async function getBranch(idOrSlug: string): Promise<Branch | null> {
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+  const column = isUuid ? 'id' : 'slug';
+
   const { data, error } = await supabase
     .from('branches')
     .select('*')
-    .eq('id', id)
+    .eq(column, idOrSlug)
     .eq('is_active', true)
     .single();
 
@@ -56,7 +60,7 @@ export default async function MenuPage({ params }: MenuPageProps) {
     <section className="mx-auto max-w-2xl py-8">
       {/* Volver */}
       <Link
-        href={`/sucursal/${branch.id}`}
+        href={`/sucursal/${branch.slug}`}
         className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-brand-400"
       >
         ← Volver a {branch.name}
@@ -69,7 +73,7 @@ export default async function MenuPage({ params }: MenuPageProps) {
       </div>
 
       {/* Parte interactiva */}
-      <MenuClient products={products} branchId={branch.id} />
+      <MenuClient products={products} branchId={branch.id} branchSlug={branch.slug} />
     </section>
   );
 }
