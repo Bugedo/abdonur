@@ -35,11 +35,6 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
     return { success: false, error: 'El carrito está vacío.' };
   }
 
-  const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
-  if (totalItems < 8) {
-    return { success: false, error: 'El pedido mínimo es de 8 empanadas.' };
-  }
-
   // Calcular total
   const totalPrice = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
 
