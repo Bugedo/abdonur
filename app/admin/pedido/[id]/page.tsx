@@ -1,31 +1,18 @@
-import { redirect, notFound } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { createSupabaseServerClient } from '@/lib/supabaseAuthServer';
 import { supabaseAdmin } from '@/lib/supabaseServer';
-import { Order, OrderItem, AdminRole } from '@/types';
+import { Order, OrderItem } from '@/types';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import OrderActions from '@/components/admin/OrderActions';
 
-async function getAdminInfo(userId: string) {
-  const { data } = await supabaseAdmin
-    .from('admin_users')
-    .select('branch_id, role')
-    .eq('user_id', userId)
-    .single();
-  return data as { branch_id: string | null; role: AdminRole } | null;
-}
+// 🧪 TESTING MODE — sin autenticación, acceso total
 
-async function getOrderWithItems(orderId: string, branchId: string | null) {
-  let query = supabaseAdmin
+async function getOrderWithItems(orderId: string) {
+  const { data: order, error: orderError } = await supabaseAdmin
     .from('orders')
     .select('*, branches(name)')
-    .eq('id', orderId);
-
-  if (branchId) {
-    query = query.eq('branch_id', branchId);
-  }
-
-  const { data: order, error: orderError } = await query.single();
+    .eq('id', orderId)
+    .single();
 
   if (orderError || !order) return null;
 
@@ -43,21 +30,13 @@ async function getOrderWithItems(orderId: string, branchId: string | null) {
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect('/admin/login');
-
-  const adminInfo = await getAdminInfo(user.id);
-  if (!adminInfo) redirect('/admin/login');
-
-  const isSuperAdmin = adminInfo.role === 'super_admin';
-
-  const result = await getOrderWithItems(id, isSuperAdmin ? null : adminInfo.branch_id);
+  const result = await getOrderWithItems(id);
   if (!result) notFound();
 
   const { order, items } = result;
 
   const formattedDate = new Date(order.created_at).toLocaleString('es-AR', {
+    timeZone: 'America/Argentina/Buenos_Aires',
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -86,13 +65,18 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               <p className="mt-1 text-sm text-stone-500">
                 #{order.id.slice(0, 8).toUpperCase()} · {formattedDate}
               </p>
-              {isSuperAdmin && order.branches?.name && (
+              {order.branches?.name && (
                 <p className="mt-1 text-sm font-medium text-brand-400">
                   🏪 {order.branches.name}
                 </p>
               )}
             </div>
-            <OrderStatusBadge status={order.status} />
+            <div className="flex items-center gap-2">
+              <span className="rounded-full bg-yellow-900/40 px-2 py-0.5 text-xs font-bold text-yellow-400">
+                🧪 TEST
+              </span>
+              <OrderStatusBadge status={order.status} />
+            </div>
           </div>
 
           {/* Info de entrega y pago */}
