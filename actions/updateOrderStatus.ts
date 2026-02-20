@@ -55,7 +55,7 @@ export async function updateOrderStatus(
     return { success: false, error: 'Error al actualizar el pedido.' };
   }
 
-  revalidatePath('/admin/dashboard');
+  revalidatePath('/admin');
   revalidatePath(`/admin/pedido/${orderId}`);
 
   return { success: true };

@@ -19,7 +19,7 @@ export async function login(formData: FormData) {
     return { error: 'Credenciales incorrectas.' };
   }
 
-  redirect('/admin/dashboard');
+  redirect('/admin');
 }
 
 export async function logout() {

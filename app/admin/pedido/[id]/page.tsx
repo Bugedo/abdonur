@@ -59,7 +59,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   return (
     <section className="mx-auto max-w-2xl py-4">
       <Link
-        href="/admin/dashboard"
+        href="/admin"
         className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-800"
       >
         ← Volver al dashboard
