@@ -18,11 +18,15 @@ export async function generateMetadata({ params }: BranchPageProps): Promise<Met
   };
 }
 
-async function getBranch(id: string): Promise<Branch | null> {
+// Supports both slug (e.g. "san-vicente") and UUID lookups
+async function getBranch(idOrSlug: string): Promise<Branch | null> {
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+  const column = isUuid ? 'id' : 'slug';
+
   const { data, error } = await supabase
     .from('branches')
     .select('*')
-    .eq('id', id)
+    .eq(column, idOrSlug)
     .eq('is_active', true)
     .single();
 
@@ -89,7 +93,7 @@ export default async function BranchPage({ params }: BranchPageProps) {
 
         {/* CTA — Pedir ahora */}
         <Link
-          href={`/sucursal/${branch.id}/menu`}
+          href={`/sucursal/${branch.slug}/menu`}
           className="mt-8 block w-full rounded-xl bg-brand-600 py-4 text-center text-lg font-bold text-white transition-colors hover:bg-brand-700"
         >
           🛒 Pedir ahora

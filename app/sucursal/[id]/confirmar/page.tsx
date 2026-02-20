@@ -8,11 +8,15 @@ interface ConfirmPageProps {
   params: Promise<{ id: string }>;
 }
 
-async function getBranch(id: string): Promise<Branch | null> {
+// Supports both slug (e.g. "san-vicente") and UUID lookups
+async function getBranch(idOrSlug: string): Promise<Branch | null> {
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+  const column = isUuid ? 'id' : 'slug';
+
   const { data, error } = await supabase
     .from('branches')
     .select('*')
-    .eq('id', id)
+    .eq(column, idOrSlug)
     .eq('is_active', true)
     .single();
 
@@ -30,7 +34,7 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
     <section className="mx-auto max-w-2xl py-8">
       {/* Volver */}
       <Link
-        href={`/sucursal/${branch.id}/menu`}
+        href={`/sucursal/${branch.slug}/menu`}
         className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-brand-400"
       >
         ← Volver al menú

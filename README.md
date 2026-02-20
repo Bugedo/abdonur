@@ -17,14 +17,23 @@ El sistema está en **modo testing**: todos los paneles admin son accesibles **s
 |---|---|---|
 | **Hub Admin** | `/admin` | Página central con acceso a todos los paneles |
 | **Super Admin** | `/admin/admin` | Ve TODAS las sucursales y todos los pedidos |
-| **San Vicente** | `/admin/sucursal/{id}` | Pedidos de Abdonur San Vicente |
-| **Alta Córdoba** | `/admin/sucursal/{id}` | Pedidos de Abdonur Alta Córdoba |
-| **Alberdi** | `/admin/sucursal/{id}` | Pedidos de Abdonur Alberdi |
-| **Nueva Córdoba** | `/admin/sucursal/{id}` | Pedidos de Abdonur Nueva Córdoba |
-| **Marqués** | `/admin/sucursal/{id}` | Pedidos de Abdonur Marqués |
-| **Gral. Pueyrredón** | `/admin/sucursal/{id}` | Pedidos de Abdonur Gral. Pueyrredón |
+| **San Vicente** | `/admin/sucursal/san-vicente` | Pedidos de Abdonur San Vicente |
+| **Alta Córdoba** | `/admin/sucursal/alta-cordoba` | Pedidos de Abdonur Alta Córdoba |
+| **Alberdi** | `/admin/sucursal/alberdi` | Pedidos de Abdonur Alberdi |
+| **Nueva Córdoba** | `/admin/sucursal/nueva-cordoba` | Pedidos de Abdonur Nueva Córdoba |
+| **Marqués** | `/admin/sucursal/marques` | Pedidos de Abdonur Marqués |
+| **Gral. Pueyrredón** | `/admin/sucursal/pueyrredon` | Pedidos de Abdonur Gral. Pueyrredón |
 
-> **Nota:** Los `{id}` son UUIDs de Supabase. Desde el hub (`/admin`) se accede directamente con un click.
+### URLs públicas por sucursal
+
+| Sucursal | URL |
+|---|---|
+| San Vicente | `/sucursal/san-vicente` |
+| Alta Córdoba | `/sucursal/alta-cordoba` |
+| Alberdi | `/sucursal/alberdi` |
+| Nueva Córdoba | `/sucursal/nueva-cordoba` |
+| Marqués | `/sucursal/marques` |
+| Gral. Pueyrredón | `/sucursal/pueyrredon` |
 
 ### Cómo usar los paneles
 

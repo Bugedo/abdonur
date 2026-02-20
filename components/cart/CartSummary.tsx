@@ -5,9 +5,10 @@ import { useCart } from '@/components/cart/CartProvider';
 
 interface CartSummaryProps {
   branchId: string;
+  branchSlug: string;
 }
 
-export default function CartSummary({ branchId }: CartSummaryProps) {
+export default function CartSummary({ branchSlug }: CartSummaryProps) {
   const { items, totalItems, totalPrice, isMinimumMet } = useCart();
 
   if (items.length === 0) return null;
@@ -32,7 +33,7 @@ export default function CartSummary({ branchId }: CartSummaryProps) {
         {/* Botón confirmar */}
         {isMinimumMet ? (
           <Link
-            href={`/sucursal/${branchId}/confirmar`}
+            href={`/sucursal/${branchSlug}/confirmar`}
             className="rounded-xl bg-whatsapp px-6 py-3 text-base font-bold text-white transition-colors hover:bg-whatsapp-dark"
           >
             Confirmar pedido →

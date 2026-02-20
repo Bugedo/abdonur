@@ -53,7 +53,7 @@ export default async function AdminHubPage() {
         {branches.map((branch) => (
           <Link
             key={branch.id}
-            href={`/admin/sucursal/${branch.id}`}
+            href={`/admin/sucursal/${branch.slug}`}
             className="block rounded-xl border border-surface-600 bg-surface-800 p-5 transition-all hover:border-brand-600 hover:shadow-lg hover:shadow-brand-900/20"
           >
             <h3 className="font-bold text-white">{branch.name}</h3>
