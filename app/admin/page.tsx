@@ -83,9 +83,9 @@ function StatsCards({ orders }: { orders: Order[] }) {
 
   return (
     <div className="mt-6 grid grid-cols-3 gap-4">
-      <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4 text-center">
-        <p className="text-2xl font-extrabold text-yellow-700">{newOrders.length}</p>
-        <p className="text-xs font-medium text-yellow-600">Nuevos</p>
+      <div className="rounded-xl border border-orange-200 bg-orange-50 p-4 text-center">
+        <p className="text-2xl font-extrabold text-orange-700">{newOrders.length}</p>
+        <p className="text-xs font-medium text-orange-600">Nuevos</p>
       </div>
       <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-center">
         <p className="text-2xl font-extrabold text-blue-700">{confirmedOrders.length}</p>
@@ -104,7 +104,7 @@ function OrderCard({ order, showBranch = false }: { order: Order & { branches?: 
     <Link
       key={order.id}
       href={`/admin/pedido/${order.id}`}
-      className="block rounded-xl border border-stone-200 bg-white p-4 shadow-sm transition-all hover:border-brand-300 hover:shadow-md"
+      className="block rounded-xl border border-stone-100 bg-white p-4 shadow-sm transition-all hover:border-brand-300 hover:shadow-md"
     >
       <div className="flex items-start justify-between">
         <div>
@@ -135,7 +135,7 @@ function OrderCard({ order, showBranch = false }: { order: Order & { branches?: 
 function OrderList({ orders, showBranch = false }: { orders: Order[]; showBranch?: boolean }) {
   if (orders.length === 0) {
     return (
-      <div className="mt-4 rounded-xl border border-dashed border-stone-300 bg-stone-50 p-12 text-center text-stone-400">
+      <div className="mt-4 rounded-xl border border-dashed border-stone-200 bg-stone-50 p-12 text-center text-stone-400">
         <p>No hay pedidos todavía.</p>
       </div>
     );
@@ -165,7 +165,7 @@ export default async function AdminPage() {
       <section className="py-12 text-center">
         <p className="text-stone-500">Tu cuenta no está vinculada a ninguna sucursal.</p>
         <form action={logout} className="mt-4">
-          <button className="text-sm text-brand-600 hover:underline">Cerrar sesión</button>
+          <button className="text-sm text-accent-600 hover:underline">Cerrar sesión</button>
         </form>
       </section>
     );
@@ -183,11 +183,13 @@ export default async function AdminPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-extrabold text-stone-900">👑 Panel General</h1>
+            <h1 className="text-2xl font-extrabold text-stone-900">
+              👑 Panel General <span className="text-accent-600">ABDONUR</span>
+            </h1>
             <p className="text-sm text-stone-500">Todas las sucursales</p>
           </div>
           <form action={logout}>
-            <button className="rounded-lg border border-stone-300 px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">
+            <button className="rounded-lg border border-stone-200 px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-50">
               Cerrar sesión
             </button>
           </form>
@@ -206,7 +208,7 @@ export default async function AdminPage() {
               return (
                 <div
                   key={branch.id}
-                  className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
+                  className="rounded-xl border border-stone-100 bg-white p-5 shadow-sm"
                 >
                   <div className="flex items-start justify-between">
                     <div>
@@ -214,7 +216,7 @@ export default async function AdminPage() {
                       <p className="mt-1 text-xs text-stone-500">{branch.address}</p>
                     </div>
                     {newCount > 0 && (
-                      <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-bold text-yellow-800">
+                      <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-bold text-orange-800">
                         {newCount} nuevo{newCount > 1 ? 's' : ''}
                       </span>
                     )}
@@ -244,7 +246,7 @@ export default async function AdminPage() {
       <section className="py-12 text-center">
         <p className="text-stone-500">Sucursal no encontrada.</p>
         <form action={logout} className="mt-4">
-          <button className="text-sm text-brand-600 hover:underline">Cerrar sesión</button>
+          <button className="text-sm text-accent-600 hover:underline">Cerrar sesión</button>
         </form>
       </section>
     );
@@ -257,11 +259,13 @@ export default async function AdminPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-stone-900">📊 Panel Admin</h1>
-          <p className="text-sm text-stone-500">{branch.name}</p>
+          <h1 className="text-2xl font-extrabold text-stone-900">
+            📊 <span className="text-accent-600">{branch.name}</span>
+          </h1>
+          <p className="text-sm text-stone-500">Panel de administración</p>
         </div>
         <form action={logout}>
-          <button className="rounded-lg border border-stone-300 px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-100">
+          <button className="rounded-lg border border-stone-200 px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-50">
             Cerrar sesión
           </button>
         </form>

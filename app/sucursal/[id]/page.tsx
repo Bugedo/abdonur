@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: BranchPageProps): Promise<Met
   const branch = await getBranch(id);
   if (!branch) return { title: 'Sucursal no encontrada' };
   return {
-    title: `${branch.name} — Empanadas Abdonur`,
-    description: `Pedí empanadas en ${branch.name}. ${branch.address}. Horarios: ${branch.opening_hours}`,
+    title: `${branch.name} — Empanadas Árabes Abdonur`,
+    description: `Pedí empanadas árabes en ${branch.name}. ${branch.address}. Horarios: ${branch.opening_hours}`,
   };
 }
 
@@ -36,29 +36,29 @@ export default async function BranchPage({ params }: BranchPageProps) {
 
   if (!branch) notFound();
 
-  // Formatear número para mostrar
-  const displayPhone = branch.whatsapp_number.replace(/^549/, '+54 9 ');
+  const displayPhone = branch.whatsapp_number.replace(/^54/, '+54 ');
 
   return (
     <section className="mx-auto max-w-2xl py-8">
       {/* Volver */}
       <Link
         href="/"
-        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-800"
+        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-accent-600"
       >
         ← Volver a sucursales
       </Link>
 
       {/* Card principal */}
-      <div className="mt-6 rounded-2xl border border-stone-200 bg-white p-8 shadow-sm">
+      <div className="mt-6 rounded-2xl border border-stone-100 bg-white p-8 shadow-sm">
         {/* Nombre */}
         <h1 className="text-3xl font-extrabold text-stone-900">{branch.name}</h1>
+        <p className="mt-1 text-sm font-medium italic text-brand-500">Simplemente excepcionales</p>
 
         {/* Info */}
         <div className="mt-6 space-y-4">
           {/* Dirección */}
           <div className="flex items-start gap-3">
-            <span className="text-2xl">📍</span>
+            <span className="text-2xl text-brand-500">📍</span>
             <div>
               <p className="text-sm font-medium text-stone-500">Dirección</p>
               <p className="text-stone-800">{branch.address}</p>
@@ -94,7 +94,7 @@ export default async function BranchPage({ params }: BranchPageProps) {
         {/* CTA — Pedir ahora */}
         <Link
           href={`/sucursal/${branch.id}/menu`}
-          className="mt-8 block w-full rounded-xl bg-brand-600 py-4 text-center text-lg font-bold text-white transition-colors hover:bg-brand-700"
+          className="mt-8 block w-full rounded-xl bg-accent-600 py-4 text-center text-lg font-bold text-white transition-colors hover:bg-accent-700"
         >
           🛒 Pedir ahora
         </Link>

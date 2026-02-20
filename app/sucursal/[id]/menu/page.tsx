@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: MenuPageProps): Promise<Metad
   const branch = await getBranch(id);
   if (!branch) return { title: 'Menú no encontrado' };
   return {
-    title: `Menú — ${branch.name} — Empanadas Abdonur`,
-    description: `Elegí tus empanadas en ${branch.name}. Pedido mínimo: 8 empanadas.`,
+    title: `Menú — ${branch.name} — Empanadas Árabes Abdonur`,
+    description: `Elegí tus productos en ${branch.name}. Empanadas árabes, comidas y postres.`,
   };
 }
 
@@ -36,7 +36,8 @@ async function getProducts(): Promise<Product[]> {
     .from('products')
     .select('*')
     .eq('is_active', true)
-    .order('name');
+    .order('category')
+    .order('price');
 
   if (error) {
     console.error('Error fetching products:', error.message);
@@ -56,7 +57,7 @@ export default async function MenuPage({ params }: MenuPageProps) {
       {/* Volver */}
       <Link
         href={`/sucursal/${branch.id}`}
-        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-800"
+        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-accent-600"
       >
         ← Volver a {branch.name}
       </Link>
@@ -64,7 +65,7 @@ export default async function MenuPage({ params }: MenuPageProps) {
       {/* Título */}
       <div className="mt-6">
         <h1 className="text-3xl font-extrabold text-stone-900">Menú</h1>
-        <p className="mt-1 text-stone-500">{branch.name} — Elegí tus empanadas</p>
+        <p className="mt-1 text-stone-500">{branch.name}</p>
       </div>
 
       {/* Parte interactiva: productos + carrito */}

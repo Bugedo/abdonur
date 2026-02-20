@@ -23,9 +23,11 @@ export default function AdminLoginPage() {
 
   return (
     <section className="flex min-h-[60vh] items-center justify-center">
-      <div className="w-full max-w-sm rounded-2xl border border-stone-200 bg-white p-8 shadow-sm">
-        <h1 className="text-2xl font-extrabold text-stone-900">🔐 Admin</h1>
-        <p className="mt-1 text-sm text-stone-500">Ingresá con tu cuenta de sucursal</p>
+      <div className="w-full max-w-sm rounded-2xl border border-stone-100 bg-white p-8 shadow-md">
+        <div className="text-center">
+          <h1 className="text-2xl font-extrabold text-accent-600">ABDONUR</h1>
+          <p className="mt-1 text-sm text-stone-500">Panel de Administración</p>
+        </div>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
@@ -37,8 +39,8 @@ export default function AdminLoginPage() {
               name="email"
               type="email"
               required
-              placeholder="admin@abdonur.com"
-              className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+              placeholder="sucursal@abdonur.com"
+              className="mt-1 w-full rounded-lg border border-stone-200 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
             />
           </div>
 
@@ -52,7 +54,7 @@ export default function AdminLoginPage() {
               type="password"
               required
               placeholder="••••••••"
-              className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+              className="mt-1 w-full rounded-lg border border-stone-200 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
             />
           </div>
 
@@ -65,7 +67,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-brand-600 py-3 text-base font-bold text-white transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full rounded-xl bg-accent-600 py-3 text-base font-bold text-white transition-colors hover:bg-accent-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? 'Ingresando...' : 'Ingresar'}
           </button>

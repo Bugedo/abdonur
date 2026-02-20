@@ -11,7 +11,6 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addItem, removeItem, getQuantity } = useCart();
   const quantity = getQuantity(product.id);
 
-  // Formatear precio argentino
   const formattedPrice = new Intl.NumberFormat('es-AR', {
     style: 'currency',
     currency: 'ARS',
@@ -19,14 +18,14 @@ export default function ProductCard({ product }: ProductCardProps) {
   }).format(product.price);
 
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-stone-200 bg-white px-5 py-4 shadow-sm">
+    <div className="flex items-center gap-4 rounded-xl border border-stone-100 bg-white px-5 py-4 shadow-sm transition-all hover:border-brand-200">
       {/* Info del producto */}
       <div className="min-w-0 flex-1">
         <h3 className="text-base font-semibold text-stone-900">{product.name}</h3>
         {product.description && (
-          <p className="mt-0.5 truncate text-sm text-stone-500">{product.description}</p>
+          <p className="mt-0.5 text-sm text-stone-500">{product.description}</p>
         )}
-        <p className="mt-1 text-lg font-bold text-brand-700">{formattedPrice}</p>
+        <p className="mt-1 text-lg font-bold text-accent-600">{formattedPrice}</p>
       </div>
 
       {/* Controles de cantidad */}
@@ -35,7 +34,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <>
             <button
               onClick={() => removeItem(product.id)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-300 bg-white text-lg font-bold text-stone-600 transition-colors hover:border-red-400 hover:bg-red-50 hover:text-red-600"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-stone-200 bg-white text-lg font-bold text-stone-600 transition-colors hover:border-accent-400 hover:bg-red-50 hover:text-accent-600"
               aria-label={`Quitar ${product.name}`}
             >
               −
@@ -47,7 +46,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         ) : null}
         <button
           onClick={() => addItem(product)}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-lg font-bold text-white transition-colors hover:bg-brand-700"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-500 text-lg font-bold text-white transition-colors hover:bg-brand-600"
           aria-label={`Agregar ${product.name}`}
         >
           +
