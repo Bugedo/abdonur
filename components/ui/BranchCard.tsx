@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Branch } from '@/types';
+import OpenStatusBadge from '@/components/ui/OpenStatusBadge';
 
 interface BranchCardProps {
   branch: Branch;
@@ -30,10 +31,7 @@ export default function BranchCard({ branch }: BranchCardProps) {
 
       {/* CTA */}
       <div className="mt-4 flex items-center justify-between">
-        <span className="inline-flex items-center gap-1 text-xs font-medium text-green-400">
-          <span className="h-2 w-2 rounded-full bg-green-500" />
-          Abierto
-        </span>
+        <OpenStatusBadge openingHours={branch.opening_hours} />
         <span className="text-sm font-bold text-brand-500 group-hover:text-brand-400">
           Ver menú →
         </span>
