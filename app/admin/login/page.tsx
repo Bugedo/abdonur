@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { login } from '@/actions/auth';
 
 export default function AdminLoginPage() {
@@ -23,15 +24,24 @@ export default function AdminLoginPage() {
 
   return (
     <section className="flex min-h-[60vh] items-center justify-center">
-      <div className="w-full max-w-sm rounded-2xl border border-stone-100 bg-white p-8 shadow-md">
-        <div className="text-center">
-          <h1 className="text-2xl font-extrabold text-accent-600">ABDONUR</h1>
-          <p className="mt-1 text-sm text-stone-500">Panel de Administración</p>
+      <div className="w-full max-w-sm rounded-2xl border border-surface-600 bg-surface-800 p-8">
+        {/* Logo */}
+        <div className="mb-6 flex justify-center">
+          <Image
+            src="/images/logo/abdonur-logo.jpg"
+            alt="Abdonur"
+            width={200}
+            height={60}
+            className="h-10 w-auto"
+          />
         </div>
+
+        <h1 className="text-2xl font-extrabold text-white">🔐 Admin</h1>
+        <p className="mt-1 text-sm text-stone-500">Ingresá con tu cuenta de sucursal</p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-stone-700">
+            <label htmlFor="email" className="block text-sm font-medium text-stone-400">
               Email
             </label>
             <input
@@ -39,13 +49,13 @@ export default function AdminLoginPage() {
               name="email"
               type="email"
               required
-              placeholder="sucursal@abdonur.com"
-              className="mt-1 w-full rounded-lg border border-stone-200 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
+              placeholder="admin@abdonur.com"
+              className="mt-1 w-full rounded-lg border border-surface-500 bg-surface-700 px-4 py-3 text-white placeholder:text-stone-600 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-stone-700">
+            <label htmlFor="password" className="block text-sm font-medium text-stone-400">
               Contraseña
             </label>
             <input
@@ -54,12 +64,12 @@ export default function AdminLoginPage() {
               type="password"
               required
               placeholder="••••••••"
-              className="mt-1 w-full rounded-lg border border-stone-200 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
+              className="mt-1 w-full rounded-lg border border-surface-500 bg-surface-700 px-4 py-3 text-white placeholder:text-stone-600 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
             />
           </div>
 
           {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="rounded-lg border border-red-800 bg-red-900/40 px-4 py-3 text-sm text-red-400">
               {error}
             </div>
           )}
@@ -67,7 +77,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-accent-600 py-3 text-base font-bold text-white transition-colors hover:bg-accent-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full rounded-xl bg-brand-600 py-3 text-base font-bold text-white transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? 'Ingresando...' : 'Ingresar'}
           </button>

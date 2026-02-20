@@ -83,17 +83,17 @@ function StatsCards({ orders }: { orders: Order[] }) {
 
   return (
     <div className="mt-6 grid grid-cols-3 gap-4">
-      <div className="rounded-xl border border-orange-200 bg-orange-50 p-4 text-center">
-        <p className="text-2xl font-extrabold text-orange-700">{newOrders.length}</p>
-        <p className="text-xs font-medium text-orange-600">Nuevos</p>
+      <div className="rounded-xl border border-yellow-800/40 bg-yellow-900/20 p-4 text-center">
+        <p className="text-2xl font-extrabold text-yellow-400">{newOrders.length}</p>
+        <p className="text-xs font-medium text-yellow-500">Nuevos</p>
       </div>
-      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-center">
-        <p className="text-2xl font-extrabold text-blue-700">{confirmedOrders.length}</p>
-        <p className="text-xs font-medium text-blue-600">Confirmados</p>
+      <div className="rounded-xl border border-blue-800/40 bg-blue-900/20 p-4 text-center">
+        <p className="text-2xl font-extrabold text-blue-400">{confirmedOrders.length}</p>
+        <p className="text-xs font-medium text-blue-500">Confirmados</p>
       </div>
-      <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-center">
-        <p className="text-2xl font-extrabold text-green-700">{completedOrders.length}</p>
-        <p className="text-xs font-medium text-green-600">Finalizados</p>
+      <div className="rounded-xl border border-green-800/40 bg-green-900/20 p-4 text-center">
+        <p className="text-2xl font-extrabold text-green-400">{completedOrders.length}</p>
+        <p className="text-xs font-medium text-green-500">Finalizados</p>
       </div>
     </div>
   );
@@ -104,16 +104,16 @@ function OrderCard({ order, showBranch = false }: { order: Order & { branches?: 
     <Link
       key={order.id}
       href={`/admin/pedido/${order.id}`}
-      className="block rounded-xl border border-stone-100 bg-white p-4 shadow-sm transition-all hover:border-brand-300 hover:shadow-md"
+      className="block rounded-xl border border-surface-600 bg-surface-800 p-4 transition-all hover:border-brand-600 hover:shadow-lg hover:shadow-brand-900/20"
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="font-semibold text-stone-900">{order.customer_name}</p>
+          <p className="font-semibold text-white">{order.customer_name}</p>
           <p className="mt-0.5 text-xs text-stone-500">
             #{order.id.slice(0, 8).toUpperCase()} · {formattedDate(order.created_at)}
           </p>
           {showBranch && order.branches?.name && (
-            <p className="mt-0.5 text-xs font-medium text-brand-600">
+            <p className="mt-0.5 text-xs font-medium text-brand-400">
               🏪 {order.branches.name}
             </p>
           )}
@@ -125,7 +125,7 @@ function OrderCard({ order, showBranch = false }: { order: Order & { branches?: 
         </div>
         <div className="text-right">
           <OrderStatusBadge status={order.status} />
-          <p className="mt-1 text-sm font-bold text-stone-900">{formatPrice(order.total_price)}</p>
+          <p className="mt-1 text-sm font-bold text-white">{formatPrice(order.total_price)}</p>
         </div>
       </div>
     </Link>
@@ -135,7 +135,7 @@ function OrderCard({ order, showBranch = false }: { order: Order & { branches?: 
 function OrderList({ orders, showBranch = false }: { orders: Order[]; showBranch?: boolean }) {
   if (orders.length === 0) {
     return (
-      <div className="mt-4 rounded-xl border border-dashed border-stone-200 bg-stone-50 p-12 text-center text-stone-400">
+      <div className="mt-4 rounded-xl border border-dashed border-surface-500 bg-surface-800 p-12 text-center text-stone-500">
         <p>No hay pedidos todavía.</p>
       </div>
     );
@@ -165,7 +165,7 @@ export default async function AdminPage() {
       <section className="py-12 text-center">
         <p className="text-stone-500">Tu cuenta no está vinculada a ninguna sucursal.</p>
         <form action={logout} className="mt-4">
-          <button className="text-sm text-accent-600 hover:underline">Cerrar sesión</button>
+          <button className="text-sm text-brand-400 hover:underline">Cerrar sesión</button>
         </form>
       </section>
     );
@@ -183,13 +183,13 @@ export default async function AdminPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-extrabold text-stone-900">
-              👑 Panel General <span className="text-accent-600">ABDONUR</span>
+            <h1 className="text-2xl font-extrabold text-white">
+              👑 Panel General <span className="text-brand-500">ABDONUR</span>
             </h1>
             <p className="text-sm text-stone-500">Todas las sucursales</p>
           </div>
           <form action={logout}>
-            <button className="rounded-lg border border-stone-200 px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-50">
+            <button className="rounded-lg border border-surface-500 px-4 py-2 text-sm font-medium text-stone-400 hover:bg-surface-700">
               Cerrar sesión
             </button>
           </form>
@@ -200,7 +200,7 @@ export default async function AdminPage() {
 
         {/* Resumen por sucursal */}
         <div className="mt-8">
-          <h2 className="text-lg font-bold text-stone-900">Sucursales</h2>
+          <h2 className="text-lg font-bold text-white">Sucursales</h2>
           <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {allBranches.map((branch) => {
               const branchOrders = allOrders.filter((o) => o.branch_id === branch.id);
@@ -208,20 +208,20 @@ export default async function AdminPage() {
               return (
                 <div
                   key={branch.id}
-                  className="rounded-xl border border-stone-100 bg-white p-5 shadow-sm"
+                  className="rounded-xl border border-surface-600 bg-surface-800 p-5"
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-bold text-stone-900">{branch.name}</h3>
+                      <h3 className="font-bold text-white">{branch.name}</h3>
                       <p className="mt-1 text-xs text-stone-500">{branch.address}</p>
                     </div>
                     {newCount > 0 && (
-                      <span className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-bold text-orange-800">
+                      <span className="inline-flex items-center rounded-full bg-yellow-900/40 px-2.5 py-0.5 text-xs font-bold text-yellow-400">
                         {newCount} nuevo{newCount > 1 ? 's' : ''}
                       </span>
                     )}
                   </div>
-                  <p className="mt-3 text-sm text-stone-600">
+                  <p className="mt-3 text-sm text-stone-400">
                     {branchOrders.length} pedido{branchOrders.length !== 1 ? 's' : ''} totales
                   </p>
                 </div>
@@ -232,7 +232,7 @@ export default async function AdminPage() {
 
         {/* Todos los pedidos */}
         <div className="mt-8">
-          <h2 className="text-lg font-bold text-stone-900">Todos los pedidos</h2>
+          <h2 className="text-lg font-bold text-white">Todos los pedidos</h2>
           <OrderList orders={allOrders} showBranch />
         </div>
       </section>
@@ -246,7 +246,7 @@ export default async function AdminPage() {
       <section className="py-12 text-center">
         <p className="text-stone-500">Sucursal no encontrada.</p>
         <form action={logout} className="mt-4">
-          <button className="text-sm text-accent-600 hover:underline">Cerrar sesión</button>
+          <button className="text-sm text-brand-400 hover:underline">Cerrar sesión</button>
         </form>
       </section>
     );
@@ -259,13 +259,13 @@ export default async function AdminPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-stone-900">
-            📊 <span className="text-accent-600">{branch.name}</span>
+          <h1 className="text-2xl font-extrabold text-white">
+            📊 <span className="text-brand-500">{branch.name}</span>
           </h1>
           <p className="text-sm text-stone-500">Panel de administración</p>
         </div>
         <form action={logout}>
-          <button className="rounded-lg border border-stone-200 px-4 py-2 text-sm font-medium text-stone-600 hover:bg-stone-50">
+          <button className="rounded-lg border border-surface-500 px-4 py-2 text-sm font-medium text-stone-400 hover:bg-surface-700">
             Cerrar sesión
           </button>
         </form>
@@ -276,7 +276,7 @@ export default async function AdminPage() {
 
       {/* Lista de pedidos */}
       <div className="mt-8">
-        <h2 className="text-lg font-bold text-stone-900">Pedidos</h2>
+        <h2 className="text-lg font-bold text-white">Pedidos</h2>
         <OrderList orders={orders} />
       </div>
     </section>

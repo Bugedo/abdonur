@@ -74,7 +74,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
     }
 
     if (!isMinimumMet) {
-      setError('Agregá al menos un producto.');
+      setError('Agregá al menos un producto al carrito.');
       return;
     }
 
@@ -110,11 +110,11 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
 
   if (items.length === 0) {
     return (
-      <div className="mt-8 rounded-xl border border-dashed border-stone-200 bg-stone-50 p-12 text-center">
+      <div className="mt-8 rounded-xl border border-dashed border-surface-500 bg-surface-800 p-12 text-center">
         <p className="text-stone-500">Tu carrito está vacío.</p>
         <Link
           href={`/sucursal/${branch.id}/menu`}
-          className="mt-4 inline-block rounded-lg bg-accent-600 px-6 py-2 text-sm font-bold text-white hover:bg-accent-700"
+          className="mt-4 inline-block rounded-lg bg-brand-600 px-6 py-2 text-sm font-bold text-white hover:bg-brand-700"
         >
           Ir al menú
         </Link>
@@ -125,43 +125,43 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
   return (
     <form onSubmit={handleSubmit} className="mt-6 space-y-6">
       {/* Resumen del pedido */}
-      <div className="rounded-xl border border-stone-100 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-bold text-stone-900">Tu pedido</h2>
+      <div className="rounded-xl border border-surface-600 bg-surface-800 p-6">
+        <h2 className="text-lg font-bold text-white">Tu pedido</h2>
         <div className="mt-4 space-y-2">
           {items.map((item) => (
             <div key={item.product.id} className="flex items-center justify-between text-sm">
-              <span className="text-stone-700">
+              <span className="text-stone-300">
                 {item.quantity}x {item.product.name}
               </span>
-              <span className="font-medium text-stone-900">
+              <span className="font-medium text-white">
                 ${(item.product.price * item.quantity).toLocaleString('es-AR')}
               </span>
             </div>
           ))}
         </div>
-        <div className="mt-4 border-t border-stone-100 pt-4">
+        <div className="mt-4 border-t border-surface-600 pt-4">
           <div className="flex items-center justify-between">
-            <span className="text-base font-bold text-stone-900">Total ({totalItems} {totalItems === 1 ? 'producto' : 'productos'})</span>
-            <span className="text-xl font-extrabold text-accent-600">{formattedTotal}</span>
+            <span className="text-base font-bold text-white">Total ({totalItems} productos)</span>
+            <span className="text-xl font-extrabold text-brand-500">{formattedTotal}</span>
           </div>
         </div>
         <Link
           href={`/sucursal/${branch.id}/menu`}
-          className="mt-3 inline-block text-sm text-brand-600 hover:underline"
+          className="mt-3 inline-block text-sm text-brand-400 hover:underline"
         >
           ← Modificar pedido
         </Link>
       </div>
 
       {/* Datos del cliente */}
-      <div className="rounded-xl border border-stone-100 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-bold text-stone-900">Tus datos</h2>
+      <div className="rounded-xl border border-surface-600 bg-surface-800 p-6">
+        <h2 className="text-lg font-bold text-white">Tus datos</h2>
 
         <div className="mt-4 space-y-4">
           {/* Nombre */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-stone-700">
-              Nombre <span className="text-accent-500">*</span>
+            <label htmlFor="name" className="block text-sm font-medium text-stone-400">
+              Nombre <span className="text-brand-500">*</span>
             </label>
             <input
               id="name"
@@ -169,15 +169,15 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="Tu nombre"
-              className="mt-1 w-full rounded-lg border border-stone-200 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
+              className="mt-1 w-full rounded-lg border border-surface-500 bg-surface-700 px-4 py-3 text-white placeholder:text-stone-600 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
               required
             />
           </div>
 
           {/* Método de entrega */}
           <div>
-            <label className="block text-sm font-medium text-stone-700">
-              ¿Cómo lo querés? <span className="text-accent-500">*</span>
+            <label className="block text-sm font-medium text-stone-400">
+              ¿Cómo lo querés? <span className="text-brand-500">*</span>
             </label>
             <div className="mt-2 grid grid-cols-2 gap-3">
               <button
@@ -185,8 +185,8 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
                 onClick={() => setDeliveryMethod('pickup')}
                 className={`rounded-lg border-2 px-4 py-3 text-sm font-semibold transition-colors ${
                   deliveryMethod === 'pickup'
-                    ? 'border-brand-500 bg-brand-50 text-brand-800'
-                    : 'border-stone-200 bg-white text-stone-600 hover:border-stone-300'
+                    ? 'border-brand-500 bg-brand-900/40 text-brand-400'
+                    : 'border-surface-500 bg-surface-700 text-stone-400 hover:border-surface-400'
                 }`}
               >
                 🏪 Retiro en local
@@ -196,8 +196,8 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
                 onClick={() => setDeliveryMethod('delivery')}
                 className={`rounded-lg border-2 px-4 py-3 text-sm font-semibold transition-colors ${
                   deliveryMethod === 'delivery'
-                    ? 'border-brand-500 bg-brand-50 text-brand-800'
-                    : 'border-stone-200 bg-white text-stone-600 hover:border-stone-300'
+                    ? 'border-brand-500 bg-brand-900/40 text-brand-400'
+                    : 'border-surface-500 bg-surface-700 text-stone-400 hover:border-surface-400'
                 }`}
               >
                 🛵 Envío a domicilio
@@ -208,8 +208,8 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
           {/* Dirección (solo si es delivery) */}
           {deliveryMethod === 'delivery' && (
             <div>
-              <label htmlFor="address" className="block text-sm font-medium text-stone-700">
-                Dirección de envío <span className="text-accent-500">*</span>
+              <label htmlFor="address" className="block text-sm font-medium text-stone-400">
+                Dirección de envío <span className="text-brand-500">*</span>
               </label>
               <input
                 id="address"
@@ -217,7 +217,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="Ej: Av. San Martín 1234, Piso 2"
-                className="mt-1 w-full rounded-lg border border-stone-200 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
+                className="mt-1 w-full rounded-lg border border-surface-500 bg-surface-700 px-4 py-3 text-white placeholder:text-stone-600 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
                 required
               />
             </div>
@@ -225,8 +225,8 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
 
           {/* Método de pago */}
           <div>
-            <label className="block text-sm font-medium text-stone-700">
-              ¿Cómo pagás? <span className="text-accent-500">*</span>
+            <label className="block text-sm font-medium text-stone-400">
+              ¿Cómo pagás? <span className="text-brand-500">*</span>
             </label>
             <div className="mt-2 grid grid-cols-2 gap-3">
               <button
@@ -234,8 +234,8 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
                 onClick={() => setPaymentMethod('cash')}
                 className={`rounded-lg border-2 px-4 py-3 text-sm font-semibold transition-colors ${
                   paymentMethod === 'cash'
-                    ? 'border-brand-500 bg-brand-50 text-brand-800'
-                    : 'border-stone-200 bg-white text-stone-600 hover:border-stone-300'
+                    ? 'border-brand-500 bg-brand-900/40 text-brand-400'
+                    : 'border-surface-500 bg-surface-700 text-stone-400 hover:border-surface-400'
                 }`}
               >
                 💵 Efectivo
@@ -245,8 +245,8 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
                 onClick={() => setPaymentMethod('transfer')}
                 className={`rounded-lg border-2 px-4 py-3 text-sm font-semibold transition-colors ${
                   paymentMethod === 'transfer'
-                    ? 'border-brand-500 bg-brand-50 text-brand-800'
-                    : 'border-stone-200 bg-white text-stone-600 hover:border-stone-300'
+                    ? 'border-brand-500 bg-brand-900/40 text-brand-400'
+                    : 'border-surface-500 bg-surface-700 text-stone-400 hover:border-surface-400'
                 }`}
               >
                 📱 Transferencia / MP
@@ -256,7 +256,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
 
           {/* Observaciones */}
           <div>
-            <label htmlFor="notes" className="block text-sm font-medium text-stone-700">
+            <label htmlFor="notes" className="block text-sm font-medium text-stone-400">
               Observaciones
             </label>
             <textarea
@@ -265,7 +265,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Ej: sin picante, para las 20hs, etc."
               rows={3}
-              className="mt-1 w-full resize-none rounded-lg border border-stone-200 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
+              className="mt-1 w-full resize-none rounded-lg border border-surface-500 bg-surface-700 px-4 py-3 text-white placeholder:text-stone-600 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
             />
           </div>
         </div>
@@ -273,7 +273,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
 
       {/* Error */}
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="rounded-lg border border-red-800 bg-red-900/40 px-4 py-3 text-sm text-red-400">
           {error}
         </div>
       )}

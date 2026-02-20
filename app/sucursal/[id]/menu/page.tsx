@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: MenuPageProps): Promise<Metad
   if (!branch) return { title: 'Menú no encontrado' };
   return {
     title: `Menú — ${branch.name} — Empanadas Árabes Abdonur`,
-    description: `Elegí tus productos en ${branch.name}. Empanadas árabes, comidas y postres.`,
+    description: `Elegí tus empanadas y comidas árabes en ${branch.name}.`,
   };
 }
 
@@ -37,7 +37,7 @@ async function getProducts(): Promise<Product[]> {
     .select('*')
     .eq('is_active', true)
     .order('category')
-    .order('price');
+    .order('name');
 
   if (error) {
     console.error('Error fetching products:', error.message);
@@ -57,18 +57,18 @@ export default async function MenuPage({ params }: MenuPageProps) {
       {/* Volver */}
       <Link
         href={`/sucursal/${branch.id}`}
-        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-accent-600"
+        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-brand-400"
       >
         ← Volver a {branch.name}
       </Link>
 
       {/* Título */}
       <div className="mt-6">
-        <h1 className="text-3xl font-extrabold text-stone-900">Menú</h1>
-        <p className="mt-1 text-stone-500">{branch.name}</p>
+        <h1 className="text-3xl font-extrabold text-white">Menú</h1>
+        <p className="mt-1 text-stone-400">{branch.name} — Elegí tus productos</p>
       </div>
 
-      {/* Parte interactiva: productos + carrito */}
+      {/* Parte interactiva */}
       <MenuClient products={products} branchId={branch.id} />
     </section>
   );

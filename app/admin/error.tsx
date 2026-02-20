@@ -11,20 +11,20 @@ export default function AdminError({
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-20 text-center">
       <span className="text-6xl">⚠️</span>
-      <h1 className="text-2xl font-extrabold text-stone-900">Error en el panel</h1>
-      <p className="max-w-sm text-stone-500">
+      <h1 className="text-2xl font-extrabold text-white">Error en el panel</h1>
+      <p className="max-w-sm text-stone-400">
         Ocurrió un error. Probá reintentar o volvé al login.
       </p>
       <div className="mt-2 flex gap-3">
         <button
           onClick={reset}
-          className="rounded-xl bg-accent-600 px-6 py-3 font-bold text-white hover:bg-accent-700"
+          className="rounded-xl bg-brand-600 px-6 py-3 font-bold text-white hover:bg-brand-700"
         >
           Reintentar
         </button>
         <Link
           href="/admin/login"
-          className="rounded-xl border border-stone-200 px-6 py-3 font-bold text-stone-700 hover:bg-stone-50"
+          className="rounded-xl border border-surface-500 px-6 py-3 font-bold text-stone-300 hover:bg-surface-700"
         >
           Ir al login
         </Link>

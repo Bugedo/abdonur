@@ -1,10 +1,10 @@
 import { OrderStatus } from '@/types';
 
 const statusConfig: Record<OrderStatus, { label: string; classes: string }> = {
-  new: { label: '🆕 Nuevo', classes: 'border-yellow-300 bg-yellow-50 text-yellow-800' },
-  confirmed: { label: '✅ Confirmado', classes: 'border-blue-300 bg-blue-50 text-blue-800' },
-  completed: { label: '🎉 Completado', classes: 'border-green-300 bg-green-50 text-green-800' },
-  cancelled: { label: '❌ Cancelado', classes: 'border-red-300 bg-red-50 text-red-800' },
+  new: { label: '🆕 Nuevo', classes: 'border-yellow-700 bg-yellow-900/40 text-yellow-400' },
+  confirmed: { label: '✅ Confirmado', classes: 'border-blue-700 bg-blue-900/40 text-blue-400' },
+  completed: { label: '🎉 Completado', classes: 'border-green-700 bg-green-900/40 text-green-400' },
+  cancelled: { label: '❌ Cancelado', classes: 'border-red-700 bg-red-900/40 text-red-400' },
 };
 
 export default function OrderStatusBadge({ status }: { status: OrderStatus }) {
@@ -15,5 +15,3 @@ export default function OrderStatusBadge({ status }: { status: OrderStatus }) {
     </span>
   );
 }
-
-

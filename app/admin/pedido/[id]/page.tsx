@@ -72,22 +72,22 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
     <section className="mx-auto max-w-2xl py-4">
       <Link
         href="/admin"
-        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-accent-600"
+        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-brand-400"
       >
         ← Volver al panel
       </Link>
 
       <div className="mt-6 space-y-6">
         {/* Header del pedido */}
-        <div className="rounded-xl border border-stone-100 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-surface-600 bg-surface-800 p-6">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-extrabold text-stone-900">{order.customer_name}</h1>
+              <h1 className="text-2xl font-extrabold text-white">{order.customer_name}</h1>
               <p className="mt-1 text-sm text-stone-500">
                 #{order.id.slice(0, 8).toUpperCase()} · {formattedDate}
               </p>
               {isSuperAdmin && order.branches?.name && (
-                <p className="mt-1 text-sm font-medium text-brand-600">
+                <p className="mt-1 text-sm font-medium text-brand-400">
                   🏪 {order.branches.name}
                 </p>
               )}
@@ -97,46 +97,46 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
           {/* Info de entrega y pago */}
           <div className="mt-4 space-y-2 text-sm">
-            <p className="text-stone-700">
-              <span className="font-medium">Entrega:</span>{' '}
+            <p className="text-stone-300">
+              <span className="font-medium text-stone-400">Entrega:</span>{' '}
               {order.delivery_method === 'delivery' ? '🛵 Envío a domicilio' : '🏪 Retiro en local'}
             </p>
             {order.delivery_method === 'delivery' && order.address && (
-              <p className="text-stone-700">
-                <span className="font-medium">Dirección:</span> 📍 {order.address}
+              <p className="text-stone-300">
+                <span className="font-medium text-stone-400">Dirección:</span> 📍 {order.address}
               </p>
             )}
-            <p className="text-stone-700">
-              <span className="font-medium">Pago:</span>{' '}
+            <p className="text-stone-300">
+              <span className="font-medium text-stone-400">Pago:</span>{' '}
               {order.payment_method === 'cash' ? '💵 Efectivo' : '📱 Transferencia / MP'}
             </p>
             {order.notes && (
-              <p className="text-stone-700">
-                <span className="font-medium">Observaciones:</span> 📝 {order.notes}
+              <p className="text-stone-300">
+                <span className="font-medium text-stone-400">Observaciones:</span> 📝 {order.notes}
               </p>
             )}
           </div>
         </div>
 
         {/* Items del pedido */}
-        <div className="rounded-xl border border-stone-100 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-bold text-stone-900">Detalle del pedido</h2>
+        <div className="rounded-xl border border-surface-600 bg-surface-800 p-6">
+          <h2 className="text-lg font-bold text-white">Detalle del pedido</h2>
           <div className="mt-4 space-y-2">
             {items.map((item) => (
               <div key={item.id} className="flex items-center justify-between text-sm">
-                <span className="text-stone-700">
+                <span className="text-stone-300">
                   {item.quantity}x {item.products?.name ?? 'Producto'}
                 </span>
-                <span className="font-medium text-stone-900">
+                <span className="font-medium text-white">
                   {formatPrice(item.unit_price * item.quantity)}
                 </span>
               </div>
             ))}
           </div>
-          <div className="mt-4 border-t border-stone-100 pt-4">
+          <div className="mt-4 border-t border-surface-600 pt-4">
             <div className="flex items-center justify-between">
-              <span className="text-base font-bold text-stone-900">Total</span>
-              <span className="text-xl font-extrabold text-accent-600">
+              <span className="text-base font-bold text-white">Total</span>
+              <span className="text-xl font-extrabold text-brand-500">
                 {formatPrice(order.total_price)}
               </span>
             </div>

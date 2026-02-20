@@ -31,15 +31,15 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
       {/* Volver */}
       <Link
         href={`/sucursal/${branch.id}/menu`}
-        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-accent-600"
+        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-brand-400"
       >
         ← Volver al menú
       </Link>
 
       {/* Título */}
       <div className="mt-6">
-        <h1 className="text-3xl font-extrabold text-stone-900">Confirmar pedido</h1>
-        <p className="mt-1 text-stone-500">{branch.name}</p>
+        <h1 className="text-3xl font-extrabold text-white">Confirmar pedido</h1>
+        <p className="mt-1 text-stone-400">{branch.name} — Últimos detalles</p>
       </div>
 
       {/* Parte interactiva */}
