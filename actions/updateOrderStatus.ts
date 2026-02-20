@@ -1,9 +1,11 @@
 'use server';
 
-import { createSupabaseServerClient } from '@/lib/supabaseAuthServer';
 import { supabaseAdmin } from '@/lib/supabaseServer';
-import { OrderStatus, AdminRole } from '@/types';
+import { OrderStatus } from '@/types';
 import { revalidatePath } from 'next/cache';
+
+// 🧪 TESTING MODE — cambiar a false para activar autenticación
+const TESTING_MODE = true;
 
 interface UpdateResult {
   success: boolean;
@@ -14,38 +16,40 @@ export async function updateOrderStatus(
   orderId: string,
   newStatus: OrderStatus
 ): Promise<UpdateResult> {
-  // Verificar que el usuario está autenticado
-  const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  if (!TESTING_MODE) {
+    // ── Auth mode: verificar usuario y permisos ──
+    const { createSupabaseServerClient } = await import('@/lib/supabaseAuthServer');
+    const { AdminRole } = await import('@/types') as { AdminRole: string };
 
-  if (!user) {
-    return { success: false, error: 'No autorizado.' };
-  }
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-  // Obtener info del admin
-  const { data: adminUser } = await supabaseAdmin
-    .from('admin_users')
-    .select('branch_id, role')
-    .eq('user_id', user.id)
-    .single();
+    if (!user) {
+      return { success: false, error: 'No autorizado.' };
+    }
 
-  if (!adminUser) {
-    return { success: false, error: 'No tenés permisos de admin.' };
-  }
-
-  const { role, branch_id } = adminUser as { branch_id: string | null; role: AdminRole };
-
-  // Super admin puede actualizar cualquier pedido
-  // Branch admin solo puede actualizar pedidos de su sucursal
-  if (role === 'branch_admin') {
-    const { data: order } = await supabaseAdmin
-      .from('orders')
-      .select('branch_id')
-      .eq('id', orderId)
+    const { data: adminUser } = await supabaseAdmin
+      .from('admin_users')
+      .select('branch_id, role')
+      .eq('user_id', user.id)
       .single();
 
-    if (!order || order.branch_id !== branch_id) {
-      return { success: false, error: 'No podés modificar pedidos de otra sucursal.' };
+    if (!adminUser) {
+      return { success: false, error: 'No tenés permisos de admin.' };
+    }
+
+    const { role, branch_id } = adminUser as { branch_id: string | null; role: string };
+
+    if (role === 'branch_admin') {
+      const { data: order } = await supabaseAdmin
+        .from('orders')
+        .select('branch_id')
+        .eq('id', orderId)
+        .single();
+
+      if (!order || order.branch_id !== branch_id) {
+        return { success: false, error: 'No podés modificar pedidos de otra sucursal.' };
+      }
     }
   }
 
@@ -61,6 +65,8 @@ export async function updateOrderStatus(
   }
 
   revalidatePath('/admin');
+  revalidatePath('/admin/admin');
+  revalidatePath('/admin/sucursal');
   revalidatePath(`/admin/pedido/${orderId}`);
 
   return { success: true };
