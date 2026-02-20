@@ -161,12 +161,12 @@ CREATE POLICY "admin_users_self_read" ON admin_users
 
 -- 6 Sucursales reales de Córdoba
 INSERT INTO branches (slug, name, address, whatsapp_number, opening_hours, is_active) VALUES
-  ('san-vicente',   'Abdonur San Vicente',       'Ambrosio Funes 1241, San Vicente, Córdoba',                  '543517061970',  'Lun a Dom 10:00 - 23:00', true),
-  ('alta-cordoba',  'Abdonur Alta Córdoba',      'Fragueiro 2118, Alta Córdoba',                               '543517619358',  'Lun a Dom 10:00 - 23:00', true),
-  ('alberdi',       'Abdonur Alberdi',           'Av. Colón 3228, Alberdi, Córdoba',                           '543512052055',  'Lun a Dom 10:00 - 23:00', true),
-  ('nueva-cordoba', 'Abdonur Nueva Córdoba',     'Nueva Córdoba (Solo Delivery)',                               '543517619358',  'Lun a Dom 10:00 - 23:00', true),
-  ('marques',       'Abdonur Marqués',           'Luciano de Figueroa 305, esq Pimentel, Marqués, Córdoba',    '543517539009',  'Lun a Dom 10:00 - 23:00', true),
-  ('pueyrredon',    'Abdonur Gral. Pueyrredón',  'Av. Patria 920, esquina Armenia, Gral. Pueyrredón, Córdoba', '543518176818',  'Lun a Dom 10:00 - 23:00', true);
+  ('san-vicente',   'Abdonur San Vicente',       'Ambrosio Funes 1241, San Vicente, Córdoba',                  '393791025851',  'Lun a Dom 10:00 - 23:00', true),
+  ('alta-cordoba',  'Abdonur Alta Córdoba',      'Fragueiro 2118, Alta Córdoba',                               '393791025851',  'Lun a Dom 10:00 - 23:00', true),
+  ('alberdi',       'Abdonur Alberdi',           'Av. Colón 3228, Alberdi, Córdoba',                           '393791025851',  'Lun a Dom 10:00 - 23:00', true),
+  ('nueva-cordoba', 'Abdonur Nueva Córdoba',     'Nueva Córdoba (Solo Delivery)',                               '393791025851',  'Lun a Dom 10:00 - 23:00', true),
+  ('marques',       'Abdonur Marqués',           'Luciano de Figueroa 305, esq Pimentel, Marqués, Córdoba',    '393791025851',  'Lun a Dom 10:00 - 23:00', true),
+  ('pueyrredon',    'Abdonur Gral. Pueyrredón',  'Av. Patria 920, esquina Armenia, Gral. Pueyrredón, Córdoba', '393791025851',  'Lun a Dom 10:00 - 23:00', true);
 
 -- Productos reales
 INSERT INTO products (name, description, price, category, image_url, is_active) VALUES

@@ -55,14 +55,14 @@ Con el modo testing desactivado, los usuarios deben loguearse en `/admin/login` 
 
 ## Sucursales
 
-| Sucursal | Dirección | Teléfono / WhatsApp |
+| Sucursal | Dirección | WhatsApp Pedidos |
 |---|---|---|
-| **Abdonur San Vicente** | Ambrosio Funes 1241, San Vicente, Córdoba | 3517061970 |
-| **Abdonur Alta Córdoba** | Fragueiro 2118, Alta Córdoba | 3517619358 |
-| **Abdonur Alberdi** | Av. Colón 3228, Alberdi, Córdoba | 3512052055 |
-| **Abdonur Nueva Córdoba** | Nueva Córdoba (Solo Delivery) | 3517619358 |
-| **Abdonur Marqués** | Luciano de Figueroa 305, esq Pimentel | 3517539009 |
-| **Abdonur Gral. Pueyrredón** | Av. Patria 920, esquina Armenia | 3518176818 |
+| **Abdonur San Vicente** | Ambrosio Funes 1241, San Vicente, Córdoba | +39 379 102 5851 |
+| **Abdonur Alta Córdoba** | Fragueiro 2118, Alta Córdoba | +39 379 102 5851 |
+| **Abdonur Alberdi** | Av. Colón 3228, Alberdi, Córdoba | +39 379 102 5851 |
+| **Abdonur Nueva Córdoba** | Nueva Córdoba (Solo Delivery) | +39 379 102 5851 |
+| **Abdonur Marqués** | Luciano de Figueroa 305, esq Pimentel | +39 379 102 5851 |
+| **Abdonur Gral. Pueyrredón** | Av. Patria 920, esquina Armenia | +39 379 102 5851 |
 
 Venta por mayor y franquicia: **3513224810**
 
