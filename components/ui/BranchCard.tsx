@@ -9,16 +9,16 @@ export default function BranchCard({ branch }: BranchCardProps) {
   return (
     <Link
       href={`/sucursal/${branch.id}`}
-      className="group block rounded-2xl border border-stone-100 bg-white p-6 shadow-sm transition-all hover:border-brand-300 hover:shadow-lg"
+      className="group block rounded-2xl border border-surface-600 bg-surface-800 p-6 transition-all hover:border-brand-600 hover:shadow-lg hover:shadow-brand-900/30"
     >
       {/* Nombre */}
-      <h2 className="text-xl font-bold text-stone-900 group-hover:text-accent-600">
+      <h2 className="text-xl font-bold text-white group-hover:text-brand-400">
         {branch.name}
       </h2>
 
       {/* Dirección */}
-      <p className="mt-2 flex items-start gap-2 text-sm text-stone-600">
-        <span className="mt-0.5 text-brand-500">📍</span>
+      <p className="mt-2 flex items-start gap-2 text-sm text-stone-400">
+        <span className="mt-0.5">📍</span>
         <span>{branch.address}</span>
       </p>
 
@@ -30,11 +30,11 @@ export default function BranchCard({ branch }: BranchCardProps) {
 
       {/* CTA */}
       <div className="mt-4 flex items-center justify-between">
-        <span className="inline-flex items-center gap-1 text-xs font-medium text-green-600">
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-green-400">
           <span className="h-2 w-2 rounded-full bg-green-500" />
           Abierto
         </span>
-        <span className="text-sm font-bold text-brand-600 group-hover:text-accent-600">
+        <span className="text-sm font-bold text-brand-500 group-hover:text-brand-400">
           Ver menú →
         </span>
       </div>

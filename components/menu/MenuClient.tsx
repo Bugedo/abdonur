@@ -9,48 +9,41 @@ interface MenuClientProps {
   branchId: string;
 }
 
-const categoryLabels: Record<ProductCategory, string> = {
+const categoryTitles: Record<ProductCategory, string> = {
   empanadas: '🥟 Empanadas Árabes',
-  comidas: '🍽️ Comidas',
-  postres: '🍮 Postres',
+  comidas: '🍽️ Comidas y Platos',
+  postres: '🍰 Postres Árabes',
 };
 
 const categoryOrder: ProductCategory[] = ['empanadas', 'comidas', 'postres'];
 
 export default function MenuClient({ products, branchId }: MenuClientProps) {
-  const grouped = categoryOrder
-    .map((cat) => ({
-      category: cat,
-      label: categoryLabels[cat],
-      items: products.filter((p) => p.category === cat),
-    }))
-    .filter((g) => g.items.length > 0);
+  const productsByCategory = products.reduce((acc, product) => {
+    (acc[product.category] = acc[product.category] || []).push(product);
+    return acc;
+  }, {} as Record<ProductCategory, Product[]>);
 
   return (
     <>
-      {grouped.length > 0 ? (
-        <div className="mt-6 space-y-8 pb-32">
-          {grouped.map((group) => (
-            <div key={group.category}>
-              <h2 className="border-b-2 border-brand-200 pb-2 text-lg font-extrabold text-accent-600">
-                {group.label}
-              </h2>
-              <div className="mt-3 space-y-3">
-                {group.items.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
+      {products.length > 0 ? (
+        <div className="mt-6 space-y-10 pb-32">
+          {categoryOrder
+            .filter((cat) => productsByCategory[cat]?.length)
+            .map((category) => (
+              <div key={category}>
+                <h2 className="mb-4 border-b border-surface-600 pb-2 text-2xl font-bold text-brand-500">
+                  {categoryTitles[category]}
+                </h2>
+                <div className="space-y-3">
+                  {productsByCategory[category].map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-
-          {/* Aviso */}
-          <div className="rounded-lg border border-stone-100 bg-stone-50 p-3 text-center text-xs text-stone-500">
-            <p>Nuestros productos <strong>NO</strong> son aptos para Celíacos.</p>
-            <p>Todos nuestros productos <strong>SÍ</strong> son aptos para APLV, excepto los postres.</p>
-          </div>
+            ))}
         </div>
       ) : (
-        <div className="mt-8 rounded-xl border border-dashed border-stone-200 bg-stone-50 p-12 text-center text-stone-400">
+        <div className="mt-8 rounded-xl border border-dashed border-surface-500 bg-surface-800 p-12 text-center text-stone-500">
           <p>No hay productos disponibles en este momento.</p>
         </div>
       )}

@@ -2,23 +2,33 @@
 
 /* ─────────────────────────────────────
    Theme — Empanadas Árabes Abdonur
-   Paleta rojo/naranja sobre fondo blanco
+   Estética oscura inspirada en la marca
+   Fondo negro, rojo, dorado, blanco
    ───────────────────────────────────── */
 @theme {
-  --color-brand-50: #fff7ed;
-  --color-brand-100: #ffedd5;
-  --color-brand-200: #fed7aa;
-  --color-brand-300: #fdba74;
-  --color-brand-400: #fb923c;
-  --color-brand-500: #f97316;
-  --color-brand-600: #ea580c;
-  --color-brand-700: #c2410c;
-  --color-brand-800: #9a3412;
-  --color-brand-900: #7c2d12;
+  /* Rojo Abdonur */
+  --color-brand-50: #fef2f2;
+  --color-brand-100: #fee2e2;
+  --color-brand-200: #fecaca;
+  --color-brand-300: #fca5a5;
+  --color-brand-400: #f87171;
+  --color-brand-500: #ef4444;
+  --color-brand-600: #dc2626;
+  --color-brand-700: #b91c1c;
+  --color-brand-800: #991b1b;
+  --color-brand-900: #7f1d1d;
 
-  --color-accent-500: #dc2626;
-  --color-accent-600: #b91c1c;
-  --color-accent-700: #991b1b;
+  /* Dorado para slogan */
+  --color-gold-400: #fbbf24;
+  --color-gold-500: #f59e0b;
+  --color-gold-600: #d97706;
+
+  /* Superficie oscura */
+  --color-surface-900: #0a0a0a;
+  --color-surface-800: #141414;
+  --color-surface-700: #1c1c1c;
+  --color-surface-600: #262626;
+  --color-surface-500: #333333;
 
   --color-whatsapp: #25D366;
   --color-whatsapp-dark: #128C7E;
@@ -29,6 +39,6 @@
    ───────────────────────────────────── */
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #ffffff;
-  color: #1c1917;
+  background-color: #0a0a0a;
+  color: #f5f5f4;
 }

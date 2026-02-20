@@ -21,6 +21,7 @@ export interface Product {
   description: string;
   price: number;
   category: ProductCategory;
+  image_url: string;
   is_active: boolean;
 }
 
@@ -40,7 +41,6 @@ export interface Order {
   total_price: number;
   status: OrderStatus;
   created_at: string;
-  // Relaciones opcionales (cuando se hace join)
   branch?: Branch;
   branches?: { name: string };
   order_items?: OrderItem[];
@@ -53,7 +53,6 @@ export interface OrderItem {
   product_id: string;
   quantity: number;
   unit_price: number;
-  // Relación opcional (cuando se hace join)
   product?: Product;
 }
 

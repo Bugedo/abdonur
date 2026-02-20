@@ -12,11 +12,11 @@ interface OrderActionsProps {
 const transitions: Record<OrderStatus, { label: string; next: OrderStatus; classes: string }[]> = {
   new: [
     { label: '✅ Confirmar pedido', next: 'confirmed', classes: 'bg-blue-600 text-white hover:bg-blue-700' },
-    { label: '❌ Cancelar', next: 'cancelled', classes: 'border border-red-300 text-red-600 hover:bg-red-50' },
+    { label: '❌ Cancelar', next: 'cancelled', classes: 'border border-red-700 text-red-400 hover:bg-red-900/30' },
   ],
   confirmed: [
     { label: '🎉 Marcar completado', next: 'completed', classes: 'bg-green-600 text-white hover:bg-green-700' },
-    { label: '❌ Cancelar', next: 'cancelled', classes: 'border border-red-300 text-red-600 hover:bg-red-50' },
+    { label: '❌ Cancelar', next: 'cancelled', classes: 'border border-red-700 text-red-400 hover:bg-red-900/30' },
   ],
   completed: [],
   cancelled: [],
@@ -55,10 +55,8 @@ export default function OrderActions({ orderId, currentStatus }: OrderActionsPro
         ))}
       </div>
       {error && (
-        <p className="text-sm text-red-600">{error}</p>
+        <p className="text-sm text-red-400">{error}</p>
       )}
     </div>
   );
 }
-
-

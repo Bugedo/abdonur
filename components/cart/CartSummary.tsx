@@ -19,14 +19,14 @@ export default function CartSummary({ branchId }: CartSummaryProps) {
   }).format(totalPrice);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-stone-200 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-surface-600 bg-surface-800 shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
       <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-4">
         {/* Info del carrito */}
         <div>
-          <p className="text-sm font-medium text-stone-600">
+          <p className="text-sm font-medium text-stone-400">
             {totalItems} {totalItems === 1 ? 'producto' : 'productos'}
           </p>
-          <p className="text-xl font-extrabold text-stone-900">{formattedTotal}</p>
+          <p className="text-xl font-extrabold text-white">{formattedTotal}</p>
         </div>
 
         {/* Botón confirmar */}
@@ -40,7 +40,7 @@ export default function CartSummary({ branchId }: CartSummaryProps) {
         ) : (
           <button
             disabled
-            className="cursor-not-allowed rounded-xl bg-stone-300 px-6 py-3 text-base font-bold text-stone-500"
+            className="cursor-not-allowed rounded-xl bg-surface-600 px-6 py-3 text-base font-bold text-stone-500"
           >
             Agregá productos
           </button>
