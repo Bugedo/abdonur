@@ -1,20 +1,24 @@
 @import 'tailwindcss';
 
 /* ─────────────────────────────────────
-   Theme — Empanadas Abdonur
-   Colores cálidos, apetitosos, orientados a acción
+   Theme — Empanadas Árabes Abdonur
+   Paleta rojo/naranja sobre fondo blanco
    ───────────────────────────────────── */
 @theme {
-  --color-brand-50: #fffbeb;
-  --color-brand-100: #fef3c7;
-  --color-brand-200: #fde68a;
-  --color-brand-300: #fcd34d;
-  --color-brand-400: #fbbf24;
-  --color-brand-500: #f59e0b;
-  --color-brand-600: #d97706;
-  --color-brand-700: #b45309;
-  --color-brand-800: #92400e;
-  --color-brand-900: #78350f;
+  --color-brand-50: #fff7ed;
+  --color-brand-100: #ffedd5;
+  --color-brand-200: #fed7aa;
+  --color-brand-300: #fdba74;
+  --color-brand-400: #fb923c;
+  --color-brand-500: #f97316;
+  --color-brand-600: #ea580c;
+  --color-brand-700: #c2410c;
+  --color-brand-800: #9a3412;
+  --color-brand-900: #7c2d12;
+
+  --color-accent-500: #dc2626;
+  --color-accent-600: #b91c1c;
+  --color-accent-700: #991b1b;
 
   --color-whatsapp: #25D366;
   --color-whatsapp-dark: #128C7E;
@@ -25,6 +29,6 @@
    ───────────────────────────────────── */
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #fafaf9;
+  background-color: #ffffff;
   color: #1c1917;
 }

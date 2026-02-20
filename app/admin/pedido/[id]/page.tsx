@@ -16,7 +16,6 @@ async function getAdminInfo(userId: string) {
 }
 
 async function getOrderWithItems(orderId: string, branchId: string | null) {
-  // Super admin can see any order; branch admin can only see their branch's
   let query = supabaseAdmin
     .from('orders')
     .select('*, branches(name)')
@@ -53,7 +52,6 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
   const isSuperAdmin = adminInfo.role === 'super_admin';
 
-  // Super admin passes null to see any order, branch admin passes their branch_id
   const result = await getOrderWithItems(id, isSuperAdmin ? null : adminInfo.branch_id);
   if (!result) notFound();
 
@@ -74,14 +72,14 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
     <section className="mx-auto max-w-2xl py-4">
       <Link
         href="/admin"
-        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-800"
+        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-accent-600"
       >
-        ← Volver al dashboard
+        ← Volver al panel
       </Link>
 
       <div className="mt-6 space-y-6">
         {/* Header del pedido */}
-        <div className="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-stone-100 bg-white p-6 shadow-sm">
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-2xl font-extrabold text-stone-900">{order.customer_name}</h1>
@@ -121,7 +119,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         </div>
 
         {/* Items del pedido */}
-        <div className="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-stone-100 bg-white p-6 shadow-sm">
           <h2 className="text-lg font-bold text-stone-900">Detalle del pedido</h2>
           <div className="mt-4 space-y-2">
             {items.map((item) => (
@@ -138,7 +136,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <div className="mt-4 border-t border-stone-100 pt-4">
             <div className="flex items-center justify-between">
               <span className="text-base font-bold text-stone-900">Total</span>
-              <span className="text-xl font-extrabold text-brand-700">
+              <span className="text-xl font-extrabold text-accent-600">
                 {formatPrice(order.total_price)}
               </span>
             </div>

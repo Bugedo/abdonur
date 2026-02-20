@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useCart, MIN_ITEMS } from '@/components/cart/CartProvider';
+import { useCart } from '@/components/cart/CartProvider';
 import { createOrder } from '@/actions/createOrder';
 import { Branch, DeliveryMethod, PaymentMethod } from '@/types';
 
@@ -29,7 +29,6 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
   const deliveryLabel = deliveryMethod === 'pickup' ? 'Retira en local' : 'Envío a domicilio';
   const paymentLabel = paymentMethod === 'cash' ? 'Efectivo al recibir' : 'Transferencia / MercadoPago';
 
-  // Generar mensaje de WhatsApp
   function buildWhatsAppMessage(orderId: string): string {
     const lines = [
       `🥟 *Nuevo pedido — ${branch.name}*`,
@@ -75,7 +74,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
     }
 
     if (!isMinimumMet) {
-      setError(`El pedido mínimo es de ${MIN_ITEMS} empanadas.`);
+      setError('Agregá al menos un producto.');
       return;
     }
 
@@ -98,7 +97,6 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
         return;
       }
 
-      // Generar link de WhatsApp y abrir
       const message = buildWhatsAppMessage(result.orderId!);
       const waUrl = `https://wa.me/${branch.whatsapp_number}?text=${encodeURIComponent(message)}`;
 
@@ -110,14 +108,13 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
     }
   }
 
-  // Si no hay items, mostrar mensaje
   if (items.length === 0) {
     return (
-      <div className="mt-8 rounded-xl border border-dashed border-stone-300 bg-stone-50 p-12 text-center">
+      <div className="mt-8 rounded-xl border border-dashed border-stone-200 bg-stone-50 p-12 text-center">
         <p className="text-stone-500">Tu carrito está vacío.</p>
         <Link
           href={`/sucursal/${branch.id}/menu`}
-          className="mt-4 inline-block rounded-lg bg-brand-600 px-6 py-2 text-sm font-bold text-white hover:bg-brand-700"
+          className="mt-4 inline-block rounded-lg bg-accent-600 px-6 py-2 text-sm font-bold text-white hover:bg-accent-700"
         >
           Ir al menú
         </Link>
@@ -128,7 +125,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
   return (
     <form onSubmit={handleSubmit} className="mt-6 space-y-6">
       {/* Resumen del pedido */}
-      <div className="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-stone-100 bg-white p-6 shadow-sm">
         <h2 className="text-lg font-bold text-stone-900">Tu pedido</h2>
         <div className="mt-4 space-y-2">
           {items.map((item) => (
@@ -144,8 +141,8 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
         </div>
         <div className="mt-4 border-t border-stone-100 pt-4">
           <div className="flex items-center justify-between">
-            <span className="text-base font-bold text-stone-900">Total ({totalItems} empanadas)</span>
-            <span className="text-xl font-extrabold text-brand-700">{formattedTotal}</span>
+            <span className="text-base font-bold text-stone-900">Total ({totalItems} {totalItems === 1 ? 'producto' : 'productos'})</span>
+            <span className="text-xl font-extrabold text-accent-600">{formattedTotal}</span>
           </div>
         </div>
         <Link
@@ -157,14 +154,14 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
       </div>
 
       {/* Datos del cliente */}
-      <div className="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-stone-100 bg-white p-6 shadow-sm">
         <h2 className="text-lg font-bold text-stone-900">Tus datos</h2>
 
         <div className="mt-4 space-y-4">
           {/* Nombre */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-stone-700">
-              Nombre <span className="text-red-500">*</span>
+              Nombre <span className="text-accent-500">*</span>
             </label>
             <input
               id="name"
@@ -172,7 +169,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="Tu nombre"
-              className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+              className="mt-1 w-full rounded-lg border border-stone-200 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
               required
             />
           </div>
@@ -180,7 +177,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
           {/* Método de entrega */}
           <div>
             <label className="block text-sm font-medium text-stone-700">
-              ¿Cómo lo querés? <span className="text-red-500">*</span>
+              ¿Cómo lo querés? <span className="text-accent-500">*</span>
             </label>
             <div className="mt-2 grid grid-cols-2 gap-3">
               <button
@@ -212,7 +209,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
           {deliveryMethod === 'delivery' && (
             <div>
               <label htmlFor="address" className="block text-sm font-medium text-stone-700">
-                Dirección de envío <span className="text-red-500">*</span>
+                Dirección de envío <span className="text-accent-500">*</span>
               </label>
               <input
                 id="address"
@@ -220,7 +217,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="Ej: Av. San Martín 1234, Piso 2"
-                className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+                className="mt-1 w-full rounded-lg border border-stone-200 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
                 required
               />
             </div>
@@ -229,7 +226,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
           {/* Método de pago */}
           <div>
             <label className="block text-sm font-medium text-stone-700">
-              ¿Cómo pagás? <span className="text-red-500">*</span>
+              ¿Cómo pagás? <span className="text-accent-500">*</span>
             </label>
             <div className="mt-2 grid grid-cols-2 gap-3">
               <button
@@ -268,7 +265,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Ej: sin picante, para las 20hs, etc."
               rows={3}
-              className="mt-1 w-full resize-none rounded-lg border border-stone-300 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200"
+              className="mt-1 w-full resize-none rounded-lg border border-stone-200 px-4 py-3 text-stone-900 placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100"
             />
           </div>
         </div>

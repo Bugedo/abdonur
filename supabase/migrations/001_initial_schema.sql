@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════
--- EMPANADAS ABDONUR — Migración inicial
+-- EMPANADAS ÁRABES ABDONUR — Migración inicial
 -- Tablas, relaciones, RLS y seeds
 -- ═══════════════════════════════════════════════════════════════
 
@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS products (
   name        TEXT NOT NULL,
   description TEXT DEFAULT '',
   price       NUMERIC(10,2) NOT NULL,
+  category    TEXT NOT NULL DEFAULT 'empanadas',
   is_active   BOOLEAN DEFAULT true,
   created_at  TIMESTAMPTZ DEFAULT now()
 );
@@ -72,12 +73,12 @@ CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
 CREATE INDEX IF NOT EXISTS idx_admin_users_user_id ON admin_users(user_id);
+CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 
 -- ─────────────────────────────────────
 -- 3. ROW LEVEL SECURITY (RLS)
 -- ─────────────────────────────────────
 
--- Habilitar RLS en todas las tablas
 ALTER TABLE branches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
@@ -88,7 +89,7 @@ ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "branches_public_read" ON branches
   FOR SELECT USING (is_active = true);
 
--- BRANCHES: admins pueden ver todas (incluso inactivas)
+-- BRANCHES: admins pueden ver todas
 CREATE POLICY "branches_admin_read" ON branches
   FOR SELECT USING (
     auth.uid() IN (SELECT user_id FROM admin_users)
@@ -98,7 +99,7 @@ CREATE POLICY "branches_admin_read" ON branches
 CREATE POLICY "products_public_read" ON products
   FOR SELECT USING (is_active = true);
 
--- PRODUCTS: admins pueden ver todos (incluso inactivos)
+-- PRODUCTS: admins pueden ver todos
 CREATE POLICY "products_admin_read" ON products
   FOR SELECT USING (
     auth.uid() IN (SELECT user_id FROM admin_users)
@@ -108,62 +109,81 @@ CREATE POLICY "products_admin_read" ON products
 CREATE POLICY "orders_public_insert" ON orders
   FOR INSERT WITH CHECK (true);
 
--- ORDERS: admins solo ven pedidos de SU sucursal
+-- ORDERS: admins ven pedidos de SU sucursal o todos si es super_admin
 CREATE POLICY "orders_admin_read" ON orders
   FOR SELECT USING (
+    EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid() AND role = 'super_admin')
+    OR
     branch_id IN (
-      SELECT branch_id FROM admin_users WHERE user_id = auth.uid()
+      SELECT branch_id FROM admin_users WHERE user_id = auth.uid() AND role = 'branch_admin'
     )
   );
 
--- ORDERS: admins pueden actualizar pedidos de SU sucursal
+-- ORDERS: admins pueden actualizar pedidos de SU sucursal o todos si es super_admin
 CREATE POLICY "orders_admin_update" ON orders
   FOR UPDATE USING (
+    EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid() AND role = 'super_admin')
+    OR
     branch_id IN (
-      SELECT branch_id FROM admin_users WHERE user_id = auth.uid()
+      SELECT branch_id FROM admin_users WHERE user_id = auth.uid() AND role = 'branch_admin'
     )
   );
 
--- ORDER_ITEMS: cualquiera puede insertar (al crear pedido)
+-- ORDER_ITEMS: cualquiera puede insertar
 CREATE POLICY "order_items_public_insert" ON order_items
   FOR INSERT WITH CHECK (true);
 
--- ORDER_ITEMS: solo admins de la sucursal pueden leer
+-- ORDER_ITEMS: solo admins de la sucursal o super_admin pueden leer
 CREATE POLICY "order_items_admin_read" ON order_items
   FOR SELECT USING (
+    EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid() AND role = 'super_admin')
+    OR
     order_id IN (
       SELECT o.id FROM orders o
       JOIN admin_users au ON au.branch_id = o.branch_id
-      WHERE au.user_id = auth.uid()
+      WHERE au.user_id = auth.uid() AND au.role = 'branch_admin'
     )
   );
 
--- ADMIN_USERS: solo el propio admin puede leer su registro
+-- ADMIN_USERS: solo el propio admin puede leer su registro, y super_admin puede leer todos
 CREATE POLICY "admin_users_self_read" ON admin_users
-  FOR SELECT USING (user_id = auth.uid());
+  FOR SELECT USING (
+    user_id = auth.uid()
+    OR
+    EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid() AND role = 'super_admin')
+  );
 
 -- ─────────────────────────────────────
 -- 4. SEEDS — Datos iniciales
 -- ─────────────────────────────────────
 
--- 5 Sucursales
+-- 6 Sucursales reales de Córdoba
 INSERT INTO branches (name, address, whatsapp_number, opening_hours, is_active) VALUES
-  ('Abdonur Centro',     'Av. San Martín 450, Centro',           '5491112345678', 'Lun a Sáb 10:00 - 22:00', true),
-  ('Abdonur Norte',      'Av. Libertador 1200, Zona Norte',      '5491112345679', 'Lun a Dom 11:00 - 23:00', true),
-  ('Abdonur Sur',        'Calle Belgrano 890, Zona Sur',         '5491112345680', 'Mar a Dom 10:00 - 21:00', true),
-  ('Abdonur Oeste',      'Ruta 7 km 34, Zona Oeste',             '5491112345681', 'Lun a Vie 11:00 - 22:00', true),
-  ('Abdonur Costanera',  'Costanera Sur 300, Frente al río',     '5491112345682', 'Jue a Dom 12:00 - 00:00', true);
+  ('Abdonur San Vicente',       'Ambrosio Funes 1241, San Vicente, Córdoba',                  '543517061970',  'Lun a Dom 10:00 - 23:00', true),
+  ('Abdonur Alta Córdoba',      'Fragueiro 2118, Alta Córdoba',                               '543517619358',  'Lun a Dom 10:00 - 23:00', true),
+  ('Abdonur Alberdi',           'Av. Colón 3228, Alberdi, Córdoba',                           '543512052055',  'Lun a Dom 10:00 - 23:00', true),
+  ('Abdonur Nueva Córdoba',     'Nueva Córdoba (Solo Delivery)',                               '543517619358',  'Lun a Dom 10:00 - 23:00', true),
+  ('Abdonur Marqués',           'Luciano de Figueroa 305, esq Pimentel, Marqués, Córdoba',    '543517539009',  'Lun a Dom 10:00 - 23:00', true),
+  ('Abdonur Gral. Pueyrredón',  'Av. Patria 920, esquina Armenia, Gral. Pueyrredón, Córdoba', '543518176818',  'Lun a Dom 10:00 - 23:00', true);
 
--- Productos (empanadas)
-INSERT INTO products (name, description, price, is_active) VALUES
-  ('Carne suave',         'Clásica carne cortada a cuchillo con cebolla',   1200.00, true),
-  ('Carne picante',       'Carne cortada a cuchillo con ají molido',        1200.00, true),
-  ('Jamón y queso',       'Jamón cocido con queso mozzarella',              1100.00, true),
-  ('Pollo',               'Pollo desmenuzado con cebolla y morrón',         1200.00, true),
-  ('Humita',              'Choclo cremoso con salsa blanca',                1100.00, true),
-  ('Caprese',             'Tomate, albahaca y mozzarella',                  1100.00, true),
-  ('Roquefort y nuez',    'Queso roquefort con nueces',                     1300.00, true),
-  ('Verdura',             'Acelga, cebolla y huevo',                        1000.00, true),
-  ('Árabe',               'Carne con limón, especias y piñones',            1400.00, true),
-  ('Empanada del mes',    'Sabor especial que cambia cada mes',             1500.00, true);
+-- Productos reales
+INSERT INTO products (name, description, price, category, is_active) VALUES
+  -- Empanadas
+  ('Empanada Árabe (unidad)',     'Empanada árabe tradicional',                                                                    1600.00, 'empanadas', true),
+  ('Docena de Empanadas Árabes',  '12 empanadas árabes tradicionales',                                                            18000.00, 'empanadas', true),
 
+  -- Comidas
+  ('Almuerzo o Cena para 2',      '2 empanadas, 4 niños envueltos, 2 porc de quebbe, 1 porc puré de garbanzos, 1 porc de aceitunas y 6 pancitos', 19500.00, 'comidas', true),
+  ('Quebbe - 1 Kg',               'Quebbe por kilo',                                                                              18400.00, 'comidas', true),
+  ('Quebbe - Porción',            'Porción aproximada de quebbe',                                                                  4500.00, 'comidas', true),
+  ('Niños Envueltos - 1 Kg',      'Niños envueltos por kilo',                                                                     27000.00, 'comidas', true),
+  ('Niños Envueltos - Porción',   'Porción aproximada de niños envueltos',                                                         7000.00, 'comidas', true),
+  ('Puré de Garbanzos - 1 Kg',    'Puré de garbanzos por kilo',                                                                   11900.00, 'comidas', true),
+  ('Puré de Garbanzos - Porción', 'Porción aproximada de puré de garbanzos',                                                       2600.00, 'comidas', true),
+  ('Laben - 250 cm3',             'Laben en porción de 250 cm3',                                                                   2400.00, 'comidas', true),
+  ('Aceitunas a la Árabe - 1 Kg', 'Aceitunas a la árabe por kilo',                                                                21000.00, 'comidas', true),
+  ('Aceitunas a la Árabe - Porción','Porción aproximada de aceitunas a la árabe',                                                   4000.00, 'comidas', true),
+
+  -- Postres
+  ('Namura - Porción',            'Postre árabe Namura',                                                                           1600.00, 'postres', true),
+  ('Backlawa - Porción',          'Postre árabe Backlawa',                                                                         2500.00, 'postres', true);

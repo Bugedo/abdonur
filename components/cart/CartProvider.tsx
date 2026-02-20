@@ -3,8 +3,8 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { Product, CartItem } from '@/types';
 
-// ─── Mínimo de empanadas para pedir ───
-export const MIN_ITEMS = 8;
+// ─── Mínimo de items para pedir ───
+export const MIN_ITEMS = 1;
 
 interface CartContextType {
   items: CartItem[];
@@ -72,5 +72,3 @@ export function useCart() {
   if (!ctx) throw new Error('useCart must be used within CartProvider');
   return ctx;
 }
-
-

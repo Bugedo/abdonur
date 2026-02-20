@@ -1,5 +1,5 @@
 // ─────────────────────────────────────
-// Tipos globales — Empanadas Abdonur
+// Tipos globales — Empanadas Árabes Abdonur
 // ─────────────────────────────────────
 
 // ── Sucursales ──
@@ -13,11 +13,14 @@ export interface Branch {
 }
 
 // ── Productos ──
+export type ProductCategory = 'empanadas' | 'comidas' | 'postres';
+
 export interface Product {
   id: string;
   name: string;
   description: string;
   price: number;
+  category: ProductCategory;
   is_active: boolean;
 }
 
@@ -39,6 +42,7 @@ export interface Order {
   created_at: string;
   // Relaciones opcionales (cuando se hace join)
   branch?: Branch;
+  branches?: { name: string };
   order_items?: OrderItem[];
 }
 
@@ -77,4 +81,3 @@ export interface OrderFormData {
   address: string;
   payment_method: PaymentMethod;
 }
-

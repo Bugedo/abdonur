@@ -31,7 +31,7 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
       {/* Volver */}
       <Link
         href={`/sucursal/${branch.id}/menu`}
-        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-stone-800"
+        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-accent-600"
       >
         ← Volver al menú
       </Link>
