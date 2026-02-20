@@ -59,6 +59,16 @@ export interface CartItem {
   quantity: number;
 }
 
+// ── Admin ──
+export type AdminRole = 'branch_admin' | 'super_admin';
+
+export interface AdminUser {
+  id: string;
+  user_id: string;
+  branch_id: string | null;
+  role: AdminRole;
+}
+
 // ── Formulario de pedido ──
 export interface OrderFormData {
   customer_name: string;
