@@ -3,9 +3,7 @@
 import { supabaseAdmin } from '@/lib/supabaseServer';
 import { OrderStatus } from '@/types';
 import { revalidatePath } from 'next/cache';
-
-// 🧪 TESTING MODE — cambiar a false para activar autenticación
-const TESTING_MODE = true;
+import { TESTING_MODE } from '@/lib/adminTestingMode';
 
 interface UpdateResult {
   success: boolean;
