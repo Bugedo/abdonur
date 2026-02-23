@@ -1,8 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { updateSession } from '@/lib/supabaseAuthMiddleware';
-
-// 🧪 TESTING MODE — cambiar a false para activar autenticación
-const TESTING_MODE = true;
+import { TESTING_MODE } from '@/lib/adminTestingMode';
 
 export async function middleware(request: NextRequest) {
   if (TESTING_MODE) {

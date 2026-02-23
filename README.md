@@ -45,9 +45,12 @@ El sistema está en **modo testing**: todos los paneles admin son accesibles **s
 
 ### Desactivar modo testing (para producción)
 
-Cambiar `TESTING_MODE = true` → `TESTING_MODE = false` en estos 2 archivos:
-- `middleware.ts` — reactiva la autenticación en rutas `/admin/*`
-- `actions/updateOrderStatus.ts` — reactiva la verificación de permisos al cambiar estado de pedidos
+Definir variable de entorno:
+- `ADMIN_TESTING_MODE=false`
+
+Con eso:
+- `middleware.ts` reactiva la autenticación en rutas `/admin/*`
+- `actions/updateOrderStatus.ts` reactiva la verificación de permisos al cambiar estado de pedidos
 
 Con el modo testing desactivado, los usuarios deben loguearse en `/admin/login` y serán redirigidos al panel correspondiente según su rol.
 

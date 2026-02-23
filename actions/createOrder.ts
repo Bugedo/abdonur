@@ -2,6 +2,7 @@
 
 import { supabaseAdmin } from '@/lib/supabaseServer';
 import { CartItem, DeliveryMethod, PaymentMethod } from '@/types';
+import { revalidatePath } from 'next/cache';
 
 interface CreateOrderInput {
   branchId: string;
@@ -76,6 +77,11 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
     await supabaseAdmin.from('orders').delete().eq('id', order.id);
     return { success: false, error: 'Error al crear el pedido. Intentá de nuevo.' };
   }
+
+  // Refresca paneles admin para que entren pedidos nuevos sin esperar al cache.
+  revalidatePath('/admin');
+  revalidatePath('/admin/admin');
+  revalidatePath('/admin/sucursal/[id]', 'page');
 
   return { success: true, orderId: order.id };
 }

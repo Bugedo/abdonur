@@ -80,7 +80,7 @@ export default async function BranchAdminPage({ params }: { params: Promise<{ id
   const branch = await getBranch(id);
   if (!branch) notFound();
 
-  const orders = await getBranchOrders(id);
+  const orders = await getBranchOrders(branch.id);
 
   return (
     <section className="py-4">
