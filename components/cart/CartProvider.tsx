@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import { Product, CartItem } from '@/types';
 
 // ─── Mínimo de items para pedir ───
@@ -15,6 +16,7 @@ interface CartContextType {
     comboDetail: string;
   }) => void;
   removeItem: (productId: string) => void;
+  removeLineItem: (payload: { productId: string; cartKey?: string }) => void;
   getQuantity: (productId: string) => number;
   totalItems: number;
   totalPrice: number;
@@ -26,6 +28,35 @@ const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+  const params = useParams<{ id?: string }>();
+  const cartStorageKey = `abdonur_cart_${params?.id ?? 'default'}`;
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(cartStorageKey);
+      if (!raw) {
+        setItems([]);
+        setHydrated(true);
+        return;
+      }
+      const parsed = JSON.parse(raw) as CartItem[];
+      if (Array.isArray(parsed)) {
+        setItems(parsed);
+      } else {
+        setItems([]);
+      }
+    } catch {
+      setItems([]);
+    } finally {
+      setHydrated(true);
+    }
+  }, [cartStorageKey]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    window.localStorage.setItem(cartStorageKey, JSON.stringify(items));
+  }, [items, cartStorageKey, hydrated]);
 
   const addItem = useCallback((product: Product) => {
     setItems((prev) => {
@@ -75,6 +106,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const removeLineItem = useCallback(({ productId, cartKey }: { productId: string; cartKey?: string }) => {
+    setItems((prev) => {
+      if (cartKey) {
+        return prev.filter((item) => item.cartKey !== cartKey);
+      }
+      return prev.filter((item) => item.product.id !== productId);
+    });
+  }, []);
+
   const getQuantity = useCallback(
     (productId: string) =>
       items
@@ -87,7 +127,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const totalPrice = items.reduce((sum, i) => sum + (i.unitPrice ?? i.product.price) * i.quantity, 0);
   const isMinimumMet = totalItems >= MIN_ITEMS;
 
-  const clearCart = useCallback(() => setItems([]), []);
+  const clearCart = useCallback(() => {
+    setItems([]);
+    window.localStorage.removeItem(cartStorageKey);
+  }, [cartStorageKey]);
 
   return (
     <CartContext.Provider
@@ -96,6 +139,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addItem,
         addConfiguredCombo,
         removeItem,
+        removeLineItem,
         getQuantity,
         totalItems,
         totalPrice,

@@ -38,7 +38,7 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
   return (
     <>
       {products.length > 0 ? (
-        <div className="mt-6 space-y-10 pb-32">
+        <div className="mt-6 space-y-10 pb-44">
           {categoryOrder
             .filter((cat) => productsByCategory[cat]?.length)
             .map((category) => (

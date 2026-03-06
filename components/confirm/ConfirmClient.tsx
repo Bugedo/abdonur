@@ -11,7 +11,7 @@ interface ConfirmClientProps {
 }
 
 export default function ConfirmClient({ branch }: ConfirmClientProps) {
-  const { items, totalItems, totalPrice, isMinimumMet, clearCart } = useCart();
+  const { items, totalItems, totalPrice, isMinimumMet, clearCart, removeLineItem } = useCart();
   const [customerName, setCustomerName] = useState('');
   const [notes, setNotes] = useState('');
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('pickup');
@@ -64,6 +64,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+    let whatsappWindow: Window | null = null;
 
     if (!customerName.trim()) {
       setError('Ingresá tu nombre.');
@@ -83,6 +84,10 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
     setLoading(true);
 
     try {
+      // Open a blank tab synchronously from the user click
+      // so browsers don't block the final WhatsApp redirect.
+      whatsappWindow = window.open('', '_blank');
+
       const result = await createOrder({
         branchId: branch.id,
         customerName: customerName.trim(),
@@ -94,6 +99,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
       });
 
       if (!result.success) {
+        if (whatsappWindow) whatsappWindow.close();
         setError(result.error ?? 'Error al crear el pedido.');
         setLoading(false);
         return;
@@ -103,8 +109,13 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
       const waUrl = `https://wa.me/${branch.whatsapp_number}?text=${encodeURIComponent(message)}`;
 
       clearCart();
-      window.open(waUrl, '_blank');
+      if (whatsappWindow) {
+        whatsappWindow.location.href = waUrl;
+      } else {
+        window.open(waUrl, '_blank');
+      }
     } catch {
+      if (whatsappWindow) whatsappWindow.close();
       setError('Error inesperado. Intentá de nuevo.');
       setLoading(false);
     }
@@ -131,13 +142,24 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
         <h2 className="text-lg font-bold text-white">Tu pedido</h2>
         <div className="mt-4 space-y-2">
           {items.map((item) => (
-            <div key={item.cartKey ?? item.product.id} className="flex items-center justify-between text-sm">
-              <span className="text-stone-300">
-                {item.quantity}x {item.displayName ?? item.product.name}
-              </span>
-              <span className="font-medium text-white">
-                ${((item.unitPrice ?? item.product.price) * item.quantity).toLocaleString('es-AR')}
-              </span>
+            <div key={item.cartKey ?? item.product.id} className="flex items-center justify-between gap-3 text-sm">
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-stone-300">
+                  {item.quantity}x {item.displayName ?? item.product.name}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-white">
+                  ${((item.unitPrice ?? item.product.price) * item.quantity).toLocaleString('es-AR')}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeLineItem({ productId: item.product.id, cartKey: item.cartKey })}
+                  className="rounded-md border border-red-700/70 px-2 py-1 text-xs font-semibold text-red-300 hover:bg-red-900/30"
+                >
+                  Eliminar
+                </button>
+              </div>
             </div>
           ))}
         </div>
