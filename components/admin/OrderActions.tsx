@@ -3,30 +3,30 @@
 import { useState } from 'react';
 import { OrderStatus } from '@/types';
 import { updateOrderStatus } from '@/actions/updateOrderStatus';
+import { getNextStatuses } from '@/lib/orderStatusWorkflow';
 
 interface OrderActionsProps {
   orderId: string;
   currentStatus: OrderStatus;
 }
 
-const transitions: Record<OrderStatus, { label: string; next: OrderStatus; classes: string }[]> = {
-  new: [
-    { label: '✅ Confirmar pedido', next: 'confirmed', classes: 'bg-blue-600 text-white hover:bg-blue-700' },
-    { label: '❌ Cancelar', next: 'cancelled', classes: 'border border-red-700 text-red-400 hover:bg-red-900/30' },
-  ],
-  confirmed: [
-    { label: '🎉 Marcar completado', next: 'completed', classes: 'bg-green-600 text-white hover:bg-green-700' },
-    { label: '❌ Cancelar', next: 'cancelled', classes: 'border border-red-700 text-red-400 hover:bg-red-900/30' },
-  ],
-  completed: [],
-  cancelled: [],
+const actionConfig: Record<OrderStatus, { label: string; classes: string }> = {
+  new: { label: 'Nuevo', classes: '' },
+  confirmed: { label: '✅ Confirmar pedido', classes: 'bg-yellow-600 text-white hover:bg-yellow-700' },
+  on_the_way: { label: '🛵 Marcar en camino', classes: 'bg-emerald-600 text-white hover:bg-emerald-700' },
+  ready: { label: '🍽️ Marcar preparado', classes: 'bg-green-600 text-white hover:bg-green-700' },
+  completed: { label: '🎉 Marcar entregado', classes: 'bg-slate-600 text-white hover:bg-slate-700' },
+  cancelled: { label: '❌ Cancelado', classes: '' },
 };
 
 export default function OrderActions({ orderId, currentStatus }: OrderActionsProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const actions = transitions[currentStatus];
+  const actions = getNextStatuses(currentStatus).map((nextStatus) => ({
+    next: nextStatus,
+    ...actionConfig[nextStatus],
+  }));
   if (actions.length === 0) return null;
 
   async function handleAction(newStatus: OrderStatus) {

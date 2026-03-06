@@ -5,6 +5,7 @@ import { OrderStatus } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { TESTING_MODE } from '@/lib/adminTestingMode';
 import { getAdminSession } from '@/lib/adminSession';
+import { canTransitionStatus } from '@/lib/orderStatusWorkflow';
 
 interface UpdateResult {
   success: boolean;
@@ -15,6 +16,20 @@ export async function updateOrderStatus(
   orderId: string,
   newStatus: OrderStatus
 ): Promise<UpdateResult> {
+  const { data: targetOrder } = await supabaseAdmin
+    .from('orders')
+    .select('id, branch_id, status')
+    .eq('id', orderId)
+    .single();
+
+  if (!targetOrder) {
+    return { success: false, error: 'Pedido no encontrado.' };
+  }
+
+  if (!canTransitionStatus(targetOrder.status as OrderStatus, newStatus)) {
+    return { success: false, error: 'Cambio de estado no permitido para este pedido.' };
+  }
+
   if (!TESTING_MODE) {
     const session = await getAdminSession();
     if (!session) {
@@ -22,27 +37,9 @@ export async function updateOrderStatus(
     }
 
     if (session.role === 'branch_admin') {
-      const { data: order } = await supabaseAdmin
-        .from('orders')
-        .select('branch_id')
-        .eq('id', orderId)
-        .single();
-
-      if (!order || order.branch_id !== session.branchId) {
+      if (targetOrder.branch_id !== session.branchId) {
         return { success: false, error: 'No podés modificar pedidos de otra sucursal.' };
       }
-    }
-  }
-
-  if (TESTING_MODE) {
-    const { data: exists } = await supabaseAdmin
-      .from('orders')
-      .select('id')
-      .eq('id', orderId)
-      .single();
-
-    if (!exists) {
-      return { success: false, error: 'Pedido no encontrado.' };
     }
   }
 
