@@ -162,12 +162,12 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
 
         return (
           <article key={order.id} className={`rounded-xl border p-4 transition-all hover:border-brand-600 ${cardColor}`}>
-            <button
-              type="button"
-              onClick={() => setExpandedOrderId((prev) => (prev === order.id ? null : order.id))}
-              className="w-full text-left"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => setExpandedOrderId((prev) => (prev === order.id ? null : order.id))}
+                className="flex-1 text-left"
+              >
                 <div>
                   <p className="font-semibold text-white">{order.customer_name}</p>
                   <p className="mt-0.5 text-xs text-stone-500">
@@ -184,13 +184,20 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
                   {order.address && <p className="mt-1 text-xs text-stone-400">📍 {order.address}</p>}
                   {order.notes && <p className="mt-1 text-xs text-stone-400">📝 {order.notes}</p>}
                 </div>
+              </button>
 
                 <div className="text-right">
                   <OrderStatusBadge status={order.status} />
                   <p className="mt-1 text-sm font-bold text-white">{formatPrice(order.total_price)}</p>
+                  <button
+                    type="button"
+                    onClick={() => setExpandedOrderId((prev) => (prev === order.id ? null : order.id))}
+                    className="mt-2 rounded-md border border-surface-500 px-2 py-1 text-[11px] font-semibold text-stone-300 hover:bg-surface-700"
+                  >
+                    {isExpanded ? 'Ocultar comida' : 'Ver comida'}
+                  </button>
                 </div>
               </div>
-            </button>
 
             <div className="mt-3 flex flex-wrap gap-2">
               {actionsForOrder.map((action) => (
@@ -211,12 +218,8 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
 
             {errorsByOrder[order.id] && <p className="mt-2 text-xs text-red-400">{errorsByOrder[order.id]}</p>}
 
-            <div
-              className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
-                isExpanded ? 'mt-4 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-              }`}
-            >
-              <div className="min-h-0">
+            {isExpanded && (
+              <div className="mt-4">
                 <div className="rounded-lg border border-surface-600 bg-surface-900/40 p-3">
                   <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Detalle de comida</p>
                   {(order.order_items ?? []).length === 0 ? (
@@ -235,7 +238,7 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
                   )}
                 </div>
               </div>
-            </div>
+            )}
           </article>
         );
       })}

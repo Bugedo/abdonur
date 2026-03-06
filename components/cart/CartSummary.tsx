@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { useCart } from '@/components/cart/CartProvider';
 
 interface CartSummaryProps {
@@ -9,7 +10,8 @@ interface CartSummaryProps {
 }
 
 export default function CartSummary({ branchSlug }: CartSummaryProps) {
-  const { items, totalItems, totalPrice, isMinimumMet } = useCart();
+  const { items, totalItems, totalPrice, isMinimumMet, removeLineItem } = useCart();
+  const [showItems, setShowItems] = useState(false);
 
   if (items.length === 0) return null;
 
@@ -21,7 +23,35 @@ export default function CartSummary({ branchSlug }: CartSummaryProps) {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-surface-600 bg-surface-800 shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
-      <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-4">
+      <div className="mx-auto max-w-2xl px-4 py-4">
+        <button
+          type="button"
+          onClick={() => setShowItems((prev) => !prev)}
+          className="mb-3 text-xs font-semibold text-brand-400 hover:underline"
+        >
+          {showItems ? 'Ocultar carrito' : 'Ver carrito'}
+        </button>
+
+        {showItems && (
+          <div className="mb-3 max-h-36 space-y-1 overflow-y-auto rounded-lg border border-surface-600 bg-surface-900/50 p-2">
+            {items.map((item) => (
+              <div key={item.cartKey ?? item.product.id} className="flex items-center justify-between gap-2 text-xs">
+                <span className="min-w-0 flex-1 truncate text-stone-300">
+                  {item.quantity}x {item.displayName ?? item.product.name}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeLineItem({ productId: item.product.id, cartKey: item.cartKey })}
+                  className="rounded-md border border-red-700/70 px-2 py-1 text-[11px] font-semibold text-red-300 hover:bg-red-900/30"
+                >
+                  Eliminar
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between">
         {/* Info del carrito */}
         <div>
           <p className="text-sm font-medium text-stone-400">
@@ -46,6 +76,7 @@ export default function CartSummary({ branchSlug }: CartSummaryProps) {
             Agregá productos
           </button>
         )}
+        </div>
       </div>
     </div>
   );
