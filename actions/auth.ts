@@ -51,7 +51,7 @@ export async function login(formData: FormData) {
   });
 
   if (!branch) {
-    return { error: 'Usuario inválido. Usá el nombre de la sucursal.' };
+    return { error: 'Usuario inválido. Usá el usuario corto de sucursal (ej: sanvicente).' };
   }
 
   await createAdminSession({
