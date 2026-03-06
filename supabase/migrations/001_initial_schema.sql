@@ -161,12 +161,12 @@ CREATE POLICY "admin_users_self_read" ON admin_users
 
 -- 6 Sucursales reales de Córdoba
 INSERT INTO branches (slug, name, address, whatsapp_number, opening_hours, is_active) VALUES
-  ('san-vicente',   'Abdonur San Vicente',       'Ambrosio Funes 1241, San Vicente, Córdoba',                  '393791025851',  'Lun a Dom 10:00 - 23:00', true),
-  ('alta-cordoba',  'Abdonur Alta Córdoba',      'Fragueiro 2118, Alta Córdoba',                               '393791025851',  'Lun a Dom 10:00 - 23:00', true),
-  ('alberdi',       'Abdonur Alberdi',           'Av. Colón 3228, Alberdi, Córdoba',                           '393791025851',  'Lun a Dom 10:00 - 23:00', true),
-  ('nueva-cordoba', 'Abdonur Nueva Córdoba',     'Nueva Córdoba (Solo Delivery)',                               '393791025851',  'Lun a Dom 10:00 - 23:00', true),
-  ('marques',       'Abdonur Marqués',           'Luciano de Figueroa 305, esq Pimentel, Marqués, Córdoba',    '393791025851',  'Lun a Dom 10:00 - 23:00', true),
-  ('pueyrredon',    'Abdonur Gral. Pueyrredón',  'Av. Patria 920, esquina Armenia, Gral. Pueyrredón, Córdoba', '393791025851',  'Lun a Dom 10:00 - 23:00', true);
+  ('san-vicente',   'Abdonur San Vicente',       'Ambrosio Funes 1241, San Vicente, Córdoba',                  '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
+  ('alta-cordoba',  'Abdonur Alta Córdoba',      'Fragueiro 2118, Alta Córdoba',                               '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
+  ('alberdi',       'Abdonur Alberdi',           'Av. Colón 3228, Alberdi, Córdoba',                           '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
+  ('nueva-cordoba', 'Abdonur Nueva Córdoba',     'Nueva Córdoba (Solo Delivery)',                               '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
+  ('marques',       'Abdonur Marqués',           'Luciano de Figueroa 305, esq Pimentel, Marqués, Córdoba',    '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
+  ('pueyrredon',    'Abdonur Gral. Pueyrredón',  'Av. Patria 920, esquina Armenia, Gral. Pueyrredón, Córdoba', '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true);
 
 -- Productos reales
 INSERT INTO products (name, description, price, category, image_url, is_active) VALUES
@@ -175,7 +175,7 @@ INSERT INTO products (name, description, price, category, image_url, is_active) 
   ('Docena de Empanadas Árabes',  '12 empanadas árabes tradicionales',                                                            18000.00, 'empanadas', '/images/menu/empanadas-docena.jpg', true),
 
   -- Comidas
-  ('Almuerzo o Cena para 2',      '2 empanadas, 4 niños envueltos, 2 porc de quebbe, 1 porc puré de garbanzos, 1 porc de aceitunas y 6 pancitos', 19500.00, 'comidas', '/images/menu/combo-para-dos.jpg', true),
+  ('Picada p 2 (comen 2, pican 3)',      '2 empanadas, 4 niños envueltos, 2 porc de quebbe, 1 porc puré de garbanzos, 1 porc de aceitunas y 6 pancitos', 19500.00, 'comidas', '/images/menu/combo-para-dos.jpg', true),
   ('Quebbe - 1 Kg',               'Quebbe por kilo',                                                                              18400.00, 'comidas', '/images/menu/quebbe.jpg', true),
   ('Quebbe - Porción',            'Porción aproximada de quebbe',                                                                  4500.00, 'comidas', '/images/menu/quebbe.jpg', true),
   ('Niños Envueltos - 1 Kg',      'Niños envueltos por kilo',                                                                     27000.00, 'comidas', '/images/menu/ninos-envueltos.jpg', true),

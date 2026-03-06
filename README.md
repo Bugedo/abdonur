@@ -191,7 +191,7 @@ Venta por mayor y franquicia: **3513224810**
 - Docena de Empanadas Árabes: $18.000
 
 ### Comidas
-- Almuerzo o Cena para 2: $19.500
+- Picada p 2 (comen 2, pican 3): $19.500
 - Quebbe (1 Kg): $18.400 / (Porción): $4.500
 - Niños Envueltos (1 Kg): $27.000 / (Porción): $7.000
 - Puré de Garbanzos (1 Kg): $11.900 / (Porción): $2.600
