@@ -3,6 +3,7 @@
 import { Product, ProductCategory } from '@/types';
 import CartSummary from '@/components/cart/CartSummary';
 import ProductCard from '@/components/ui/ProductCard';
+import ComboProductCard from '@/components/menu/ComboProductCard';
 
 interface MenuClientProps {
   products: Product[];
@@ -19,6 +20,16 @@ const categoryTitles: Record<ProductCategory, string> = {
 const categoryOrder: ProductCategory[] = ['empanadas', 'comidas', 'postres'];
 
 export default function MenuClient({ products, branchId, branchSlug }: MenuClientProps) {
+  const comboProducts = products.filter(
+    (product) =>
+      product.category === 'empanadas' &&
+      (product.name.toLowerCase().includes('arma tu x6') || product.name.toLowerCase().includes('arma tu x12'))
+  );
+  const comboProductIds = new Set(comboProducts.map((product) => product.id));
+  const flavorProducts = products.filter(
+    (product) => product.category === 'empanadas' && !comboProductIds.has(product.id)
+  );
+
   const productsByCategory = products.reduce((acc, product) => {
     (acc[product.category] = acc[product.category] || []).push(product);
     return acc;
@@ -37,7 +48,11 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
                 </h2>
                 <div className="space-y-3">
                   {productsByCategory[category].map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    comboProductIds.has(product.id) ? (
+                      <ComboProductCard key={product.id} product={product} flavorProducts={flavorProducts} />
+                    ) : (
+                      <ProductCard key={product.id} product={product} />
+                    )
                   ))}
                 </div>
               </div>
