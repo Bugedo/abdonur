@@ -59,8 +59,12 @@ export interface OrderItem {
 
 // ── Carrito (estado local, no se guarda en DB) ──
 export interface CartItem {
+  cartKey?: string;
   product: Product;
   quantity: number;
+  unitPrice?: number;
+  displayName?: string;
+  comboDetail?: string;
 }
 
 // ── Admin ──
