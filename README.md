@@ -9,13 +9,13 @@
 
 ## Paneles de Administración
 
-### 🧪 Modo Testing (actual)
+### 🔐 Modo Producción (actual)
 
-El sistema está en **modo testing**: todos los paneles admin son accesibles **sin usuario ni contraseña**. Entrando a `/admin` se ve un hub central con links a cada panel.
+El panel admin funciona con login en **`/admin`**. Según el usuario ingresado, redirige automáticamente al panel correspondiente.
 
 | Panel | URL | Descripción |
 |---|---|---|
-| **Hub Admin** | `/admin` | Página central con acceso a todos los paneles |
+| **Login Admin** | `/admin` | Acceso con usuario y contraseña |
 | **Super Admin** | `/admin/admin` | Ve TODAS las sucursales y todos los pedidos |
 | **San Vicente** | `/admin/sucursal/san-vicente` | Pedidos de Abdonur San Vicente |
 | **Alta Córdoba** | `/admin/sucursal/alta-cordoba` | Pedidos de Abdonur Alta Córdoba |
@@ -37,22 +37,21 @@ El sistema está en **modo testing**: todos los paneles admin son accesibles **s
 
 ### Cómo usar los paneles
 
-1. Ir a **`/admin`** → Se muestra el hub con todas las sucursales y el panel general.
-2. Click en **"👑 Super Admin"** → Ve todos los pedidos de todas las sucursales, con stats globales y resumen por sucursal.
-3. Click en una **sucursal** → Ve solo los pedidos de esa sucursal, con stats y datos de la misma.
-4. Click en un **pedido** → Ve el detalle completo (cliente, items, método de entrega, pago, dirección, notas).
-5. Desde el detalle se puede **cambiar el estado** del pedido: Nuevo → Confirmado → Completado / Cancelado.
+1. Ir a **`/admin`** e ingresar usuario + contraseña.
+2. Si el usuario es de sucursal, redirige a **`/admin/sucursal/[slug]`**.
+3. Si el usuario es `admin`, redirige a **`/admin/admin`**.
+4. Desde el listado se puede abrir cada pedido y cambiar estado: Nuevo → Confirmado → Completado / Cancelado.
 
-### Desactivar modo testing (para producción)
+### Activar modo testing (opcional)
 
 Definir variable de entorno:
-- `ADMIN_TESTING_MODE=false`
+- `ADMIN_TESTING_MODE=true`
 
 Con eso:
-- `middleware.ts` reactiva la autenticación en rutas `/admin/*`
-- `actions/updateOrderStatus.ts` reactiva la verificación de permisos al cambiar estado de pedidos
+- `middleware.ts` deja pasar rutas `/admin/*` sin login
+- `actions/updateOrderStatus.ts` omite validación de sesión admin
 
-Con el modo testing desactivado, los usuarios deben loguearse en `/admin/login` y serán redirigidos al panel correspondiente según su rol.
+Sin esa variable (o en `false`), el sistema exige login en `/admin`.
 
 ---
 
@@ -71,24 +70,24 @@ Venta por mayor y franquicia: **3513224810**
 
 ---
 
-## Credenciales de Administración (para cuando se desactive el modo testing)
+## Credenciales de Administración
 
 ### Admins por Sucursal (branch_admin)
 
-| Sucursal | Email | Contraseña |
+| Sucursal | Usuario | Contraseña |
 |---|---|---|
-| San Vicente | sanvicente@abdonur.com | Abdonur2026! |
-| Alta Córdoba | altacordoba@abdonur.com | Abdonur2026! |
-| Alberdi | alberdi@abdonur.com | Abdonur2026! |
-| Nueva Córdoba | nuevacordoba@abdonur.com | Abdonur2026! |
-| Marqués | marques@abdonur.com | Abdonur2026! |
-| Gral. Pueyrredón | pueyrredon@abdonur.com | Abdonur2026! |
+| San Vicente | sanvicente | 123456 |
+| Alta Córdoba | altacordoba | 123456 |
+| Alberdi | alberdi | 123456 |
+| Nueva Córdoba | nuevacordoba | 123456 |
+| Marqués | marques | 123456 |
+| Gral. Pueyrredón | pueyrredon | 123456 |
 
 ### Super Admin (ve todas las sucursales)
 
-| Rol | Email | Contraseña |
+| Rol | Usuario | Contraseña |
 |---|---|---|
-| Super Admin | superadmin@abdonur.com | Abdonur2026! |
+| Super Admin | admin | 123456 |
 
 ---
 

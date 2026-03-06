@@ -13,7 +13,7 @@ export default function AdminError({
       <span className="text-6xl">⚠️</span>
       <h1 className="text-2xl font-extrabold text-white">Error en el panel</h1>
       <p className="max-w-sm text-stone-400">
-        Ocurrió un error. Probá reintentar o volvé al login.
+        Ocurrió un error. Probá reintentar o volvé al acceso admin.
       </p>
       <div className="mt-2 flex gap-3">
         <button
@@ -23,10 +23,10 @@ export default function AdminError({
           Reintentar
         </button>
         <Link
-          href="/admin/login"
+          href="/admin"
           className="rounded-xl border border-surface-500 px-6 py-3 font-bold text-stone-300 hover:bg-surface-700"
         >
-          Ir al login
+          Ir al acceso admin
         </Link>
       </div>
     </section>
