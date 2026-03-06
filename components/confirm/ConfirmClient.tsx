@@ -38,9 +38,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
       '*Detalle:*',
       ...items.map(
         (i) =>
-          `• ${i.quantity}x ${i.displayName ?? i.product.name} — $${(
-            (i.unitPrice ?? i.product.price) * i.quantity
-          ).toLocaleString('es-AR')}`
+          `• ${i.quantity}x ${i.product.name} — $${(i.product.price * i.quantity).toLocaleString('es-AR')}`
       ),
       '',
       `*Total: ${formattedTotal}*`,
@@ -133,10 +131,10 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
           {items.map((item) => (
             <div key={item.product.id} className="flex items-center justify-between text-sm">
               <span className="text-stone-300">
-                {item.quantity}x {item.displayName ?? item.product.name}
+                {item.quantity}x {item.product.name}
               </span>
               <span className="font-medium text-white">
-                ${((item.unitPrice ?? item.product.price) * item.quantity).toLocaleString('es-AR')}
+                ${(item.product.price * item.quantity).toLocaleString('es-AR')}
               </span>
             </div>
           ))}

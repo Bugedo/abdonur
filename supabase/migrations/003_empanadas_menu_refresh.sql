@@ -17,7 +17,7 @@ SET
   name = 'Arma tu x12 de empanadas',
   description = 'Elegí cualquier combinación entre los 4 gustos disponibles',
   price = 20000.00,
-  image_url = '/images/menu/combos/empanadas-docena.jpg',
+  image_url = '/images/menu/empanadas/fatay-arabe.jpeg',
   category = 'empanadas',
   is_active = true
 WHERE name = 'Docena de Empanadas Árabes';
@@ -90,7 +90,7 @@ SELECT
   'Elegí cualquier combinación entre los 4 gustos disponibles',
   10000.00,
   'empanadas',
-  '/images/menu/combos/empanadas-docena.jpg',
+  '/images/menu/empanadas/fatay-arabe.jpeg',
   true
 WHERE NOT EXISTS (
   SELECT 1 FROM products WHERE name = 'Arma tu x6 de empanadas'
@@ -102,7 +102,7 @@ SELECT
   'Elegí cualquier combinación entre los 4 gustos disponibles',
   20000.00,
   'empanadas',
-  '/images/menu/combos/empanadas-docena.jpg',
+  '/images/menu/empanadas/fatay-arabe.jpeg',
   true
 WHERE NOT EXISTS (
   SELECT 1 FROM products WHERE name = 'Arma tu x12 de empanadas'

@@ -175,8 +175,8 @@ INSERT INTO products (name, description, price, category, image_url, is_active) 
   ('SFIHAS - jamón y queso',      'Empanada sfihas de jamón y queso',                                                              1800.00, 'empanadas', '/images/menu/empanadas/sfihas-jamon-queso.jpeg', true),
   ('SFIHAS - cebolla y queso',    'Empanada sfihas de cebolla y queso',                                                            1800.00, 'empanadas', '/images/menu/empanadas/sfihas-queso-cebolla.jpeg', true),
   ('SFIHAS - Bondiola al Disco',  'Empanada sfihas de bondiola al disco',                                                          1800.00, 'empanadas', '/images/menu/empanadas/sfihas-bondiola-disco.jpeg', true),
-  ('Arma tu x6 de empanadas',     'Elegí cualquier combinación entre los 4 gustos disponibles',                                  10000.00, 'empanadas', '/images/menu/combos/empanadas-docena.jpg', true),
-  ('Arma tu x12 de empanadas',    'Elegí cualquier combinación entre los 4 gustos disponibles',                                  20000.00, 'empanadas', '/images/menu/combos/empanadas-docena.jpg', true),
+  ('Arma tu x6 de empanadas',     'Elegí cualquier combinación entre los 4 gustos disponibles',                                  10000.00, 'empanadas', '/images/menu/empanadas/fatay-arabe.jpeg', true),
+  ('Arma tu x12 de empanadas',    'Elegí cualquier combinación entre los 4 gustos disponibles',                                  20000.00, 'empanadas', '/images/menu/empanadas/fatay-arabe.jpeg', true),
 
   -- Comidas
   ('Picada p 2 (comen 2, pican 3)',      '2 empanadas, 4 niños envueltos, 2 porc de quebbe, 1 porc puré de garbanzos, 1 porc de aceitunas y 6 pancitos', 19500.00, 'comidas', '/images/menu/combos/combo-para-dos.jpg', true),
