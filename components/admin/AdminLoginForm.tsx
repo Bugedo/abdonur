@@ -32,7 +32,7 @@ export default function AdminLoginForm() {
           name="username"
           type="text"
           required
-          placeholder="admin o sanvicente"
+          placeholder="admin o usuario de sucursal"
           className="mt-1 w-full rounded-lg border border-surface-500 bg-surface-700 px-4 py-3 text-white placeholder:text-stone-600 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
         />
       </div>
