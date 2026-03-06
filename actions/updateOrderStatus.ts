@@ -4,6 +4,7 @@ import { supabaseAdmin } from '@/lib/supabaseServer';
 import { OrderStatus } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { TESTING_MODE } from '@/lib/adminTestingMode';
+import { getAdminSession } from '@/lib/adminSession';
 
 interface UpdateResult {
   success: boolean;
@@ -15,39 +16,33 @@ export async function updateOrderStatus(
   newStatus: OrderStatus
 ): Promise<UpdateResult> {
   if (!TESTING_MODE) {
-    // ── Auth mode: verificar usuario y permisos ──
-    const { createSupabaseServerClient } = await import('@/lib/supabaseAuthServer');
-    const { AdminRole } = await import('@/types') as { AdminRole: string };
-
-    const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
+    const session = await getAdminSession();
+    if (!session) {
       return { success: false, error: 'No autorizado.' };
     }
 
-    const { data: adminUser } = await supabaseAdmin
-      .from('admin_users')
-      .select('branch_id, role')
-      .eq('user_id', user.id)
-      .single();
-
-    if (!adminUser) {
-      return { success: false, error: 'No tenés permisos de admin.' };
-    }
-
-    const { role, branch_id } = adminUser as { branch_id: string | null; role: string };
-
-    if (role === 'branch_admin') {
+    if (session.role === 'branch_admin') {
       const { data: order } = await supabaseAdmin
         .from('orders')
         .select('branch_id')
         .eq('id', orderId)
         .single();
 
-      if (!order || order.branch_id !== branch_id) {
+      if (!order || order.branch_id !== session.branchId) {
         return { success: false, error: 'No podés modificar pedidos de otra sucursal.' };
       }
+    }
+  }
+
+  if (TESTING_MODE) {
+    const { data: exists } = await supabaseAdmin
+      .from('orders')
+      .select('id')
+      .eq('id', orderId)
+      .single();
+
+    if (!exists) {
+      return { success: false, error: 'Pedido no encontrado.' };
     }
   }
 

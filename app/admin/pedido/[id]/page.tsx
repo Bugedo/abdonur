@@ -4,8 +4,8 @@ import { supabaseAdmin } from '@/lib/supabaseServer';
 import { Order, OrderItem } from '@/types';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import OrderActions from '@/components/admin/OrderActions';
-
-// 🧪 TESTING MODE — sin autenticación, acceso total
+import { requireAdminSession } from '@/lib/adminSession';
+import { logout } from '@/actions/auth';
 
 async function getOrderWithItems(orderId: string) {
   const { data: order, error: orderError } = await supabaseAdmin
@@ -28,12 +28,17 @@ async function getOrderWithItems(orderId: string) {
 }
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await requireAdminSession();
   const { id } = await params;
 
   const result = await getOrderWithItems(id);
   if (!result) notFound();
 
   const { order, items } = result;
+
+  if (session.role === 'branch_admin' && session.branchId !== order.branch_id) {
+    notFound();
+  }
 
   const formattedDate = new Date(order.created_at).toLocaleString('es-AR', {
     timeZone: 'America/Argentina/Buenos_Aires',
@@ -55,6 +60,14 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       >
         ← Volver al panel
       </Link>
+      <form action={logout} className="mt-3">
+        <button
+          type="submit"
+          className="rounded-lg border border-surface-500 px-3 py-1 text-xs font-semibold text-stone-300 hover:bg-surface-700"
+        >
+          Cerrar sesión
+        </button>
+      </form>
 
       <div className="mt-6 space-y-6">
         {/* Header del pedido */}
@@ -72,9 +85,6 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               )}
             </div>
             <div className="flex items-center gap-2">
-              <span className="rounded-full bg-yellow-900/40 px-2 py-0.5 text-xs font-bold text-yellow-400">
-                🧪 TEST
-              </span>
               <OrderStatusBadge status={order.status} />
             </div>
           </div>
