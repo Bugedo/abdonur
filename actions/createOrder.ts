@@ -37,7 +37,15 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
   }
 
   // Calcular total
-  const totalPrice = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+  const totalPrice = items.reduce((sum, i) => sum + (i.unitPrice ?? i.product.price) * i.quantity, 0);
+
+  const bundleDetails = items
+    .filter((i) => i.bundleLabel)
+    .map((i) => `${i.quantity}x ${i.displayName ?? i.product.name}`);
+
+  const mergedNotes = [notes.trim(), bundleDetails.length ? `Combos: ${bundleDetails.join(' | ')}` : '']
+    .filter(Boolean)
+    .join('\n');
 
   // Crear el pedido
   const { data: order, error: orderError } = await supabaseAdmin
@@ -45,7 +53,7 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
     .insert({
       branch_id: branchId,
       customer_name: customerName.trim(),
-      notes: notes.trim(),
+      notes: mergedNotes,
       delivery_method: deliveryMethod,
       address: deliveryMethod === 'delivery' ? address.trim() : '',
       payment_method: paymentMethod,
@@ -65,7 +73,7 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
     order_id: order.id,
     product_id: item.product.id,
     quantity: item.quantity,
-    unit_price: item.product.price,
+    unit_price: item.unitPrice ?? item.product.price,
   }));
 
   const { error: itemsError } = await supabaseAdmin

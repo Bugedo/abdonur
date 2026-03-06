@@ -171,21 +171,25 @@ INSERT INTO branches (slug, name, address, whatsapp_number, opening_hours, is_ac
 -- Productos reales
 INSERT INTO products (name, description, price, category, image_url, is_active) VALUES
   -- Empanadas
-  ('Empanada Árabe (unidad)',     'Empanada árabe tradicional',                                                                    1600.00, 'empanadas', '/images/menu/empanadas-arabes.jpg', true),
-  ('Docena de Empanadas Árabes',  '12 empanadas árabes tradicionales',                                                            18000.00, 'empanadas', '/images/menu/empanadas-docena.jpg', true),
+  ('FATAY - Árabes',              'Empanada árabe tradicional',                                                                    1800.00, 'empanadas', '/images/menu/empanadas/fatay-arabe.jpeg', true),
+  ('SFIHAS - jamón y queso',      'Empanada sfihas de jamón y queso',                                                              1800.00, 'empanadas', '/images/menu/empanadas/sfihas-jamon-queso.jpeg', true),
+  ('SFIHAS - cebolla y queso',    'Empanada sfihas de cebolla y queso',                                                            1800.00, 'empanadas', '/images/menu/empanadas/sfihas-queso-cebolla.jpeg', true),
+  ('SFIHAS - Bondiola al Disco',  'Empanada sfihas de bondiola al disco',                                                          1800.00, 'empanadas', '/images/menu/empanadas/sfihas-bondiola-disco.jpeg', true),
+  ('Arma tu x6 de empanadas',     'Elegí cualquier combinación entre los 4 gustos disponibles',                                  10000.00, 'empanadas', '/images/menu/combos/empanadas-docena.jpg', true),
+  ('Arma tu x12 de empanadas',    'Elegí cualquier combinación entre los 4 gustos disponibles',                                  20000.00, 'empanadas', '/images/menu/combos/empanadas-docena.jpg', true),
 
   -- Comidas
-  ('Picada p 2 (comen 2, pican 3)',      '2 empanadas, 4 niños envueltos, 2 porc de quebbe, 1 porc puré de garbanzos, 1 porc de aceitunas y 6 pancitos', 19500.00, 'comidas', '/images/menu/combo-para-dos.jpg', true),
-  ('Quebbe - 1 Kg',               'Quebbe por kilo',                                                                              18400.00, 'comidas', '/images/menu/quebbe.jpg', true),
-  ('Quebbe - Porción',            'Porción aproximada de quebbe',                                                                  4500.00, 'comidas', '/images/menu/quebbe.jpg', true),
-  ('Niños Envueltos - 1 Kg',      'Niños envueltos por kilo',                                                                     27000.00, 'comidas', '/images/menu/ninos-envueltos.jpg', true),
-  ('Niños Envueltos - Porción',   'Porción aproximada de niños envueltos',                                                         7000.00, 'comidas', '/images/menu/ninos-envueltos.jpg', true),
-  ('Puré de Garbanzos - 1 Kg',    'Puré de garbanzos por kilo',                                                                   11900.00, 'comidas', '/images/menu/pure-garbanzos.jpg', true),
-  ('Puré de Garbanzos - Porción', 'Porción aproximada de puré de garbanzos',                                                       2600.00, 'comidas', '/images/menu/pure-garbanzos.jpg', true),
-  ('Laben - 250 cm3',             'Laben en porción de 250 cm3',                                                                   2400.00, 'comidas', '/images/menu/laben.jpg', true),
-  ('Aceitunas a la Árabe - 1 Kg', 'Aceitunas a la árabe por kilo',                                                                21000.00, 'comidas', '/images/menu/aceitunas-arabes.jpg', true),
-  ('Aceitunas a la Árabe - Porción','Porción aproximada de aceitunas a la árabe',                                                   4000.00, 'comidas', '/images/menu/aceitunas-arabes.jpg', true),
+  ('Picada p 2 (comen 2, pican 3)',      '2 empanadas, 4 niños envueltos, 2 porc de quebbe, 1 porc puré de garbanzos, 1 porc de aceitunas y 6 pancitos', 19500.00, 'comidas', '/images/menu/combos/combo-para-dos.jpg', true),
+  ('Quebbe - 1 Kg',               'Quebbe por kilo',                                                                              18400.00, 'comidas', '/images/menu/comidas/quebbe.jpg', true),
+  ('Quebbe - Porción',            'Porción aproximada de quebbe',                                                                  4500.00, 'comidas', '/images/menu/comidas/quebbe.jpg', true),
+  ('Niños Envueltos - 1 Kg',      'Niños envueltos por kilo',                                                                     27000.00, 'comidas', '/images/menu/comidas/ninos-envueltos.jpg', true),
+  ('Niños Envueltos - Porción',   'Porción aproximada de niños envueltos',                                                         7000.00, 'comidas', '/images/menu/comidas/ninos-envueltos.jpg', true),
+  ('Puré de Garbanzos - 1 Kg',    'Puré de garbanzos por kilo',                                                                   11900.00, 'comidas', '/images/menu/comidas/pure-garbanzos.jpg', true),
+  ('Puré de Garbanzos - Porción', 'Porción aproximada de puré de garbanzos',                                                       2600.00, 'comidas', '/images/menu/comidas/pure-garbanzos.jpg', true),
+  ('Laben - 250 cm3',             'Laben en porción de 250 cm3',                                                                   2400.00, 'comidas', '/images/menu/comidas/laben.jpg', true),
+  ('Aceitunas a la Árabe - 1 Kg', 'Aceitunas a la árabe por kilo',                                                                21000.00, 'comidas', '/images/menu/comidas/aceitunas-arabes.jpg', true),
+  ('Aceitunas a la Árabe - Porción','Porción aproximada de aceitunas a la árabe',                                                   4000.00, 'comidas', '/images/menu/comidas/aceitunas-arabes.jpg', true),
 
   -- Postres
-  ('Namura - Porción',            'Postre árabe Namura',                                                                           1600.00, 'postres', '/images/menu/namura.jpg', true),
-  ('Backlawa - Porción',          'Postre árabe Backlawa',                                                                         2500.00, 'postres', '/images/menu/backlawa.jpg', true);
+  ('Namura - Porción',            'Postre árabe Namura',                                                                           1600.00, 'postres', '/images/menu/postres/namura.jpg', true),
+  ('Backlawa - Porción',          'Postre árabe Backlawa',                                                                         2500.00, 'postres', '/images/menu/postres/backlawa.jpg', true);
