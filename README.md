@@ -1,3 +1,96 @@
+# Abdonur - Acceso Admin
+
+## URL de acceso
+
+- Login admin: `https://abdonur.vercel.app/admin`
+
+## Credenciales
+
+### Super Admin (ve todo)
+
+- Usuario: `admin`
+- Contrasena: `123456`
+
+### Admins por sucursal (solo ven y gestionan sus pedidos)
+
+| Sucursal | Usuario | Contrasena |
+|---|---|---|
+| San Vicente | `sanvicente` | `123456` |
+| Alta Cordoba | `altacordoba` | `123456` |
+| Alberdi | `alberdi` | `123456` |
+| Nueva Cordoba | `nuevacordoba` | `123456` |
+| Marques | `marques` | `123456` |
+| Pueyrredon | `pueyrredon` | `123456` |
+
+## Comportamiento
+
+- Se entra siempre por `/admin`.
+- `admin` entra al panel general.
+- Cada usuario de sucursal entra a su panel y solo puede operar sus pedidos.
+# Abdonur - Acceso Admin
+
+## URL de acceso
+
+- Login admin: `https://abdonur.vercel.app/admin`
+
+## Credenciales
+
+### Super Admin (ve todo)
+
+- Usuario: `admin`
+- Contrasena: `123456`
+
+### Admins por sucursal (solo ven y gestionan sus pedidos)
+
+| Sucursal | Usuario | Contrasena |
+|---|---|---|
+| San Vicente | `sanvicente` | `123456` |
+| Alta Cordoba | `altacordoba` | `123456` |
+| Alberdi | `alberdi` | `123456` |
+| Nueva Cordoba | `nuevacordoba` | `123456` |
+| Marques | `marques` | `123456` |
+| Pueyrredon | `pueyrredon` | `123456` |
+
+## Comportamiento
+
+- Se entra siempre por `/admin`.
+- `admin` entra al panel general.
+- Cada usuario de sucursal entra a su panel y solo puede operar sus pedidos.
+# Abdonur - Accesos Admin
+
+## URLs
+
+- Sitio publico: `https://abdonur.vercel.app`
+- Login admin: `https://abdonur.vercel.app/admin`
+
+## Como funciona el login
+
+- Se entra siempre por `/admin`.
+- Si el usuario es de sucursal, entra a su panel de sucursal.
+- Si el usuario es `admin`, entra al panel general (superadmin).
+
+## Credenciales
+
+### Superadmin
+
+- Usuario: `admin`
+- Contrasena: `123456`
+
+### Sucursales
+
+| Sucursal | Usuario | Contrasena |
+|---|---|---|
+| San Vicente | `sanvicente` | `123456` |
+| Alta Cordoba | `altacordoba` | `123456` |
+| Alberdi | `alberdi` | `123456` |
+| Nueva Cordoba | `nuevacordoba` | `123456` |
+| Marques | `marques` | `123456` |
+| Pueyrredon | `pueyrredon` | `123456` |
+
+## Modo testing (opcional)
+
+- Variable: `ADMIN_TESTING_MODE=true`
+- Efecto: permite entrar a rutas admin sin login.
 # Empanadas Árabes Abdonur — Sistema de Pedidos Online
 
 ## URLs
