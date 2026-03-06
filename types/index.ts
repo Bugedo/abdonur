@@ -27,7 +27,7 @@ export interface Product {
 }
 
 // ── Pedidos ──
-export type OrderStatus = 'new' | 'confirmed' | 'completed' | 'cancelled';
+export type OrderStatus = 'new' | 'confirmed' | 'on_the_way' | 'ready' | 'completed' | 'cancelled';
 export type DeliveryMethod = 'pickup' | 'delivery';
 export type PaymentMethod = 'cash' | 'transfer';
 
