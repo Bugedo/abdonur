@@ -1,8 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { supabase } from '@/lib/supabaseClient';
-import { Branch } from '@/types';
+import { getActiveBranchByIdOrSlug } from '@/lib/branches';
 
 interface BranchPageProps {
   params: Promise<{ id: string }>;
@@ -10,7 +9,7 @@ interface BranchPageProps {
 
 export async function generateMetadata({ params }: BranchPageProps): Promise<Metadata> {
   const { id } = await params;
-  const branch = await getBranch(id);
+  const branch = await getActiveBranchByIdOrSlug(id);
   if (!branch) return { title: 'Sucursal no encontrada' };
   return {
     title: `${branch.name} — Empanadas Árabes Abdonur`,
@@ -18,25 +17,9 @@ export async function generateMetadata({ params }: BranchPageProps): Promise<Met
   };
 }
 
-// Supports both slug (e.g. "san-vicente") and UUID lookups
-async function getBranch(idOrSlug: string): Promise<Branch | null> {
-  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
-  const column = isUuid ? 'id' : 'slug';
-
-  const { data, error } = await supabase
-    .from('branches')
-    .select('*')
-    .eq(column, idOrSlug)
-    .eq('is_active', true)
-    .single();
-
-  if (error || !data) return null;
-  return data;
-}
-
 export default async function BranchPage({ params }: BranchPageProps) {
   const { id } = await params;
-  const branch = await getBranch(id);
+  const branch = await getActiveBranchByIdOrSlug(id);
 
   if (!branch) notFound();
 

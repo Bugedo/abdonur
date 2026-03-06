@@ -1,31 +1,15 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabaseServer';
-import { Order, Branch, OrderItem } from '@/types';
+import { AdminOrderWithItems } from '@/types';
 import { requireAdminSession } from '@/lib/adminSession';
 import { logout } from '@/actions/auth';
 import BranchOrdersPanel from '@/components/admin/BranchOrdersPanel';
+import { getBranchByIdOrSlugAdmin } from '@/lib/branches';
 
 // ── Helpers ──
 
-// Supports both slug (e.g. "san-vicente") and UUID lookups
-async function getBranch(idOrSlug: string): Promise<Branch | null> {
-  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
-  const column = isUuid ? 'id' : 'slug';
-
-  const { data } = await supabaseAdmin
-    .from('branches')
-    .select('*')
-    .eq(column, idOrSlug)
-    .single();
-  return data as Branch | null;
-}
-
-type OrderWithItems = Omit<Order, 'order_items'> & {
-  order_items?: (OrderItem & { products?: { name: string } })[];
-};
-
-async function getBranchOrders(branchId: string): Promise<OrderWithItems[]> {
+async function getBranchOrders(branchId: string): Promise<AdminOrderWithItems[]> {
   const { data, error } = await supabaseAdmin
     .from('orders')
     .select('*, order_items(*, products(name))')
@@ -45,7 +29,7 @@ export default async function BranchAdminPage({ params }: { params: Promise<{ id
   const session = await requireAdminSession();
   const { id } = await params;
 
-  const branch = await getBranch(id);
+  const branch = await getBranchByIdOrSlugAdmin(id);
   if (!branch) notFound();
 
   if (session.role === 'branch_admin' && session.branchId !== branch.id) {
@@ -81,15 +65,6 @@ export default async function BranchAdminPage({ params }: { params: Promise<{ id
             📊 <span className="text-brand-500">{branch.name}</span>
           </h1>
           <p className="text-sm text-stone-500">Panel de administración</p>
-        </div>
-      </div>
-
-      {/* Info sucursal */}
-      <div className="mt-4 rounded-xl border border-surface-600 bg-surface-800 p-4">
-        <div className="flex flex-wrap gap-4 text-sm text-stone-400">
-          <span>📍 {branch.address}</span>
-          <span>🕐 {branch.opening_hours}</span>
-          <span>💬 {branch.whatsapp_number}</span>
         </div>
       </div>
 

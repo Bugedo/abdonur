@@ -59,8 +59,12 @@ export interface OrderItem {
 
 // ── Carrito (estado local, no se guarda en DB) ──
 export interface CartItem {
+  cartKey?: string;
   product: Product;
+  displayName?: string;
+  unitPrice?: number;
   quantity: number;
+  bundleLabel?: string;
 }
 
 // ── Admin ──
@@ -72,6 +76,11 @@ export interface AdminUser {
   branch_id: string | null;
   role: AdminRole;
 }
+
+export type AdminOrderWithItems = Omit<Order, 'order_items'> & {
+  order_items?: (OrderItem & { products?: { name: string } })[];
+  branches?: { name: string };
+};
 
 // ── Formulario de pedido ──
 export interface OrderFormData {

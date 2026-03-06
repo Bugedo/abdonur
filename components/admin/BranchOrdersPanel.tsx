@@ -1,20 +1,15 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Order, OrderItem, OrderStatus } from '@/types';
+import { AdminOrderWithItems, OrderStatus } from '@/types';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import { updateOrderStatus } from '@/actions/updateOrderStatus';
 import { getNextStatuses } from '@/lib/orderStatusWorkflow';
 
-type OrderWithItems = Omit<Order, 'order_items'> & {
-  order_items?: (OrderItem & { products?: { name: string } })[];
-  branches?: { name: string };
-};
-
 type OrdersFilter = 'all' | 'new' | 'confirmed' | 'on_the_way' | 'ready' | 'past';
 
 interface BranchOrdersPanelProps {
-  orders: OrderWithItems[];
+  orders: AdminOrderWithItems[];
   showBranchName?: boolean;
 }
 

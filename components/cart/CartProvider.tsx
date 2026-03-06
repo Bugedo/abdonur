@@ -9,6 +9,13 @@ export const MIN_ITEMS = 1;
 interface CartContextType {
   items: CartItem[];
   addItem: (product: Product) => void;
+  addBundleItem: (payload: {
+    product: Product;
+    quantity: number;
+    displayName: string;
+    unitPrice: number;
+    bundleLabel: string;
+  }) => void;
   removeItem: (productId: string) => void;
   getQuantity: (productId: string) => number;
   totalItems: number;
@@ -30,37 +37,81 @@ export function CartProvider({ children }: { children: ReactNode }) {
           i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
-      return [...prev, { product, quantity: 1 }];
+      return [...prev, { product, quantity: 1, unitPrice: product.price }];
     });
   }, []);
 
+  const addBundleItem = useCallback(
+    ({
+      product,
+      quantity,
+      displayName,
+      unitPrice,
+      bundleLabel,
+    }: {
+      product: Product;
+      quantity: number;
+      displayName: string;
+      unitPrice: number;
+      bundleLabel: string;
+    }) => {
+      const bundleKey = `${product.id}:${bundleLabel}:${displayName}`;
+      setItems((prev) => {
+        const existing = prev.find((i) => i.cartKey === bundleKey);
+        if (existing) {
+          return prev.map((i) =>
+            i.cartKey === bundleKey ? { ...i, quantity: i.quantity + quantity } : i
+          );
+        }
+        return [
+          ...prev,
+          { cartKey: bundleKey, product, displayName, unitPrice, quantity, bundleLabel },
+        ];
+      });
+    },
+    []
+  );
+
   const removeItem = useCallback((productId: string) => {
     setItems((prev) => {
-      const existing = prev.find((i) => i.product.id === productId);
+      const existing = prev.find((i) => i.product.id === productId && !i.bundleLabel);
       if (!existing) return prev;
       if (existing.quantity <= 1) {
-        return prev.filter((i) => i.product.id !== productId);
+        return prev.filter((i) => !(i.product.id === productId && !i.bundleLabel));
       }
       return prev.map((i) =>
-        i.product.id === productId ? { ...i, quantity: i.quantity - 1 } : i
+        i.product.id === productId && !i.bundleLabel ? { ...i, quantity: i.quantity - 1 } : i
       );
     });
   }, []);
 
   const getQuantity = useCallback(
-    (productId: string) => items.find((i) => i.product.id === productId)?.quantity ?? 0,
+    (productId: string) =>
+      items
+        .filter((i) => i.product.id === productId && !i.bundleLabel)
+        .reduce((sum, i) => sum + i.quantity, 0),
     [items]
   );
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
-  const totalPrice = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+  const totalPrice = items.reduce((sum, i) => sum + (i.unitPrice ?? i.product.price) * i.quantity, 0);
   const isMinimumMet = totalItems >= MIN_ITEMS;
 
   const clearCart = useCallback(() => setItems([]), []);
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, removeItem, getQuantity, totalItems, totalPrice, isMinimumMet, clearCart }}
+      value={{
+        items,
+        addItem,
+        addBundleItem,
+        removeItem,
+        getQuantity,
+        totalItems,
+        totalPrice,
+        isMinimumMet,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>

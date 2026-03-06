@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabaseServer';
-import { Order, Branch, OrderItem } from '@/types';
+import { Branch, AdminOrderWithItems } from '@/types';
 import { requireSuperAdmin } from '@/lib/adminSession';
 import { logout } from '@/actions/auth';
 import BranchOrdersPanel from '@/components/admin/BranchOrdersPanel';
@@ -15,12 +15,7 @@ async function getAllBranches(): Promise<Branch[]> {
   return (data ?? []) as Branch[];
 }
 
-type OrderWithItems = Omit<Order, 'order_items'> & {
-  order_items?: (OrderItem & { products?: { name: string } })[];
-  branches?: { name: string };
-};
-
-async function getAllOrders(): Promise<OrderWithItems[]> {
+async function getAllOrders(): Promise<AdminOrderWithItems[]> {
   const { data, error } = await supabaseAdmin
     .from('orders')
     .select('*, branches(name), order_items(*, products(name))')
