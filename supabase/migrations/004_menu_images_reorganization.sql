@@ -17,8 +17,12 @@ SET image_url = '/images/menu/empanadas/sfihas-bondiola-disco.jpeg'
 WHERE name = 'SFIHAS - Bondiola al Disco';
 
 UPDATE products
+SET image_url = '/images/menu/empanadas/fatay-arabe.jpeg'
+WHERE name IN ('Arma tu x6 de empanadas', 'Arma tu x12 de empanadas');
+
+UPDATE products
 SET image_url = '/images/menu/combos/empanadas-docena.jpg'
-WHERE name IN ('Arma tu x6 de empanadas', 'Arma tu x12 de empanadas', 'Docena de Empanadas Árabes');
+WHERE name = 'Docena de Empanadas Árabes';
 
 UPDATE products
 SET image_url = '/images/menu/combos/combo-para-dos.jpg'
