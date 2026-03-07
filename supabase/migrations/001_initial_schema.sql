@@ -161,12 +161,12 @@ CREATE POLICY "admin_users_self_read" ON admin_users
 
 -- 6 Sucursales reales de Córdoba
 INSERT INTO branches (slug, name, address, whatsapp_number, opening_hours, is_active) VALUES
-  ('san-vicente',   'Abdonur San Vicente',       'Ambrosio Funes 1241, San Vicente, Córdoba',                  '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
-  ('alta-cordoba',  'Abdonur Alta Córdoba',      'Fragueiro 2118, Alta Córdoba',                               '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
-  ('alberdi',       'Abdonur Alberdi',           'Av. Colón 3228, Alberdi, Córdoba',                           '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
-  ('nueva-cordoba', 'Abdonur Nueva Córdoba',     'Nueva Córdoba (Solo Delivery)',                               '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
-  ('marques',       'Abdonur Marqués',           'Luciano de Figueroa 305, esq Pimentel, Marqués, Córdoba',    '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
-  ('pueyrredon',    'Abdonur Gral. Pueyrredón',  'Av. Patria 920, esquina Armenia, Gral. Pueyrredón, Córdoba', '393791025851',  '11:30 a 14:30 | 19:30 a 23:30 hs', true);
+  ('san-vicente',   'Abdonur San Vicente',       'Ambrosio Funes 1241, San Vicente, Córdoba',                  '5493512705825',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
+  ('alta-cordoba',  'Abdonur Alta Córdoba',      'Fragueiro 2118, Alta Córdoba',                               '5493517189630',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
+  ('alberdi',       'Abdonur Alberdi',           'Av. Colón 3228, Alberdi, Córdoba',                           '5493513224810',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
+  ('nueva-cordoba', 'Abdonur Nueva Córdoba',     'Nueva Córdoba (Solo Delivery)',                               '5493517189630',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
+  ('marques',       'Abdonur Marqués',           'Luciano de Figueroa 305, esq Pimentel, Marqués, Córdoba',    '5493517017209',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
+  ('pueyrredon',    'Abdonur Gral. Pueyrredón',  'Av. Patria 920, esquina Armenia, Gral. Pueyrredón, Córdoba', '5493516519006',  '11:30 a 14:30 | 19:30 a 23:30 hs', true);
 
 -- Productos reales
 INSERT INTO products (name, description, price, category, image_url, is_active) VALUES
