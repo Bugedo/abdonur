@@ -21,12 +21,46 @@ export default async function SuperAdminStatsPage({
 }) {
   await requireSuperAdmin();
   const query = await searchParams;
-  const filters = parseAdminStatsFilters(query);
+  const parsedFilters = parseAdminStatsFilters(query);
 
-  const [branches, stats] = await Promise.all([
-    getAllBranches(),
-    getAdminStatsData(filters, { includeBranchRows: true }),
-  ]);
+  const branches = await getAllBranches();
+  const altaCordoba = branches.find((b) => b.slug === 'alta-cordoba');
+  const nuevaCordoba = branches.find((b) => b.slug === 'nueva-cordoba');
+  const visibleBranches = branches.filter((b) => b.slug !== 'nueva-cordoba');
+
+  const statsBranchIds =
+    parsedFilters.branchId && altaCordoba && nuevaCordoba &&
+    (parsedFilters.branchId === altaCordoba.id || parsedFilters.branchId === nuevaCordoba.id)
+      ? [altaCordoba.id, nuevaCordoba.id]
+      : undefined;
+
+  const filtersForView =
+    parsedFilters.branchId && altaCordoba && nuevaCordoba && parsedFilters.branchId === nuevaCordoba.id
+      ? { ...parsedFilters, branchId: altaCordoba.id }
+      : parsedFilters;
+
+  const stats = await getAdminStatsData(filtersForView, {
+    includeBranchRows: true,
+    branchIds: statsBranchIds,
+  });
+
+  const mergedBranchRows = stats.branchRows
+    ? (() => {
+        if (!altaCordoba || !nuevaCordoba) return stats.branchRows;
+        const alta = stats.branchRows.find((r) => r.branchId === altaCordoba.id);
+        const nueva = stats.branchRows.find((r) => r.branchId === nuevaCordoba.id);
+        const others = stats.branchRows.filter((r) => r.branchId !== altaCordoba.id && r.branchId !== nuevaCordoba.id);
+        const merged = {
+          branchId: altaCordoba.id,
+          branchName: `${altaCordoba.name} + Nueva Córdoba`,
+          orders: (alta?.orders ?? 0) + (nueva?.orders ?? 0),
+          sales: (alta?.sales ?? 0) + (nueva?.sales ?? 0),
+        };
+        return [merged, ...others];
+      })()
+    : undefined;
+
+  const statsForView = { ...stats, branchRows: mergedBranchRows };
 
   return (
     <section className="py-4">
@@ -56,9 +90,9 @@ export default async function SuperAdminStatsPage({
 
       <AdminStatsDashboard
         title="Estadísticas globales"
-        stats={stats}
-        filters={filters}
-        branches={branches}
+        stats={statsForView}
+        filters={filtersForView}
+        branches={visibleBranches}
         showBranchFilter
       />
     </section>

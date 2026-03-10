@@ -128,7 +128,7 @@ function getPreviousRange(current: AdminStatsFilters) {
   return { fromIso: prevFrom.toISOString(), toIso: prevTo.toISOString() };
 }
 
-async function fetchOrdersRange(params: { fromIso: string; toIso: string; branchId?: string }) {
+async function fetchOrdersRange(params: { fromIso: string; toIso: string; branchId?: string; branchIds?: string[] }) {
   let query = supabaseAdmin
     .from('orders')
     .select('id, branch_id, total_price, status, created_at, delivery_method, payment_method, branches(name)')
@@ -136,7 +136,9 @@ async function fetchOrdersRange(params: { fromIso: string; toIso: string; branch
     .lte('created_at', params.toIso)
     .order('created_at', { ascending: true });
 
-  if (params.branchId) {
+  if (params.branchIds && params.branchIds.length > 0) {
+    query = query.in('branch_id', params.branchIds);
+  } else if (params.branchId) {
     query = query.eq('branch_id', params.branchId);
   }
 
@@ -148,14 +150,16 @@ async function fetchOrdersRange(params: { fromIso: string; toIso: string; branch
   return ((data ?? []) as unknown) as StatsOrderRow[];
 }
 
-async function fetchItemsRange(params: { fromIso: string; toIso: string; branchId?: string }) {
+async function fetchItemsRange(params: { fromIso: string; toIso: string; branchId?: string; branchIds?: string[] }) {
   let query = supabaseAdmin
     .from('order_items')
     .select('quantity, unit_price, products(name), orders!inner(branch_id, created_at, status)')
     .gte('orders.created_at', params.fromIso)
     .lte('orders.created_at', params.toIso);
 
-  if (params.branchId) {
+  if (params.branchIds && params.branchIds.length > 0) {
+    query = query.in('orders.branch_id', params.branchIds);
+  } else if (params.branchId) {
     query = query.eq('orders.branch_id', params.branchId);
   }
 
@@ -281,13 +285,16 @@ function aggregateBranchRows(orders: StatsOrderRow[]): AdminStatsBranchRow[] {
   return [...map.values()].sort((a, b) => b.sales - a.sales);
 }
 
-export async function getAdminStatsData(filters: AdminStatsFilters, opts?: { includeBranchRows?: boolean }): Promise<AdminStatsData> {
+export async function getAdminStatsData(
+  filters: AdminStatsFilters,
+  opts?: { includeBranchRows?: boolean; branchIds?: string[] }
+): Promise<AdminStatsData> {
   const prev = getPreviousRange(filters);
 
   const [currentOrders, previousOrders, currentItems] = await Promise.all([
-    fetchOrdersRange(filters),
-    fetchOrdersRange({ fromIso: prev.fromIso, toIso: prev.toIso, branchId: filters.branchId }),
-    fetchItemsRange(filters),
+    fetchOrdersRange({ ...filters, branchIds: opts?.branchIds }),
+    fetchOrdersRange({ fromIso: prev.fromIso, toIso: prev.toIso, branchId: filters.branchId, branchIds: opts?.branchIds }),
+    fetchItemsRange({ ...filters, branchIds: opts?.branchIds }),
   ]);
 
   return {

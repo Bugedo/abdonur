@@ -38,6 +38,10 @@ export default async function SuperAdminPage() {
     getAllBranches(),
   ]);
 
+  const altaCordoba = allBranches.find((b) => b.slug === 'alta-cordoba');
+  const nuevaCordoba = allBranches.find((b) => b.slug === 'nueva-cordoba');
+  const visibleBranches = allBranches.filter((b) => b.slug !== 'nueva-cordoba');
+
   return (
     <section className="py-4">
       {/* Volver */}
@@ -78,8 +82,11 @@ export default async function SuperAdminPage() {
       <div className="mt-8">
         <h2 className="text-lg font-bold text-white">Sucursales</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {allBranches.map((branch) => {
-            const branchOrders = allOrders.filter((o) => o.branch_id === branch.id);
+          {visibleBranches.map((branch) => {
+            const isAltaMergedCard = branch.slug === 'alta-cordoba' && altaCordoba && nuevaCordoba;
+            const branchOrders = isAltaMergedCard
+              ? allOrders.filter((o) => o.branch_id === altaCordoba.id || o.branch_id === nuevaCordoba.id)
+              : allOrders.filter((o) => o.branch_id === branch.id);
             const newCount = branchOrders.filter((o) => o.status === 'new').length;
             return (
               <Link
@@ -89,7 +96,9 @@ export default async function SuperAdminPage() {
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-bold text-white">{branch.name}</h3>
+                    <h3 className="font-bold text-white">
+                      {isAltaMergedCard ? `${branch.name} + Nueva Córdoba` : branch.name}
+                    </h3>
                     <p className="mt-1 text-xs text-stone-500">{branch.address}</p>
                   </div>
                   {newCount > 0 && (

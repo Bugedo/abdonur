@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { supabaseAdmin } from '@/lib/supabaseServer';
 import { AdminOrderWithItems } from '@/types';
@@ -6,14 +6,15 @@ import { requireAdminSession } from '@/lib/adminSession';
 import { logout } from '@/actions/auth';
 import BranchOrdersPanel from '@/components/admin/BranchOrdersPanel';
 import { getBranchByIdOrSlugAdmin } from '@/lib/branches';
+import { getOperationalBranchIdsForSession } from '@/lib/adminOperationalScope';
 
 // ── Helpers ──
 
-async function getBranchOrders(branchId: string): Promise<AdminOrderWithItems[]> {
+async function getBranchOrders(branchIds: string[]): Promise<AdminOrderWithItems[]> {
   const { data, error } = await supabaseAdmin
     .from('orders')
-    .select('*, order_items(*, products(name))')
-    .eq('branch_id', branchId)
+    .select('*, branches(name), order_items(*, products(name))')
+    .in('branch_id', branchIds)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -35,12 +36,38 @@ export default async function BranchAdminPage({
 
   const branch = await getBranchByIdOrSlugAdmin(id);
   if (!branch) notFound();
-
-  if (session.role === 'branch_admin' && session.branchId !== branch.id) {
-    notFound();
+  if (branch.slug === 'nueva-cordoba') {
+    redirect('/admin/sucursal/alta-cordoba');
   }
 
-  const orders = await getBranchOrders(branch.id);
+  let branchIds = [branch.id];
+  let branchPanelTitle = branch.name;
+  let showOrderBranchName = false;
+
+  if (branch.slug === 'alta-cordoba') {
+    const operationalIds = await getOperationalBranchIdsForSession({
+      role: 'branch_admin',
+      username: branch.name,
+      branchId: branch.id,
+      branchSlug: branch.slug,
+    });
+    branchIds = operationalIds;
+    if (operationalIds.length > 1) {
+      branchPanelTitle = `${branch.name} + Nueva Córdoba`;
+      showOrderBranchName = true;
+    }
+  }
+
+  if (session.role === 'branch_admin') {
+    const canAccessAltaMerged =
+      branch.slug === 'alta-cordoba' &&
+      (session.branchId === branch.id || session.branchSlug === 'nueva-cordoba');
+    if (!canAccessAltaMerged && session.branchId !== branch.id) {
+      notFound();
+    }
+  }
+
+  const orders = await getBranchOrders(branchIds);
 
   return (
     <section className="py-4">
@@ -66,7 +93,7 @@ export default async function BranchAdminPage({
       <div className="mt-4 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-white">
-            📊 <span className="text-brand-500">{branch.name}</span>
+            📊 <span className="text-brand-500">{branchPanelTitle}</span>
           </h1>
           <p className="text-sm text-stone-500">Panel de administración</p>
         </div>
@@ -81,7 +108,7 @@ export default async function BranchAdminPage({
       {/* Lista de pedidos */}
       <div className="mt-8">
         <h2 className="text-lg font-bold text-white">Pedidos</h2>
-        <BranchOrdersPanel orders={orders} />
+        <BranchOrdersPanel orders={orders} showBranchName={showOrderBranchName} />
       </div>
     </section>
   );

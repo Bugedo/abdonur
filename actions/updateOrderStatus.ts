@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { TESTING_MODE } from '@/lib/adminTestingMode';
 import { getAdminSession } from '@/lib/adminSession';
 import { canTransitionStatus } from '@/lib/orderStatusWorkflow';
+import { canOperateOrderBranch } from '@/lib/adminOperationalScope';
 
 interface UpdateResult {
   success: boolean;
@@ -37,7 +38,8 @@ export async function updateOrderStatus(
     }
 
     if (session.role === 'branch_admin') {
-      if (targetOrder.branch_id !== session.branchId) {
+      const allowed = await canOperateOrderBranch(session, targetOrder.branch_id);
+      if (!allowed) {
         return { success: false, error: 'No podés modificar pedidos de otra sucursal.' };
       }
     }
