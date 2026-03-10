@@ -67,6 +67,7 @@ function formatElapsed(elapsedMs: number) {
 export default function BranchOrdersPanel({ orders, showBranchName = false }: BranchOrdersPanelProps) {
   const router = useRouter();
   const soundsAllowed = !showBranchName;
+  const frozenTimerMsByOrderRef = useRef<Record<string, number>>({});
   const [expandedOrderIds, setExpandedOrderIds] = useState<Set<string>>(new Set());
   const [loadingOrderId, setLoadingOrderId] = useState<string | null>(null);
   const [errorsByOrder, setErrorsByOrder] = useState<Record<string, string>>({});
@@ -331,6 +332,15 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
                 ? 'border-green-700/60 bg-green-900/25'
                 : 'border-surface-600 bg-surface-800';
 
+        const shouldFreezeTimer =
+          order.status === 'on_the_way' || order.status === 'ready' || order.status === 'completed';
+        if (shouldFreezeTimer && frozenTimerMsByOrderRef.current[order.id] === undefined) {
+          frozenTimerMsByOrderRef.current[order.id] = getElapsedMs(order.created_at, nowMs);
+        }
+        if (!shouldFreezeTimer && frozenTimerMsByOrderRef.current[order.id] !== undefined) {
+          delete frozenTimerMsByOrderRef.current[order.id];
+        }
+
         return (
           <article
             key={order.id}
@@ -372,7 +382,8 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
               </div>
 
             {(() => {
-              const elapsedMs = getElapsedMs(order.created_at, nowMs);
+              const frozenElapsedMs = frozenTimerMsByOrderRef.current[order.id];
+              const elapsedMs = frozenElapsedMs ?? getElapsedMs(order.created_at, nowMs);
               const level = getTimerLevel(elapsedMs);
               const timerClasses =
                 level === 'green'
