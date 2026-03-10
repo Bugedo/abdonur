@@ -45,22 +45,27 @@ export async function login(formData: FormData) {
     return { error: 'No se pudo validar el usuario. Intentá de nuevo.' };
   }
 
-  const branch = branches.find((b) => {
+  const matchedBranch = branches.find((b) => {
     const compactSlugUsername = branchLoginUsernameFromSlug(b.slug);
     return normalizedUsername.replace(/\s+/g, '') === compactSlugUsername;
   });
 
-  if (!branch) {
+  if (!matchedBranch) {
     return { error: 'Usuario inválido. Usá el usuario corto de sucursal (ej: sanvicente).' };
   }
 
+  // Nueva Córdoba opera en el panel de Alta Córdoba.
+  const altaCordobaBranch = branches.find((b) => b.slug === 'alta-cordoba');
+  const effectiveBranch =
+    matchedBranch.slug === 'nueva-cordoba' && altaCordobaBranch ? altaCordobaBranch : matchedBranch;
+
   await createAdminSession({
     role: 'branch_admin',
-    username: branch.name,
-    branchId: branch.id,
-    branchSlug: branch.slug,
+    username: effectiveBranch.name,
+    branchId: effectiveBranch.id,
+    branchSlug: effectiveBranch.slug,
   });
-  redirect(`/admin/sucursal/${branch.slug}`);
+  redirect(`/admin/sucursal/${effectiveBranch.slug}`);
 }
 
 export async function logout() {

@@ -52,11 +52,10 @@ function getTimerLevel(elapsedMs: number): TimerLevel {
 }
 
 function formatElapsed(elapsedMs: number) {
-  // Business rule: stop counting after 60 minutes.
-  const cappedSeconds = Math.min(60 * 60, Math.floor(elapsedMs / 1000));
-  const hours = Math.floor(cappedSeconds / 3600);
-  const minutes = Math.floor((cappedSeconds % 3600) / 60);
-  const seconds = cappedSeconds % 60;
+  const totalSeconds = Math.floor(elapsedMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
 
   if (hours > 0) {
     return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -180,10 +179,11 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
   useEffect(() => {
     if (!soundEnabled || !soundsAllowed) return;
 
-    const activeOrders = sortedOrders.filter((o) => o.status !== 'completed' && o.status !== 'cancelled');
-    if (activeOrders.length === 0) return;
+    // Alarm only while order is not yet "on_the_way" or "ready".
+    const monitoredOrders = sortedOrders.filter((o) => o.status === 'new' || o.status === 'confirmed');
+    if (monitoredOrders.length === 0) return;
 
-    const highestLevel = activeOrders.reduce<TimerLevel>((current, order) => {
+    const highestLevel = monitoredOrders.reduce<TimerLevel>((current, order) => {
       const level = getTimerLevel(getElapsedMs(order.created_at, nowMs));
       if (level === 'red') return 'red';
       if (level === 'yellow' && current === 'green') return 'yellow';
