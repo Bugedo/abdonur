@@ -90,3 +90,68 @@ export interface OrderFormData {
   address: string;
   payment_method: PaymentMethod;
 }
+
+// ── Admin Stats ──
+export type AdminStatsRangePreset = 'today' | 'yesterday' | 'last7' | 'last30' | 'month' | 'custom';
+
+export interface AdminStatsFilters {
+  preset: AdminStatsRangePreset;
+  fromIso: string;
+  toIso: string;
+  fromInput: string;
+  toInput: string;
+  branchId?: string;
+}
+
+export interface AdminStatsKpis {
+  netSales: number;
+  createdOrders: number;
+  completedOrders: number;
+  activeOrders: number;
+  averageOrderValue: number;
+  cancellationRate: number;
+  averageActiveMinutes: number;
+  activeSlaRate: number;
+}
+
+export interface AdminStatsPoint {
+  label: string;
+  sales: number;
+  orders: number;
+  cancelled: number;
+}
+
+export interface AdminStatsStatusRow {
+  status: OrderStatus;
+  orders: number;
+  sales: number;
+}
+
+export interface AdminStatsTopProductRow {
+  productName: string;
+  quantity: number;
+  sales: number;
+}
+
+export interface AdminStatsBranchRow {
+  branchId: string;
+  branchName: string;
+  orders: number;
+  sales: number;
+}
+
+export interface AdminStatsBreakdownRow {
+  label: string;
+  orders: number;
+}
+
+export interface AdminStatsData {
+  current: AdminStatsKpis;
+  previous: AdminStatsKpis;
+  timeSeries: AdminStatsPoint[];
+  statusRows: AdminStatsStatusRow[];
+  topProducts: AdminStatsTopProductRow[];
+  paymentRows: AdminStatsBreakdownRow[];
+  deliveryRows: AdminStatsBreakdownRow[];
+  branchRows?: AdminStatsBranchRow[];
+}
