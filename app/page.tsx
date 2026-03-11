@@ -31,13 +31,10 @@ async function getBranches(): Promise<Branch[]> {
 
 export default async function HomePage() {
   const branches = await getBranches();
-  const orderedBranches = branchDisplayConfig
-    .map((config) => {
-      const branch = branches.find((item) => item.slug === config.slug);
-      if (!branch) return null;
-      return { branch, displayName: config.label };
-    })
-    .filter((entry): entry is { branch: Branch; displayName: string } => entry !== null);
+  const orderedBranches = branchDisplayConfig.flatMap((config) => {
+    const branch = branches.find((item) => item.slug === config.slug);
+    return branch ? [{ branch, displayName: config.label }] : [];
+  });
 
   return (
     <section className="flex flex-col items-center gap-12">
