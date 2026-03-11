@@ -5,6 +5,15 @@ import BranchCard from '@/components/ui/BranchCard';
 
 export const revalidate = 60;
 
+const branchDisplayConfig = [
+  { slug: 'san-vicente', label: 'San Vicente' },
+  { slug: 'alta-cordoba', label: 'Alta Córdoba' },
+  { slug: 'nueva-cordoba', label: 'Nueva Córdoba' },
+  { slug: 'alberdi', label: 'Alberdi' },
+  { slug: 'marques', label: 'Márquez' },
+  { slug: 'pueyrredon', label: 'Pueyrredón' },
+] as const;
+
 async function getBranches(): Promise<Branch[]> {
   const { data, error } = await supabase
     .from('branches')
@@ -22,6 +31,13 @@ async function getBranches(): Promise<Branch[]> {
 
 export default async function HomePage() {
   const branches = await getBranches();
+  const orderedBranches = branchDisplayConfig
+    .map((config) => {
+      const branch = branches.find((item) => item.slug === config.slug);
+      if (!branch) return null;
+      return { branch, displayName: config.label };
+    })
+    .filter((entry): entry is { branch: Branch; displayName: string } => entry !== null);
 
   return (
     <section className="flex flex-col items-center gap-12">
@@ -58,11 +74,11 @@ export default async function HomePage() {
         </p>
       </div>
 
-      {/* Grid de sucursales */}
-      {branches.length > 0 ? (
-        <div className="grid w-full max-w-3xl gap-4 sm:grid-cols-2">
-          {branches.map((branch) => (
-            <BranchCard key={branch.id} branch={branch} />
+      {/* Lista de sucursales */}
+      {orderedBranches.length > 0 ? (
+        <div className="flex w-full max-w-2xl flex-col gap-4">
+          {orderedBranches.map(({ branch, displayName }) => (
+            <BranchCard key={branch.id} branch={branch} displayName={displayName} />
           ))}
         </div>
       ) : (
