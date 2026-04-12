@@ -42,3 +42,44 @@ body {
   background-color: #0a0a0a;
   color: #f5f5f4;
 }
+
+/* ─────────────────────────────────────
+   Menú — entradas suaves (solo estética)
+   ───────────────────────────────────── */
+@keyframes menuFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-menu-in {
+  animation: menuFadeUp 0.42s ease-out both;
+}
+
+.animate-menu-section {
+  animation: menuFadeUp 0.4s ease-out both;
+}
+
+.menu-category-stack > .animate-menu-section:nth-child(1) {
+  animation-delay: 0ms;
+}
+.menu-category-stack > .animate-menu-section:nth-child(2) {
+  animation-delay: 55ms;
+}
+.menu-category-stack > .animate-menu-section:nth-child(3) {
+  animation-delay: 110ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-menu-in,
+  .animate-menu-section {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

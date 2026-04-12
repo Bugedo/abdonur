@@ -19,51 +19,104 @@ const dayMap: Record<string, number> = {
   sab: 6,
 };
 
+function getArgentinaNowParts() {
+  const formatter = new Intl.DateTimeFormat('es-AR', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+
+  const parts = formatter.formatToParts(new Date());
+  const weekday = parts.find((part) => part.type === 'weekday')?.value?.toLowerCase() ?? '';
+  const hour = Number(parts.find((part) => part.type === 'hour')?.value ?? '0');
+  const minute = Number(parts.find((part) => part.type === 'minute')?.value ?? '0');
+  const dayKey = weekday.replace('.', '').slice(0, 3);
+  const day = dayMap[dayKey];
+
+  return {
+    day: day ?? 0,
+    minutes: hour * 60 + minute,
+  };
+}
+
+function isWithinMinuteRange(currentMinutes: number, openMinutes: number, closeMinutes: number) {
+  // Rango nocturno que cruza medianoche.
+  if (closeMinutes < openMinutes) {
+    return currentMinutes >= openMinutes || currentMinutes < closeMinutes;
+  }
+  return currentMinutes >= openMinutes && currentMinutes < closeMinutes;
+}
+
+function parseTimeToMinutes(value: string) {
+  const match = value.trim().match(/^(\d{1,2}):(\d{2})$/);
+  if (!match) return null;
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) return null;
+  return hours * 60 + minutes;
+}
+
+function isOpenWithDayRange(openingHours: string, currentDay: number, currentMinutes: number) {
+  const match = openingHours.match(/^(\w+)\s+a\s+(\w+)\s+(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})$/i);
+  if (!match) return null;
+
+  const [, dayStart, dayEnd, openTime, closeTime] = match;
+  const dayStartNum = dayMap[dayStart.toLowerCase()];
+  const dayEndNum = dayMap[dayEnd.toLowerCase()];
+  const openMinutes = parseTimeToMinutes(openTime);
+  const closeMinutes = parseTimeToMinutes(closeTime);
+  if (dayStartNum === undefined || dayEndNum === undefined || openMinutes === null || closeMinutes === null) {
+    return false;
+  }
+
+  let isDayInRange = false;
+  if (dayStartNum <= dayEndNum) {
+    isDayInRange = currentDay >= dayStartNum && currentDay <= dayEndNum;
+  } else {
+    isDayInRange = currentDay >= dayStartNum || currentDay <= dayEndNum;
+  }
+  if (!isDayInRange) return false;
+
+  return isWithinMinuteRange(currentMinutes, openMinutes, closeMinutes);
+}
+
+function isOpenWithTimeWindows(openingHours: string, currentMinutes: number) {
+  // Example: "11:30 a 14:30 | 19:30 a 23:30 hs"
+  const cleaned = openingHours.toLowerCase().replace(/\bhs\b/g, '').trim();
+  const windows = cleaned
+    .split('|')
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+  if (windows.length === 0) return null;
+
+  const ranges = windows
+    .map((segment) => {
+      const match = segment.match(/^(\d{1,2}:\d{2})\s*a\s*(\d{1,2}:\d{2})$/i);
+      if (!match) return null;
+      const openMinutes = parseTimeToMinutes(match[1]);
+      const closeMinutes = parseTimeToMinutes(match[2]);
+      if (openMinutes === null || closeMinutes === null) return null;
+      return { openMinutes, closeMinutes };
+    })
+    .filter((range): range is { openMinutes: number; closeMinutes: number } => Boolean(range));
+
+  if (ranges.length === 0) return false;
+  return ranges.some((range) => isWithinMinuteRange(currentMinutes, range.openMinutes, range.closeMinutes));
+}
+
 function isOpenNow(openingHours: string): boolean {
   try {
-    // Hora actual en Argentina
-    const now = new Date();
-    const argTime = new Date(
-      now.toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' })
-    );
+    const { day: currentDay, minutes: currentMinutes } = getArgentinaNowParts();
 
-    const currentDay = argTime.getDay(); // 0=Dom
-    const currentMinutes = argTime.getHours() * 60 + argTime.getMinutes();
+    const byDayRange = isOpenWithDayRange(openingHours, currentDay, currentMinutes);
+    if (byDayRange !== null) return byDayRange;
 
-    // Parsear "Lun a Dom 10:00 - 23:00"
-    const match = openingHours.match(
-      /^(\w+)\s+a\s+(\w+)\s+(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})$/i
-    );
+    const byWindows = isOpenWithTimeWindows(openingHours, currentMinutes);
+    if (byWindows !== null) return byWindows;
 
-    if (!match) return false;
-
-    const [, dayStart, dayEnd, hOpenStr, mOpenStr, hCloseStr, mCloseStr] = match;
-
-    const dayStartNum = dayMap[dayStart.toLowerCase()];
-    const dayEndNum = dayMap[dayEnd.toLowerCase()];
-
-    if (dayStartNum === undefined || dayEndNum === undefined) return false;
-
-    // Verificar si hoy está dentro del rango de días
-    let isDayInRange = false;
-    if (dayStartNum <= dayEndNum) {
-      // Rango normal: Lun(1) a Vie(5)
-      isDayInRange = currentDay >= dayStartNum && currentDay <= dayEndNum;
-    } else {
-      // Rango que cruza semana: Jue(4) a Dom(0) → 4,5,6,0
-      isDayInRange = currentDay >= dayStartNum || currentDay <= dayEndNum;
-    }
-
-    if (!isDayInRange) return false;
-
-    // Verificar horario
-    const openMinutes = parseInt(hOpenStr) * 60 + parseInt(mOpenStr);
-    let closeMinutes = parseInt(hCloseStr) * 60 + parseInt(mCloseStr);
-
-    // Si cierra a las 00:00 significa medianoche (1440 min)
-    if (closeMinutes === 0) closeMinutes = 24 * 60;
-
-    return currentMinutes >= openMinutes && currentMinutes < closeMinutes;
+    return false;
   } catch {
     return false;
   }

@@ -15,7 +15,11 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
   const [expanded, setExpanded] = useState(false);
   const [selection, setSelection] = useState<Record<string, number>>({});
 
-  const targetCount = product.name.toLowerCase().includes('x12') ? 12 : 6;
+  const normalizedName = product.name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+  const targetCount = normalizedName.includes('x12') || normalizedName.includes('docena') ? 12 : 8;
   const quantityInCart = getQuantity(product.id);
   const selectedCount = useMemo(
     () => Object.values(selection).reduce((sum, qty) => sum + qty, 0),
@@ -65,8 +69,8 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
   }
 
   return (
-    <div className="rounded-xl border border-surface-600 bg-surface-800 px-4 py-3 transition-colors hover:border-surface-500">
-      <div className="flex items-center gap-4">
+    <div className="rounded-xl border border-surface-600/75 bg-surface-800/85 px-4 py-3 shadow-sm shadow-black/20 ring-1 ring-inset ring-white/[0.04] backdrop-blur-sm transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-surface-500/90 hover:bg-surface-800/95 hover:shadow-lg hover:shadow-black/30 motion-reduce:transition-colors motion-reduce:hover:translate-y-0">
+      <div className="group flex items-center gap-4">
         {product.image_url && (
           <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg">
             <Image
@@ -74,7 +78,7 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
               alt={product.name}
               width={80}
               height={80}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03] motion-reduce:group-hover:scale-100"
             />
           </div>
         )}
@@ -90,7 +94,7 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
             <>
               <button
                 onClick={() => removeItem(product.id)}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-surface-500 bg-surface-700 text-lg font-bold text-stone-300 transition-colors hover:border-red-500 hover:bg-red-900/30 hover:text-red-400"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-surface-500 bg-surface-700 text-lg font-bold text-stone-300 transition-[transform,colors] duration-150 ease-out hover:border-red-500 hover:bg-red-900/30 hover:text-red-400 active:scale-95 motion-reduce:active:scale-100"
                 aria-label={`Quitar ${product.name}`}
               >
                 -
@@ -100,7 +104,7 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
           ) : null}
           <button
             onClick={() => (expanded ? setExpanded(false) : openBuilder())}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-lg font-bold text-white transition-colors hover:bg-brand-700"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-lg font-bold text-white transition-[transform,colors] duration-150 ease-out hover:bg-brand-700 active:scale-95 motion-reduce:active:scale-100"
             aria-label={`Configurar ${product.name}`}
           >
             +
@@ -109,25 +113,28 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
       </div>
 
       <div
-        className={`grid overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`grid overflow-hidden transition-all duration-300 ease-in-out motion-reduce:duration-150 ${
           expanded ? 'mt-3 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
         }`}
       >
         <div className="min-h-0">
-          <div className="rounded-lg border border-brand-700/40 bg-brand-900/20 p-3">
+          <div className="rounded-lg border border-brand-600/35 bg-brand-900/25 p-3 shadow-inner shadow-black/20 backdrop-blur-sm">
             <p className="text-sm text-stone-300">
               Armá tu combo: faltan <span className="font-bold text-brand-400">{remaining}</span> para completar x
               {targetCount}.
             </p>
             <div className="mt-3 space-y-2">
               {flavorProducts.map((flavor) => (
-                <div key={flavor.id} className="flex items-center justify-between rounded-md bg-surface-700 px-3 py-2">
+                <div
+                  key={flavor.id}
+                  className="flex items-center justify-between rounded-md border border-white/5 bg-surface-700/80 px-3 py-2 backdrop-blur-sm transition-colors hover:bg-surface-700"
+                >
                   <span className="text-sm text-stone-200">{flavor.name}</span>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => updateFlavorQty(flavor.id, -1)}
-                      className="h-7 w-7 rounded-full border border-surface-500 text-white hover:bg-surface-600"
+                      className="h-7 w-7 rounded-full border border-surface-500 text-white transition-[transform,colors] duration-150 hover:bg-surface-600 active:scale-95 motion-reduce:active:scale-100"
                     >
                       -
                     </button>
@@ -137,7 +144,7 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
                     <button
                       type="button"
                       onClick={() => updateFlavorQty(flavor.id, 1)}
-                      className="h-7 w-7 rounded-full bg-brand-600 text-white hover:bg-brand-700"
+                      className="h-7 w-7 rounded-full bg-brand-600 text-white transition-[transform,colors] duration-150 hover:bg-brand-700 active:scale-95 motion-reduce:active:scale-100"
                     >
                       +
                     </button>
@@ -149,7 +156,7 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
               type="button"
               disabled={selectedCount !== targetCount}
               onClick={addComboToCart}
-              className="mt-3 w-full rounded-lg bg-whatsapp py-2 text-sm font-bold text-white transition-colors hover:bg-whatsapp-dark disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-3 w-full rounded-lg bg-whatsapp py-2 text-sm font-bold text-white transition-[transform,colors] duration-200 hover:bg-whatsapp-dark active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:active:scale-100"
             >
               Agregar combo al pedido
             </button>

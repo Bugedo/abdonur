@@ -20,15 +20,16 @@ const categoryTitles: Record<ProductCategory, string> = {
 const categoryOrder: ProductCategory[] = ['empanadas', 'comidas', 'postres'];
 
 type EmpanadaFlavorKey = 'arabes' | 'jyq' | 'cyq' | 'bondiola';
-type EmpanadaPresentation = 'docena' | 'media' | 'unidad';
+type EmpanadaPresentation = 'docena' | 'docena_y_media' | 'dos_docenas' | 'unidad';
 
 const empanadaFlavorOrder: EmpanadaFlavorKey[] = ['arabes', 'jyq', 'cyq', 'bondiola'];
 
-const empanadaPresentationOrder: Array<{ key: EmpanadaPresentation; label: string }> = [
-  { key: 'docena', label: 'Docena' },
-  { key: 'media', label: 'Media docena' },
-  { key: 'unidad', label: 'Unidad' },
-];
+const flavorDisplayNames: Record<EmpanadaFlavorKey, string> = {
+  arabes: 'Árabes',
+  jyq: 'Jamón y Queso',
+  cyq: 'Cebolla y Queso',
+  bondiola: 'Bondiola al Disco',
+};
 
 function normalizeText(value: string) {
   return value
@@ -39,12 +40,12 @@ function normalizeText(value: string) {
 
 function isComboBuilderProduct(name: string) {
   const normalized = normalizeText(name);
-  return normalized.includes('arma tu x6') || normalized.includes('arma tu x12');
+  return normalized.includes('arma tu x8') || normalized.includes('arma tu x12') || normalized.includes('arma tu docena');
 }
 
 function getEmpanadaFlavorKey(name: string): EmpanadaFlavorKey | null {
   const normalized = normalizeText(name);
-  if (normalized.includes('fatay') || normalized.includes('arabes')) return 'arabes';
+  if (normalized.includes('fatay') || normalized.includes('arabes') || normalized.includes('arabe')) return 'arabes';
   if (normalized.includes('jamon y queso')) return 'jyq';
   if (normalized.includes('cebolla y queso')) return 'cyq';
   if (normalized.includes('bondiola al disco')) return 'bondiola';
@@ -53,10 +54,48 @@ function getEmpanadaFlavorKey(name: string): EmpanadaFlavorKey | null {
 
 function getEmpanadaPresentation(name: string): EmpanadaPresentation | null {
   const normalized = normalizeText(name);
-  if (normalized.includes('media docena')) return 'media';
+  if (normalized.includes('docena y media')) return 'docena_y_media';
+  if (normalized.includes('2 docenas') || normalized.includes('dos docenas')) return 'dos_docenas';
   if (normalized.includes('docena')) return 'docena';
   if (normalized.includes('unidad')) return 'unidad';
   return 'unidad';
+}
+
+function withDisplayName(product: Product, displayName: string): Product {
+  return { ...product, name: displayName };
+}
+
+function canonicalComboDisplayName(product: Product): string {
+  const normalized = normalizeText(product.name);
+  if (normalized.includes('docena') || normalized.includes('x12')) return 'Armá tu Docena';
+  return 'Armá tu x8';
+}
+
+function buildFlavorRows(
+  flavorKeys: EmpanadaFlavorKey[],
+  flavorMatrix: Record<EmpanadaFlavorKey, Partial<Record<EmpanadaPresentation, Product>>>,
+  flavorDisplayNames: Record<EmpanadaFlavorKey, string>
+): Product[] {
+  return flavorKeys
+    .map((flavorKey) => {
+      const flavorName = flavorDisplayNames[flavorKey];
+      const rowProducts: Product[] = [];
+      const docena = flavorMatrix[flavorKey].docena;
+      const docenaYMedia = flavorMatrix[flavorKey].docena_y_media;
+      const dosDocenas = flavorMatrix[flavorKey].dos_docenas;
+      const unidad = flavorMatrix[flavorKey].unidad;
+
+      if (docena) rowProducts.push(withDisplayName(docena, `1 Docena de ${flavorName}`));
+      if (docenaYMedia) rowProducts.push(withDisplayName(docenaYMedia, `1 Docena y Media de ${flavorName}`));
+      if (dosDocenas) rowProducts.push(withDisplayName(dosDocenas, `2 Docenas de ${flavorName}`));
+      if (unidad) {
+        const unidadLabel = flavorKey === 'arabes' ? 'Árabe por Unidad' : `${flavorName} por Unidad`;
+        rowProducts.push(withDisplayName(unidad, unidadLabel));
+      }
+
+      return rowProducts;
+    })
+    .flat();
 }
 
 export default function MenuClient({ products, branchId, branchSlug }: MenuClientProps) {
@@ -66,8 +105,10 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
     .sort((a, b) => {
       const aNorm = normalizeText(a.name);
       const bNorm = normalizeText(b.name);
-      if (aNorm.includes('x12')) return -1;
-      if (bNorm.includes('x12')) return 1;
+      const aDocena = aNorm.includes('docena') || aNorm.includes('x12');
+      const bDocena = bNorm.includes('docena') || bNorm.includes('x12');
+      if (aDocena && !bDocena) return -1;
+      if (!aDocena && bDocena) return 1;
       return a.name.localeCompare(b.name);
     });
 
@@ -89,6 +130,14 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
   const comboFlavorProducts = empanadaFlavorOrder
     .map((flavorKey) => flavorMatrix[flavorKey].unidad)
     .filter((product): product is Product => Boolean(product));
+  const fatayRows = buildFlavorRows(['arabes'], flavorMatrix, flavorDisplayNames);
+  const sfihasFlavorSections = (['jyq', 'cyq', 'bondiola'] as const)
+    .map((flavorKey) => ({
+      flavorKey,
+      flavorLabel: flavorDisplayNames[flavorKey],
+      rows: buildFlavorRows([flavorKey], flavorMatrix, flavorDisplayNames),
+    }))
+    .filter((section) => section.rows.length > 0);
 
   const productsByCategory = products.reduce((acc, product) => {
     (acc[product.category] = acc[product.category] || []).push(product);
@@ -98,34 +147,48 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
   return (
     <>
       {products.length > 0 ? (
-        <div className="mt-6 space-y-10 pb-44">
+        <div className="menu-category-stack mt-6 space-y-10 pb-44">
           {categoryOrder
             .filter((cat) => productsByCategory[cat]?.length)
             .map((category) => (
-              <div key={category}>
-                <h2 className="mb-4 border-b border-surface-600 pb-2 text-2xl font-bold text-brand-500">
+              <div key={category} className="animate-menu-section">
+                <h2 className="mb-4 border-b border-surface-600 pb-2 text-2xl font-bold text-brand-500 transition-[color,border-color] duration-200 ease-out hover:border-brand-600/40 hover:text-brand-400">
                   {categoryTitles[category]}
                 </h2>
                 {category === 'empanadas' ? (
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      {empanadaFlavorOrder.flatMap((flavorKey) =>
-                        empanadaPresentationOrder
-                          .map((presentation) => flavorMatrix[flavorKey][presentation.key])
-                          .filter((product): product is Product => Boolean(product))
-                      ).map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                      <h3 className="text-base font-bold tracking-wide text-brand-400">FATAY</h3>
+                      {fatayRows.map((product) => (
+                        <ProductCard key={`${product.id}-${product.name}`} product={product} />
+                      ))}
+                    </div>
+
+                    <div className="space-y-3">
+                      <h3 className="text-base font-bold tracking-wide text-brand-400">SFIHAS</h3>
+                      {sfihasFlavorSections.map((section, index) => (
+                        <div key={section.flavorKey} className="space-y-3">
+                          {index > 0 && <div className="mx-1 h-px bg-surface-600/80" />}
+                          <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">{section.flavorLabel}</p>
+                          {section.rows.map((product) => (
+                            <ProductCard key={`${product.id}-${product.name}`} product={product} />
+                          ))}
+                        </div>
                       ))}
                     </div>
 
                     {comboProducts.length > 0 && (
                       <div className="pt-2">
                         <h3 className="mb-3 border-t border-surface-600 pt-4 text-base font-bold text-brand-400">
-                          Arma tu docena / Arma tu media docena
+                          Armá tu Docena / Armá tu x8
                         </h3>
                         <div className="space-y-3">
                           {comboProducts.map((product) => (
-                            <ComboProductCard key={product.id} product={product} flavorProducts={comboFlavorProducts} />
+                            <ComboProductCard
+                              key={product.id}
+                              product={withDisplayName(product, canonicalComboDisplayName(product))}
+                              flavorProducts={comboFlavorProducts}
+                            />
                           ))}
                         </div>
                       </div>
