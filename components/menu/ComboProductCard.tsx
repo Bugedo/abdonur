@@ -69,7 +69,7 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
   }
 
   return (
-    <div className="rounded-xl border border-surface-600/75 bg-surface-800/85 px-4 py-3 shadow-sm shadow-black/20 ring-1 ring-inset ring-white/[0.04] backdrop-blur-sm transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-surface-500/90 hover:bg-surface-800/95 hover:shadow-lg hover:shadow-black/30 motion-reduce:transition-colors motion-reduce:hover:translate-y-0">
+    <div className="rounded-xl border border-metallic-500/22 bg-surface-800/88 px-4 py-3 shadow-sm shadow-black/25 ring-1 ring-inset ring-metallic-400/[0.07] backdrop-blur-sm transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-metallic-400/40 hover:bg-surface-800/96 hover:shadow-[0_12px_32px_rgba(0,0,0,0.45)] motion-reduce:transition-colors motion-reduce:hover:translate-y-0">
       <div className="group flex items-center gap-4">
         {product.image_url && (
           <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg">
@@ -86,7 +86,7 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
         <div className="min-w-0 flex-1">
           <h3 className="text-base font-semibold text-white">{product.name}</h3>
           {product.description && <p className="mt-0.5 text-sm text-stone-500">{product.description}</p>}
-          <p className="mt-1 text-lg font-bold text-brand-500">{formattedPrice}</p>
+          <p className="mt-1 text-lg font-bold text-metallic-400">{formattedPrice}</p>
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
@@ -118,7 +118,7 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
         }`}
       >
         <div className="min-h-0">
-          <div className="rounded-lg border border-brand-600/35 bg-brand-900/25 p-3 shadow-inner shadow-black/20 backdrop-blur-sm">
+          <div className="rounded-lg border border-metallic-500/30 bg-brand-900/20 p-3 shadow-inner shadow-black/25 backdrop-blur-sm">
             <p className="text-sm text-stone-300">
               Armá tu combo: faltan <span className="font-bold text-brand-400">{remaining}</span> para completar x
               {targetCount}.

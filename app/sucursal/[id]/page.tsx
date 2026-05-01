@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { getActiveBranchByIdOrSlug } from '@/lib/branches';
+import { formatWhatsappArgentinaDisplay } from '@/lib/formatWhatsappDisplay';
 
 interface BranchPageProps {
   params: Promise<{ id: string }>;
@@ -23,22 +24,22 @@ export default async function BranchPage({ params }: BranchPageProps) {
 
   if (!branch) notFound();
 
-  const displayPhone = branch.whatsapp_number.replace(/^54/, '+54 ');
+  const displayPhone = formatWhatsappArgentinaDisplay(branch.whatsapp_number);
 
   return (
     <section className="mx-auto max-w-2xl py-8">
       {/* Volver */}
       <Link
         href="/"
-        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-brand-400"
+        className="inline-flex items-center gap-1 text-sm text-stone-500 transition-colors hover:text-metallic-400"
       >
         ← Volver a sucursales
       </Link>
 
       {/* Card principal */}
-      <div className="mt-6 rounded-2xl border border-surface-600 bg-surface-800 p-8">
-        <h1 className="text-3xl font-extrabold text-white">{branch.name}</h1>
-        <p className="mt-1 text-sm font-medium italic text-gold-400">Lejos... la mejor!!!</p>
+      <div className="mt-6 rounded-2xl border border-metallic-500/30 bg-surface-800/90 p-8 shadow-[inset_0_1px_0_rgba(212,175,55,0.08)] backdrop-blur-sm">
+        <h1 className="font-display text-3xl font-semibold tracking-wide text-white">{branch.name}</h1>
+        <p className="mt-2 text-sm italic text-metallic-300">Simplemente excepcionales · Lejos... la mejor!!!</p>
 
         {/* Info */}
         <div className="mt-6 space-y-4">
@@ -77,7 +78,7 @@ export default async function BranchPage({ params }: BranchPageProps) {
         {/* CTA — Pedir ahora */}
         <Link
           href={`/sucursal/${branch.slug}/menu`}
-          className="mt-8 block w-full rounded-xl bg-brand-600 py-4 text-center text-lg font-bold text-white transition-colors hover:bg-brand-700"
+          className="mt-8 block w-full rounded-xl bg-brand-600 py-4 text-center text-lg font-bold text-white shadow-[0_4px_20px_rgba(192,32,38,0.25)] transition-[transform,box-shadow,background-color] hover:bg-brand-500 hover:shadow-[0_6px_28px_rgba(192,32,38,0.35)] active:scale-[0.99] motion-reduce:active:scale-100"
         >
           🛒 Pedir ahora
         </Link>

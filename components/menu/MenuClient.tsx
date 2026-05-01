@@ -152,24 +152,24 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
             .filter((cat) => productsByCategory[cat]?.length)
             .map((category) => (
               <div key={category} className="animate-menu-section">
-                <h2 className="mb-4 border-b border-surface-600 pb-2 text-2xl font-bold text-brand-500 transition-[color,border-color] duration-200 ease-out hover:border-brand-600/40 hover:text-brand-400">
+                <h2 className="font-display mb-4 border-b border-metallic-500/35 pb-2 text-2xl font-semibold text-metallic-300 transition-[color,border-color] duration-200 ease-out hover:border-metallic-400/55 hover:text-metallic-200">
                   {categoryTitles[category]}
                 </h2>
                 {category === 'empanadas' ? (
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      <h3 className="text-base font-bold tracking-wide text-brand-400">FATAY</h3>
+                      <h3 className="font-display text-base font-semibold tracking-[0.12em] text-brand-500">FATAY</h3>
                       {fatayRows.map((product) => (
                         <ProductCard key={`${product.id}-${product.name}`} product={product} />
                       ))}
                     </div>
 
                     <div className="space-y-3">
-                      <h3 className="text-base font-bold tracking-wide text-brand-400">SFIHAS</h3>
+                      <h3 className="font-display text-base font-semibold tracking-[0.12em] text-brand-500">SFIHAS</h3>
                       {sfihasFlavorSections.map((section, index) => (
                         <div key={section.flavorKey} className="space-y-3">
-                          {index > 0 && <div className="mx-1 h-px bg-surface-600/80" />}
-                          <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">{section.flavorLabel}</p>
+                          {index > 0 && <div className="mx-1 h-px bg-gradient-to-r from-transparent via-metallic-500/40 to-transparent" />}
+                          <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">{section.flavorLabel}</p>
                           {section.rows.map((product) => (
                             <ProductCard key={`${product.id}-${product.name}`} product={product} />
                           ))}
@@ -179,7 +179,7 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
 
                     {comboProducts.length > 0 && (
                       <div className="pt-2">
-                        <h3 className="mb-3 border-t border-surface-600 pt-4 text-base font-bold text-brand-400">
+                        <h3 className="font-display mb-3 border-t border-metallic-500/30 pt-4 text-base font-semibold tracking-wide text-brand-500">
                           Armá tu Docena / Armá tu x8
                         </h3>
                         <div className="space-y-3">
@@ -205,7 +205,7 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
             ))}
         </div>
       ) : (
-        <div className="mt-8 rounded-xl border border-dashed border-surface-500 bg-surface-800 p-12 text-center text-stone-500">
+        <div className="mt-8 rounded-xl border border-dashed border-metallic-500/35 bg-surface-800/90 p-12 text-center text-stone-500 backdrop-blur-sm">
           <p>No hay productos disponibles en este momento.</p>
         </div>
       )}

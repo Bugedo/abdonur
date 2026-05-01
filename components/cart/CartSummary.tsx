@@ -22,12 +22,12 @@ export default function CartSummary({ branchSlug }: CartSummaryProps) {
   }).format(totalPrice);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-surface-500/60 bg-surface-800/90 shadow-[0_-8px_32px_rgba(0,0,0,0.45)] backdrop-blur-md">
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-metallic-500/35 bg-surface-900/93 shadow-[0_-12px_40px_rgba(0,0,0,0.55)] backdrop-blur-md">
       <div className="mx-auto max-w-2xl px-4 py-4">
         <button
           type="button"
           onClick={() => setShowItems((prev) => !prev)}
-          className="mb-3 text-xs font-semibold text-brand-400 transition-colors duration-200 hover:text-brand-300 hover:underline"
+          className="mb-3 text-xs font-semibold text-metallic-400 transition-colors duration-200 hover:text-metallic-300 hover:underline"
         >
           {showItems ? 'Ocultar carrito' : 'Ver carrito'}
         </button>
@@ -40,7 +40,7 @@ export default function CartSummary({ branchSlug }: CartSummaryProps) {
           }`}
         >
           <div className="min-h-0">
-            <div className="max-h-36 space-y-1 overflow-y-auto rounded-lg border border-surface-600/75 bg-surface-900/55 p-2 shadow-inner shadow-black/20 ring-1 ring-inset ring-white/[0.04] backdrop-blur-sm">
+            <div className="max-h-36 space-y-1 overflow-y-auto rounded-lg border border-metallic-500/25 bg-surface-950/65 p-2 shadow-inner shadow-black/25 ring-1 ring-inset ring-metallic-400/[0.06] backdrop-blur-sm">
               {items.map((item) => (
                 <div key={item.cartKey ?? item.product.id} className="flex items-center justify-between gap-2 text-xs">
                   <span className="min-w-0 flex-1 truncate text-stone-300">

@@ -11,18 +11,18 @@ export default function BranchCard({ branch, displayName }: BranchCardProps) {
   return (
     <Link
       href={`/sucursal/${branch.slug}`}
-      className="group relative block overflow-hidden rounded-2xl border border-surface-600 bg-surface-800 p-6 transition-all hover:border-brand-600 hover:shadow-lg hover:shadow-brand-900/30"
+      className="group relative block overflow-hidden rounded-2xl border border-metallic-500/25 bg-surface-800/90 p-6 shadow-[inset_0_1px_0_rgba(212,175,55,0.06)] backdrop-blur-sm transition-all hover:border-metallic-400/55 hover:shadow-[0_12px_40px_rgba(0,0,0,0.5),0_0_24px_rgba(212,175,55,0.08)]"
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-25"
         style={{
           backgroundImage:
-            'radial-gradient(circle at 20% 15%, rgba(244, 196, 48, 0.25), transparent 35%), radial-gradient(circle at 80% 75%, rgba(204, 64, 32, 0.2), transparent 40%), repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 4px)',
+            'radial-gradient(circle at 20% 15%, rgba(212, 175, 55, 0.22), transparent 38%), radial-gradient(circle at 82% 78%, rgba(192, 32, 38, 0.14), transparent 42%), repeating-linear-gradient(45deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 4px)',
         }}
       />
       <div className="relative z-10">
         {/* Nombre */}
-        <h2 className="text-3xl font-extrabold text-white group-hover:text-brand-400 sm:text-4xl">
+        <h2 className="font-display text-3xl font-semibold text-white group-hover:text-metallic-300 sm:text-4xl">
           {displayName ?? branch.name}
         </h2>
 
@@ -41,7 +41,7 @@ export default function BranchCard({ branch, displayName }: BranchCardProps) {
         {/* CTA */}
         <div className="mt-4 flex items-center justify-between">
           <OpenStatusBadge openingHours={branch.opening_hours} />
-          <span className="text-sm font-bold text-brand-500 group-hover:text-brand-400">
+          <span className="text-sm font-bold text-metallic-400 group-hover:text-metallic-300">
             Ver menú →
           </span>
         </div>

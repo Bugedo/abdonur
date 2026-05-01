@@ -46,15 +46,15 @@ export default async function MenuPage({ params }: MenuPageProps) {
       {/* Volver */}
       <Link
         href={`/sucursal/${branch.slug}`}
-        className="inline-flex items-center gap-1 text-sm text-stone-500 hover:text-brand-400"
+        className="inline-flex items-center gap-1 text-sm text-stone-500 transition-colors hover:text-metallic-400"
       >
         ← Volver a {branch.name}
       </Link>
 
       {/* Título */}
       <div className="mt-6">
-        <h1 className="text-3xl font-extrabold text-white">Menú</h1>
-        <p className="mt-1 text-stone-400">{branch.name} — Elegí tus productos</p>
+        <h1 className="font-display text-3xl font-semibold tracking-wide text-white">Menú</h1>
+        <p className="mt-2 text-sm text-stone-400">{branch.name} — Elegí tus productos</p>
       </div>
 
       {/* Parte interactiva */}

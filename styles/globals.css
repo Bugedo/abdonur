@@ -2,45 +2,65 @@
 
 /* ─────────────────────────────────────
    Theme — Empanadas Árabes Abdonur
-   Estética oscura inspirada en la marca
-   Fondo negro, rojo, dorado, blanco
+   Collateral: negro #0A0A0A, dorado metálico, rojo logo #C02026
+   Fonts: --font-montserrat / --font-cinzel desde layout (next/font)
    ───────────────────────────────────── */
 @theme {
-  /* Rojo Abdonur */
+  /* Rojo institucional (logo Abdonur) */
   --color-brand-50: #fef2f2;
-  --color-brand-100: #fee2e2;
-  --color-brand-200: #fecaca;
-  --color-brand-300: #fca5a5;
-  --color-brand-400: #f87171;
-  --color-brand-500: #ef4444;
-  --color-brand-600: #dc2626;
-  --color-brand-700: #b91c1c;
-  --color-brand-800: #991b1b;
-  --color-brand-900: #7f1d1d;
+  --color-brand-100: #fde8e9;
+  --color-brand-200: #f9c4c6;
+  --color-brand-300: #f08a8e;
+  --color-brand-400: #e04248;
+  --color-brand-500: #c02026;
+  --color-brand-600: #a01a1f;
+  --color-brand-700: #801519;
+  --color-brand-800: #5c1014;
+  --color-brand-900: #3d0b0e;
 
-  /* Dorado para slogan */
-  --color-gold-400: #fbbf24;
-  --color-gold-500: #f59e0b;
-  --color-gold-600: #d97706;
+  /* Dorado metálico + acentos claros */
+  --color-metallic-200: #f5e6a8;
+  --color-metallic-300: #e8c547;
+  --color-metallic-400: #d4af37;
+  --color-metallic-500: #c9a227;
+  --color-metallic-600: #9a7b1c;
 
-  /* Superficie oscura */
+  --color-gold-400: #e8c547;
+  --color-gold-500: #d4af37;
+  --color-gold-600: #b8860b;
+
+  /* Superficie oscura (carbón) */
+  --color-surface-950: #050505;
   --color-surface-900: #0a0a0a;
-  --color-surface-800: #141414;
-  --color-surface-700: #1c1c1c;
-  --color-surface-600: #262626;
+  --color-surface-800: #121212;
+  --color-surface-700: #1a1a1a;
+  --color-surface-600: #242424;
   --color-surface-500: #333333;
 
-  --color-whatsapp: #25D366;
-  --color-whatsapp-dark: #128C7E;
+  --color-whatsapp: #25d366;
+  --color-whatsapp-dark: #128c7e;
+
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cinzel), ui-serif, Georgia, 'Times New Roman', serif;
 }
 
 /* ─────────────────────────────────────
    Base styles
    ───────────────────────────────────── */
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #0a0a0a;
-  color: #f5f5f4;
+  font-family: var(--font-sans);
+  background-color: var(--color-surface-900);
+  color: #e0e0e0;
+  background-image:
+    radial-gradient(ellipse 130% 70% at 50% -25%, rgba(212, 175, 55, 0.09), transparent 50%),
+    radial-gradient(ellipse 90% 55% at 100% 30%, rgba(192, 32, 38, 0.07), transparent 55%),
+    radial-gradient(ellipse 80% 50% at 0% 80%, rgba(212, 175, 55, 0.05), transparent 50%),
+    repeating-linear-gradient(
+      -8deg,
+      rgba(255, 255, 255, 0.012) 0 1px,
+      transparent 1px 3px
+    );
+  background-attachment: fixed;
 }
 
 /* ─────────────────────────────────────

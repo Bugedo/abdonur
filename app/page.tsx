@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { supabase } from '@/lib/supabaseClient';
 import { Branch } from '@/types';
 import BranchCard from '@/components/ui/BranchCard';
+import GoldDivider from '@/components/ui/GoldDivider';
 
 export const revalidate = 60;
 
@@ -53,13 +54,13 @@ export default async function HomePage() {
 
       {/* Hero visible al abrir */}
       <div className="flex min-h-[100svh] flex-col items-center justify-center px-4 text-center">
-        <h1 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-lg sm:text-4xl md:text-5xl">
-          Empanadas Árabes <span className="text-brand-500">Abdonur</span>
+        <h1 className="font-display text-3xl font-bold tracking-[0.02em] text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.85)] sm:text-4xl md:text-5xl md:tracking-[0.04em]">
+          Empanadas Árabes <span className="text-brand-500 drop-shadow-[0_0_20px_rgba(192,32,38,0.35)]">Abdonur</span>
         </h1>
-        <p className="mt-2 text-sm font-medium italic text-gold-400 drop-shadow sm:text-base">
-          Lejos... la mejor!!!
-        </p>
-        <p className="mt-4 max-w-lg text-sm text-stone-200 drop-shadow sm:text-base">
+        <p className="mt-3 max-w-md text-metallic-300 italic drop-shadow sm:text-lg">Simplemente excepcionales</p>
+        <GoldDivider className="my-6 max-w-xs sm:max-w-md" />
+        <p className="text-sm font-medium italic text-metallic-200 drop-shadow sm:text-base">Lejos... la mejor!!!</p>
+        <p className="mt-4 max-w-lg text-sm text-[#e0e0e0]/95 drop-shadow sm:text-base">
           Más de 30 años de tradición familiar. La receta de la abuela Juana, hecha con amor.
         </p>
       </div>
@@ -68,12 +69,9 @@ export default async function HomePage() {
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-12 px-4 pb-16">
         {/* Título sucursales */}
         <div className="text-center">
-          <h2 className="text-2xl font-extrabold text-white sm:text-3xl">
-            Elegí tu sucursal
-          </h2>
-          <p className="mt-2 text-stone-300">
-            Seleccioná la más cercana y hacé tu pedido
-          </p>
+          <h2 className="font-display text-2xl font-semibold tracking-wide text-white sm:text-3xl">Elegí tu sucursal</h2>
+          <GoldDivider className="mx-auto mt-4 max-w-xs" />
+          <p className="mt-3 text-sm text-stone-400">Seleccioná la más cercana y hacé tu pedido</p>
         </div>
 
         {/* Lista de sucursales */}
@@ -84,15 +82,29 @@ export default async function HomePage() {
             ))}
           </div>
         ) : (
-          <div className="w-full max-w-md rounded-xl border border-dashed border-surface-500 bg-surface-800/95 p-12 text-center text-stone-500 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-xl border border-dashed border-metallic-500/35 bg-surface-800/90 p-12 text-center text-stone-500 backdrop-blur-md">
             <p>No hay sucursales disponibles en este momento.</p>
           </div>
         )}
 
         {/* Info adicional */}
-        <div className="max-w-md rounded-xl border border-surface-600 bg-surface-800/95 p-4 text-center text-sm backdrop-blur-sm">
-          <p className="font-medium text-gold-400">📞 Venta por mayor y franquicia: 3513224810</p>
-          <p className="mt-1 text-xs text-stone-400">@abdonurcomidasarabes</p>
+        <div className="max-w-md rounded-xl border border-metallic-500/30 bg-surface-800/90 p-5 text-center text-sm shadow-[inset_0_1px_0_rgba(212,175,55,0.08)] backdrop-blur-md">
+          <p className="font-medium text-metallic-300">
+            Venta por mayor y franquicia:{' '}
+            <a href="tel:+543513224810" className="text-metallic-200 underline-offset-2 hover:underline">
+              351 322 4810
+            </a>
+          </p>
+          <p className="mt-2 text-xs text-stone-500">
+            <a
+              href="https://www.instagram.com/abdonurempanadasarabes/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-metallic-400 hover:text-metallic-300"
+            >
+              @abdonurempanadasarabes
+            </a>
+          </p>
         </div>
       </div>
     </section>

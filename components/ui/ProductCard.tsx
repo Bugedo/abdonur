@@ -22,7 +22,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   }).format(product.price);
 
   return (
-    <div className="group flex items-center gap-4 rounded-xl border border-surface-600/75 bg-surface-800/85 px-4 py-3 shadow-sm shadow-black/20 ring-1 ring-inset ring-white/[0.04] backdrop-blur-sm transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-surface-500/90 hover:bg-surface-800/95 hover:shadow-lg hover:shadow-black/30 motion-reduce:transition-colors motion-reduce:hover:translate-y-0">
+    <div className="group flex items-center gap-4 rounded-xl border border-metallic-500/22 bg-surface-800/88 px-4 py-3 shadow-sm shadow-black/25 ring-1 ring-inset ring-metallic-400/[0.07] backdrop-blur-sm transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-metallic-400/40 hover:bg-surface-800/96 hover:shadow-[0_12px_32px_rgba(0,0,0,0.45)] motion-reduce:transition-colors motion-reduce:hover:translate-y-0">
       {/* Imagen del producto */}
       {product.image_url && (
         <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg">
@@ -42,7 +42,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {shouldShowDescription && (
           <p className="mt-0.5 truncate text-sm text-stone-500">{product.description}</p>
         )}
-        <p className="mt-1 text-lg font-bold text-brand-500">{formattedPrice}</p>
+        <p className="mt-1 text-lg font-bold text-metallic-400">{formattedPrice}</p>
       </div>
 
       {/* Controles de cantidad */}
