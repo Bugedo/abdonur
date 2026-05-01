@@ -38,3 +38,6 @@ next-env.d.ts
 
 # supabase local metadata
 supabase/.temp/
+
+.next-debug.log
+.next-dev.log
