@@ -11,6 +11,8 @@ export interface Branch {
   whatsapp_number: string;
   opening_hours: string;
   is_active: boolean;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 // ── Productos ──
@@ -40,6 +42,8 @@ export interface Order {
   address: string | null;
   payment_method: PaymentMethod;
   total_price: number;
+  delivery_fee?: number | null;
+  delivery_distance_km?: number | null;
   status: OrderStatus;
   created_at: string;
   branch?: Branch;

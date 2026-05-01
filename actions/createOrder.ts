@@ -1,10 +1,11 @@
 'use server';
 
-import { supabaseAdmin } from '@/lib/supabaseServer';
+import { validateCreateOrderInput, createOrderRecord, type BaseCreateOrderInput } from '@/lib/orderCreation';
+import { quoteDeliveryForBranch } from '@/lib/deliveryQuoteServer';
 import { CartItem, DeliveryMethod, PaymentMethod } from '@/types';
 import { revalidatePath } from 'next/cache';
 
-interface CreateOrderInput {
+export interface CreateOrderInput {
   branchId: string;
   customerName: string;
   notes: string;
@@ -12,83 +13,71 @@ interface CreateOrderInput {
   address: string;
   paymentMethod: PaymentMethod;
   items: CartItem[];
+  deliveryDestinationLat?: number;
+  deliveryDestinationLng?: number;
 }
 
-interface CreateOrderResult {
+export interface CreateOrderResult {
   success: boolean;
   orderId?: string;
   error?: string;
+  itemsSubtotal?: number;
+  deliveryFee?: number;
+  totalPrice?: number;
+  deliveryDistanceKm?: number | null;
 }
 
 export async function createOrder(input: CreateOrderInput): Promise<CreateOrderResult> {
-  const { branchId, customerName, notes, deliveryMethod, address, paymentMethod, items } = input;
+  const {
+    branchId,
+    customerName,
+    notes,
+    deliveryMethod,
+    address,
+    paymentMethod,
+    items,
+    deliveryDestinationLat,
+    deliveryDestinationLng,
+  } = input;
 
-  // Validaciones del servidor
-  if (!customerName.trim()) {
-    return { success: false, error: 'El nombre es obligatorio.' };
+  let deliveryFee: number | undefined;
+  let deliveryDistanceKm: number | null | undefined;
+
+  if (deliveryMethod === 'delivery') {
+    const lat = deliveryDestinationLat;
+    const lng = deliveryDestinationLng;
+    if (lat == null || lng == null || !Number.isFinite(lat) || !Number.isFinite(lng)) {
+      return { success: false, error: 'Elegí una dirección del buscador para calcular el envío.' };
+    }
+    const q = await quoteDeliveryForBranch(branchId, lat, lng);
+    if (!q.ok) {
+      return { success: false, error: q.error };
+    }
+    deliveryFee = q.feeARS;
+    deliveryDistanceKm = q.distanceKm;
   }
 
-  if (deliveryMethod === 'delivery' && !address.trim()) {
-    return { success: false, error: 'La dirección es obligatoria para envío a domicilio.' };
-  }
+  const base: BaseCreateOrderInput = {
+    branchId,
+    customerName,
+    notes,
+    deliveryMethod,
+    address,
+    paymentMethod,
+    items,
+    deliveryFee,
+    deliveryDistanceKm,
+  };
 
-  if (items.length === 0) {
-    return { success: false, error: 'El carrito está vacío.' };
-  }
+  const validationError = validateCreateOrderInput(base);
+  if (validationError) return validationError;
 
-  // Calcular total
-  const totalPrice = items.reduce((sum, i) => sum + (i.unitPrice ?? i.product.price) * i.quantity, 0);
+  const result = await createOrderRecord(base);
+  if (!result.success) return result;
 
-  const comboLines = items
-    .filter((item) => item.comboDetail)
-    .map((item) => `${item.product.name}: ${item.comboDetail}`);
-  const mergedNotes = [notes.trim(), comboLines.length ? `Detalle combos: ${comboLines.join(' | ')}` : '']
-    .filter(Boolean)
-    .join('\n');
-
-  // Crear el pedido
-  const { data: order, error: orderError } = await supabaseAdmin
-    .from('orders')
-    .insert({
-      branch_id: branchId,
-      customer_name: customerName.trim(),
-      notes: mergedNotes,
-      delivery_method: deliveryMethod,
-      address: deliveryMethod === 'delivery' ? address.trim() : '',
-      payment_method: paymentMethod,
-      total_price: totalPrice,
-      status: 'new',
-    })
-    .select('id')
-    .single();
-
-  if (orderError || !order) {
-    console.error('Error creating order:', orderError?.message);
-    return { success: false, error: 'Error al crear el pedido. Intentá de nuevo.' };
-  }
-
-  // Crear los items del pedido
-  const orderItems = items.map((item) => ({
-    order_id: order.id,
-    product_id: item.product.id,
-    quantity: item.quantity,
-    unit_price: item.unitPrice ?? item.product.price,
-  }));
-
-  const { error: itemsError } = await supabaseAdmin
-    .from('order_items')
-    .insert(orderItems);
-
-  if (itemsError) {
-    console.error('Error creating order items:', itemsError.message);
-    await supabaseAdmin.from('orders').delete().eq('id', order.id);
-    return { success: false, error: 'Error al crear el pedido. Intentá de nuevo.' };
-  }
-
-  // Refresca paneles admin para que entren pedidos nuevos sin esperar al cache.
   revalidatePath('/admin');
   revalidatePath('/admin/admin');
   revalidatePath('/admin/sucursal/[id]', 'page');
 
-  return { success: true, orderId: order.id };
+  return result;
 }

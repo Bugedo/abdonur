@@ -52,6 +52,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   const formatPrice = (price: number) =>
     new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 }).format(price);
 
+  const itemsSubtotal = items.reduce((sum, item) => sum + item.unit_price * item.quantity, 0);
+  const deliveryFeeNum = Number(order.delivery_fee ?? 0);
+
   return (
     <section className="mx-auto max-w-2xl py-4">
       <Link
@@ -100,6 +103,17 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 <span className="font-medium text-stone-400">Dirección:</span> 📍 {order.address}
               </p>
             )}
+            {order.delivery_method === 'delivery' && deliveryFeeNum > 0 && (
+              <p className="text-stone-300">
+                <span className="font-medium text-stone-400">Envío:</span>{' '}
+                {formatPrice(deliveryFeeNum)}
+                {order.delivery_distance_km != null && (
+                  <span className="text-stone-500">
+                    {' '}(~{Number(order.delivery_distance_km).toFixed(1)} km geodésicos)
+                  </span>
+                )}
+              </p>
+            )}
             <p className="text-stone-300">
               <span className="font-medium text-stone-400">Pago:</span>{' '}
               {order.payment_method === 'cash' ? '💵 Efectivo' : '📱 Transferencia / MP'}
@@ -127,8 +141,25 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               </div>
             ))}
           </div>
-          <div className="mt-4 border-t border-surface-600 pt-4">
-            <div className="flex items-center justify-between">
+          <div className="mt-4 space-y-2 border-t border-surface-600 pt-4">
+            <div className="flex justify-between text-sm text-stone-400">
+              <span>Subtotal productos</span>
+              <span>{formatPrice(itemsSubtotal)}</span>
+            </div>
+            {order.delivery_method === 'delivery' && deliveryFeeNum > 0 && (
+              <div className="flex justify-between text-sm text-stone-400">
+                <span>
+                  Envío
+                  {order.delivery_distance_km != null && (
+                    <span className="text-stone-500">
+                      {' '}(~{Number(order.delivery_distance_km).toFixed(1)} km)
+                    </span>
+                  )}
+                </span>
+                <span>{formatPrice(deliveryFeeNum)}</span>
+              </div>
+            )}
+            <div className="flex items-center justify-between pt-2">
               <span className="text-base font-bold text-white">Total</span>
               <span className="text-xl font-extrabold text-brand-500">
                 {formatPrice(order.total_price)}

@@ -372,6 +372,18 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
                   {order.payment_method === 'cash' ? '💵 Efectivo' : '📱 Transferencia'}
                 </p>
                 {order.address && <p className="mt-1 text-xs text-stone-400">📍 {order.address}</p>}
+                {order.delivery_method === 'delivery' &&
+                  order.delivery_fee != null &&
+                  Number(order.delivery_fee) > 0 && (
+                    <p className="mt-1 text-xs text-stone-400">
+                      📦 Envío {formatPrice(Number(order.delivery_fee))}
+                      {order.delivery_distance_km != null && (
+                        <span className="text-stone-500">
+                          {' '}(~{Number(order.delivery_distance_km).toFixed(1)} km)
+                        </span>
+                      )}
+                    </p>
+                  )}
                 {order.notes && <p className="mt-1 text-xs text-stone-400">📝 {order.notes}</p>}
               </div>
 
@@ -437,6 +449,21 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
                       ))}
                     </div>
                   )}
+                  {order.delivery_method === 'delivery' &&
+                    order.delivery_fee != null &&
+                    Number(order.delivery_fee) > 0 && (
+                      <div className="mt-3 space-y-1 border-t border-surface-600 pt-3 text-xs text-stone-400">
+                        <div className="flex justify-between">
+                          <span>Envío</span>
+                          <span className="font-medium text-stone-200">
+                            {formatPrice(Number(order.delivery_fee))}
+                          </span>
+                        </div>
+                        {order.delivery_distance_km != null && (
+                          <p>Distancia aprox.: {Number(order.delivery_distance_km).toFixed(1)} km</p>
+                        )}
+                      </div>
+                    )}
                 </div>
               </div>
             )}
