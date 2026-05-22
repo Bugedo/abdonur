@@ -1,7 +1,6 @@
 'use server';
 
 import { validateCreateOrderInput, createOrderRecord, type BaseCreateOrderInput } from '@/lib/orderCreation';
-import { quoteDeliveryForBranch } from '@/lib/deliveryQuoteServer';
 import { CartItem, DeliveryMethod, PaymentMethod } from '@/types';
 import { revalidatePath } from 'next/cache';
 
@@ -13,8 +12,6 @@ export interface CreateOrderInput {
   address: string;
   paymentMethod: PaymentMethod;
   items: CartItem[];
-  deliveryDestinationLat?: number;
-  deliveryDestinationLng?: number;
 }
 
 export interface CreateOrderResult {
@@ -28,34 +25,7 @@ export interface CreateOrderResult {
 }
 
 export async function createOrder(input: CreateOrderInput): Promise<CreateOrderResult> {
-  const {
-    branchId,
-    customerName,
-    notes,
-    deliveryMethod,
-    address,
-    paymentMethod,
-    items,
-    deliveryDestinationLat,
-    deliveryDestinationLng,
-  } = input;
-
-  let deliveryFee: number | undefined;
-  let deliveryDistanceKm: number | null | undefined;
-
-  if (deliveryMethod === 'delivery') {
-    const lat = deliveryDestinationLat;
-    const lng = deliveryDestinationLng;
-    if (lat == null || lng == null || !Number.isFinite(lat) || !Number.isFinite(lng)) {
-      return { success: false, error: 'Elegí una dirección del buscador para calcular el envío.' };
-    }
-    const q = await quoteDeliveryForBranch(branchId, lat, lng);
-    if (!q.ok) {
-      return { success: false, error: q.error };
-    }
-    deliveryFee = q.feeARS;
-    deliveryDistanceKm = q.distanceKm;
-  }
+  const { branchId, customerName, notes, deliveryMethod, address, paymentMethod, items } = input;
 
   const base: BaseCreateOrderInput = {
     branchId,
@@ -65,8 +35,8 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
     address,
     paymentMethod,
     items,
-    deliveryFee,
-    deliveryDistanceKm,
+    deliveryFee: deliveryMethod === 'delivery' ? 0 : undefined,
+    deliveryDistanceKm: deliveryMethod === 'delivery' ? null : undefined,
   };
 
   const validationError = validateCreateOrderInput(base);

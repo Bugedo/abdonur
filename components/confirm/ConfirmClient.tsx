@@ -1,21 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/components/cart/CartProvider';
 import { createOrder } from '@/actions/createOrder';
-import { getDeliveryQuote } from '@/actions/deliveryQuote';
 import { Branch, DeliveryMethod, PaymentMethod } from '@/types';
 import AddressPhotonAutocomplete from '@/components/confirm/AddressPhotonAutocomplete';
 
 interface ConfirmClientProps {
   branch: Branch;
-}
-
-function branchSupportsDelivery(branch: Branch): boolean {
-  const la = branch.latitude;
-  const lo = branch.longitude;
-  return la != null && lo != null && Number.isFinite(Number(la)) && Number.isFinite(Number(lo));
 }
 
 export default function ConfirmClient({ branch }: ConfirmClientProps) {
@@ -24,70 +17,20 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
   const [notes, setNotes] = useState('');
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>('pickup');
   const [address, setAddress] = useState('');
-  const [destLat, setDestLat] = useState<number | null>(null);
-  const [destLng, setDestLng] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [quoteLoading, setQuoteLoading] = useState(false);
-  const [quoteError, setQuoteError] = useState('');
-  const [quote, setQuote] = useState<{ feeARS: number; distanceKm: number } | null>(null);
 
-  const supportsDelivery = branchSupportsDelivery(branch);
-
-  const arsFmt = (n: number) =>
-    new Intl.NumberFormat('es-AR', {
-      style: 'currency',
-      currency: 'ARS',
-      minimumFractionDigits: 0,
-    }).format(n);
-
-  const cartSubtotal = totalPrice;
-  const deliveryFeePreview = deliveryMethod === 'delivery' && quote ? quote.feeARS : 0;
-  const grandTotal = cartSubtotal + deliveryFeePreview;
+  const formattedTotal = new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    minimumFractionDigits: 0,
+  }).format(totalPrice);
 
   const deliveryLabel = deliveryMethod === 'pickup' ? 'Retira en local' : 'Envío a domicilio';
   const paymentLabel = paymentMethod === 'cash' ? 'Efectivo al recibir' : 'Transferencia / MercadoPago';
 
-  useEffect(() => {
-    if (deliveryMethod !== 'delivery') {
-      setDestLat(null);
-      setDestLng(null);
-      setQuote(null);
-      setQuoteError('');
-      setQuoteLoading(false);
-      return;
-    }
-
-    if (destLat == null || destLng == null) {
-      setQuote(null);
-      setQuoteError('');
-      setQuoteLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-    setQuoteLoading(true);
-    setQuoteError('');
-    void getDeliveryQuote(branch.id, destLat, destLng).then((r) => {
-      if (cancelled) return;
-      setQuoteLoading(false);
-      if (r.ok) {
-        setQuote({ feeARS: r.feeARS, distanceKm: r.distanceKm });
-      } else {
-        setQuote(null);
-        setQuoteError(r.error);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [branch.id, deliveryMethod, destLat, destLng]);
-
-  function buildWhatsAppMessage(
-    orderId: string,
-    totals: { itemsSubtotal: number; deliveryFee: number; total: number; deliveryKm?: number | null }
-  ): string {
+  function buildWhatsAppMessage(orderId: string): string {
     const lines = [
       `🥟 *Nuevo pedido — ${branch.name}*`,
       `📋 Pedido: #${orderId.slice(0, 8).toUpperCase()}`,
@@ -101,17 +44,10 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
           ).toLocaleString('es-AR')}`
       ),
       '',
-      `*Subtotal productos:* ${arsFmt(totals.itemsSubtotal)}`,
+      `*Total: ${formattedTotal}*`,
+      '',
+      `🚚 Entrega: ${deliveryLabel}`,
     ];
-
-    if (totals.deliveryFee > 0) {
-      lines.push(`*Envío:* ${arsFmt(totals.deliveryFee)}`);
-      if (totals.deliveryKm != null) {
-        lines.push(`*Distancia aprox. (geodésica):* ${totals.deliveryKm.toFixed(1)} km`);
-      }
-    }
-
-    lines.push('', `*Total:* ${arsFmt(totals.total)}`, '', `🚚 Entrega: ${deliveryLabel}`);
 
     if (deliveryMethod === 'delivery') {
       lines.push(`📍 Dirección: ${address.trim()}`);
@@ -136,23 +72,9 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
       return;
     }
 
-    if (deliveryMethod === 'delivery') {
-      if (!supportsDelivery) {
-        setError('El envío a domicilio no está disponible en esta sucursal.');
-        return;
-      }
-      if (!address.trim()) {
-        setError('Ingresá tu dirección para el envío.');
-        return;
-      }
-      if (destLat == null || destLng == null) {
-        setError('Elegí una dirección del listado para calcular el envío.');
-        return;
-      }
-      if (quoteLoading || !quote || quoteError) {
-        setError(quoteError || 'Esperá la cotización de envío.');
-        return;
-      }
+    if (deliveryMethod === 'delivery' && !address.trim()) {
+      setError('Ingresá tu dirección para el envío.');
+      return;
     }
 
     if (!isMinimumMet) {
@@ -173,10 +95,6 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
         address: address.trim(),
         paymentMethod,
         items,
-        deliveryDestinationLat:
-          deliveryMethod === 'delivery' && destLat != null ? destLat : undefined,
-        deliveryDestinationLng:
-          deliveryMethod === 'delivery' && destLng != null ? destLng : undefined,
       });
 
       if (!result.success) {
@@ -186,15 +104,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
         return;
       }
 
-      const message = buildWhatsAppMessage(result.orderId!, {
-        itemsSubtotal: result.itemsSubtotal ?? cartSubtotal,
-        deliveryFee: result.deliveryFee ?? 0,
-        total: result.totalPrice ?? grandTotal,
-        deliveryKm:
-          deliveryMethod === 'delivery'
-            ? (result.deliveryDistanceKm ?? quote?.distanceKm ?? null)
-            : undefined,
-      });
+      const message = buildWhatsAppMessage(result.orderId!);
       const waUrl = `https://wa.me/${branch.whatsapp_number}?text=${encodeURIComponent(message)}`;
 
       clearCart();
@@ -210,13 +120,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
     }
   }
 
-  const deliveryBlocked =
-    deliveryMethod === 'delivery' &&
-    supportsDelivery &&
-    (destLat == null ||
-      quoteLoading ||
-      quote == null ||
-      !!quoteError);
+  const deliveryBlocked = deliveryMethod === 'delivery' && !address.trim();
 
   if (items.length === 0) {
     return (
@@ -259,35 +163,16 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
             </div>
           ))}
         </div>
-        <div className="mt-4 border-t border-metallic-500/25 pt-4 space-y-1">
-          <div className="flex items-center justify-between text-sm text-stone-400">
-            <span>Subtotal productos ({totalItems} productos)</span>
-            <span className="font-medium text-stone-300">{arsFmt(cartSubtotal)}</span>
+        <div className="mt-4 border-t border-metallic-500/25 pt-4">
+          <div className="flex items-center justify-between">
+            <span className="text-base font-bold text-white">Total ({totalItems} productos)</span>
+            <span className="text-xl font-extrabold text-metallic-400">{formattedTotal}</span>
           </div>
-          {deliveryMethod === 'delivery' && supportsDelivery && (
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-stone-400">
-                Envío{' '}
-                {quoteLoading
-                  ? '(calculando…)'
-                  : quote
-                    ? `(${quote.distanceKm.toFixed(1)} km)`
-                    : destLat != null && destLng != null
-                      ? ''
-                      : ''}
-              </span>
-              <span className="font-medium text-stone-300">
-                {deliveryFeePreview ? arsFmt(deliveryFeePreview) : quoteLoading ? '…' : '—'}
-              </span>
-            </div>
+          {deliveryMethod === 'delivery' && (
+            <p className="mt-2 text-xs text-stone-500">
+              El costo de envío lo confirma el local por WhatsApp.
+            </p>
           )}
-          {deliveryMethod === 'delivery' && quoteError && (
-            <p className="text-xs text-red-400">{quoteError}</p>
-          )}
-          <div className="flex items-center justify-between pt-2">
-            <span className="text-base font-bold text-white">Total</span>
-            <span className="text-xl font-extrabold text-metallic-400">{arsFmt(grandTotal)}</span>
-          </div>
         </div>
         <Link
           href={`/sucursal/${branch.slug}/menu`}
@@ -334,10 +219,8 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
               </button>
               <button
                 type="button"
-                disabled={!supportsDelivery}
-                onClick={() => supportsDelivery && setDeliveryMethod('delivery')}
-                title={supportsDelivery ? undefined : 'Pedí retiro en local o desde otra sucursal'}
-                className={`rounded-lg border-2 px-4 py-3 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-45 ${
+                onClick={() => setDeliveryMethod('delivery')}
+                className={`rounded-lg border-2 px-4 py-3 text-sm font-semibold transition-colors ${
                   deliveryMethod === 'delivery'
                     ? 'border-metallic-400 bg-brand-900/25 text-metallic-200'
                     : 'border-metallic-500/25 bg-surface-700 text-stone-400 hover:border-metallic-500/40'
@@ -346,14 +229,9 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
                 🛵 Envío a domicilio
               </button>
             </div>
-            {!supportsDelivery && (
-              <p className="mt-2 text-xs text-stone-500">
-                Envío no disponible en esta sucursal hasta configurar coordenadas del local.
-              </p>
-            )}
           </div>
 
-          {deliveryMethod === 'delivery' && supportsDelivery && (
+          {deliveryMethod === 'delivery' && (
             <div>
               <label htmlFor="address" className="block text-sm font-medium text-stone-400">
                 Dirección de envío <span className="text-metallic-500">*</span>
@@ -362,18 +240,14 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
                 id="address"
                 value={address}
                 onChangeAddress={setAddress}
-                onPlaceResolved={(lat, lng) => {
-                  setDestLat(lat);
-                  setDestLng(lng);
-                }}
-                onPlaceCleared={() => {
-                  setDestLat(null);
-                  setDestLng(null);
-                  setQuote(null);
-                  setQuoteError('');
-                }}
-                placeholder="Buscá y elegí la dirección (~3 caracteres)"
+                onPlaceResolved={(_lat, _lng, label) => setAddress(label)}
+                onPlaceCleared={() => {}}
+                placeholder="Buscá tu dirección o escribila (Córdoba Capital)"
               />
+              <p className="mt-2 text-xs text-stone-500">
+                Solo envíos en Córdoba Capital, Argentina. Podés elegir una sugerencia o escribir la
+                dirección completa.
+              </p>
             </div>
           )}
 

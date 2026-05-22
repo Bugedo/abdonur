@@ -142,22 +142,26 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             ))}
           </div>
           <div className="mt-4 space-y-2 border-t border-surface-600 pt-4">
-            <div className="flex justify-between text-sm text-stone-400">
-              <span>Subtotal productos</span>
-              <span>{formatPrice(itemsSubtotal)}</span>
-            </div>
-            {order.delivery_method === 'delivery' && deliveryFeeNum > 0 && (
-              <div className="flex justify-between text-sm text-stone-400">
-                <span>
-                  Envío
-                  {order.delivery_distance_km != null && (
-                    <span className="text-stone-500">
-                      {' '}(~{Number(order.delivery_distance_km).toFixed(1)} km)
+            {deliveryFeeNum > 0 && (
+              <>
+                <div className="flex justify-between text-sm text-stone-400">
+                  <span>Subtotal productos</span>
+                  <span>{formatPrice(itemsSubtotal)}</span>
+                </div>
+                {order.delivery_method === 'delivery' && (
+                  <div className="flex justify-between text-sm text-stone-400">
+                    <span>
+                      Envío
+                      {order.delivery_distance_km != null && (
+                        <span className="text-stone-500">
+                          {' '}(~{Number(order.delivery_distance_km).toFixed(1)} km)
+                        </span>
+                      )}
                     </span>
-                  )}
-                </span>
-                <span>{formatPrice(deliveryFeeNum)}</span>
-              </div>
+                    <span>{formatPrice(deliveryFeeNum)}</span>
+                  </div>
+                )}
+              </>
             )}
             <div className="flex items-center justify-between pt-2">
               <span className="text-base font-bold text-white">Total</span>
