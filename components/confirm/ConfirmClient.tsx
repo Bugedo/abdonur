@@ -6,6 +6,7 @@ import { useCart } from '@/components/cart/CartProvider';
 import { createOrder } from '@/actions/createOrder';
 import { Branch, DeliveryMethod, PaymentMethod } from '@/types';
 import AddressPhotonAutocomplete from '@/components/confirm/AddressPhotonAutocomplete';
+import { normalizeWhatsappWaMe } from '@/lib/formatWhatsappDisplay';
 
 interface ConfirmClientProps {
   branch: Branch;
@@ -105,7 +106,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
       }
 
       const message = buildWhatsAppMessage(result.orderId!);
-      const waUrl = `https://wa.me/${branch.whatsapp_number}?text=${encodeURIComponent(message)}`;
+      const waUrl = `https://wa.me/${normalizeWhatsappWaMe(branch.whatsapp_number)}?text=${encodeURIComponent(message)}`;
 
       clearCart();
       if (whatsappWindow) {

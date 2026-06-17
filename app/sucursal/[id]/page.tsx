@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { getActiveBranchByIdOrSlug } from '@/lib/branches';
-import { formatWhatsappArgentinaDisplay } from '@/lib/formatWhatsappDisplay';
+import { formatWhatsappArgentinaDisplay, normalizeWhatsappWaMe } from '@/lib/formatWhatsappDisplay';
 
 interface BranchPageProps {
   params: Promise<{ id: string }>;
@@ -64,7 +64,7 @@ export default async function BranchPage({ params }: BranchPageProps) {
             <div>
               <p className="text-sm font-medium text-stone-500">WhatsApp</p>
               <a
-                href={`https://wa.me/${branch.whatsapp_number}`}
+                href={`https://wa.me/${normalizeWhatsappWaMe(branch.whatsapp_number)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-whatsapp hover:underline"

@@ -9,7 +9,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:apply-delivery-migration": "node scripts/apply-delivery-migration.cjs"
+    "db:apply-delivery-migration": "node scripts/apply-delivery-migration.cjs",
+    "db:apply-whatsapp-migration": "node scripts/apply-whatsapp-migration.cjs",
+    "db:clear-orders": "node scripts/clear-orders.cjs"
   },
   "repository": {
     "type": "git",
