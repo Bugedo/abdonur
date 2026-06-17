@@ -6,21 +6,7 @@
 
 ## Credenciales
 
-### Super Admin (ve todo)
-
-- Usuario: `admin`
-- Contrasena: `123456`
-
-### Admins por sucursal (solo ven y gestionan sus pedidos)
-
-| Sucursal | Usuario | Contrasena |
-|---|---|---|
-| San Vicente | `sanvicente` | `123456` |
-| Alta Cordoba | `altacordoba` | `123456` |
-| Alberdi | `alberdi` | `123456` |
-| Nueva Cordoba | `nuevacordoba` | `123456` |
-| Marques | `marques` | `123456` |
-| Pueyrredon | `pueyrredon` | `123456` |
+Ver `docs/CREDENCIALES_ADMIN.md` (archivo local, ignorado por git). Plantilla: `docs/CREDENCIALES_ADMIN.example.md`.
 
 ## Comportamiento
 
@@ -35,21 +21,7 @@
 
 ## Credenciales
 
-### Super Admin (ve todo)
-
-- Usuario: `admin`
-- Contrasena: `123456`
-
-### Admins por sucursal (solo ven y gestionan sus pedidos)
-
-| Sucursal | Usuario | Contrasena |
-|---|---|---|
-| San Vicente | `sanvicente` | `123456` |
-| Alta Cordoba | `altacordoba` | `123456` |
-| Alberdi | `alberdi` | `123456` |
-| Nueva Cordoba | `nuevacordoba` | `123456` |
-| Marques | `marques` | `123456` |
-| Pueyrredon | `pueyrredon` | `123456` |
+Ver `docs/CREDENCIALES_ADMIN.md` (archivo local, ignorado por git). Plantilla: `docs/CREDENCIALES_ADMIN.example.md`.
 
 ## Comportamiento
 
@@ -71,21 +43,7 @@
 
 ## Credenciales
 
-### Superadmin
-
-- Usuario: `admin`
-- Contrasena: `123456`
-
-### Sucursales
-
-| Sucursal | Usuario | Contrasena |
-|---|---|---|
-| San Vicente | `sanvicente` | `123456` |
-| Alta Cordoba | `altacordoba` | `123456` |
-| Alberdi | `alberdi` | `123456` |
-| Nueva Cordoba | `nuevacordoba` | `123456` |
-| Marques | `marques` | `123456` |
-| Pueyrredon | `pueyrredon` | `123456` |
+Ver `docs/CREDENCIALES_ADMIN.md` (archivo local, ignorado por git). Plantilla: `docs/CREDENCIALES_ADMIN.example.md`.
 
 ## Modo testing (opcional)
 
@@ -165,22 +123,7 @@ Venta por mayor y franquicia: **3513224810**
 
 ## Credenciales de Administración
 
-### Admins por Sucursal (branch_admin)
-
-| Sucursal | Usuario | Contraseña |
-|---|---|---|
-| San Vicente | sanvicente | 123456 |
-| Alta Córdoba | altacordoba | 123456 |
-| Alberdi | alberdi | 123456 |
-| Nueva Córdoba | nuevacordoba | 123456 |
-| Marqués | marques | 123456 |
-| Gral. Pueyrredón | pueyrredon | 123456 |
-
-### Super Admin (ve todas las sucursales)
-
-| Rol | Usuario | Contraseña |
-|---|---|---|
-| Super Admin | admin | 123456 |
+Ver `docs/CREDENCIALES_ADMIN.md` (archivo local, ignorado por git). Plantilla: `docs/CREDENCIALES_ADMIN.example.md`.
 
 ---
 

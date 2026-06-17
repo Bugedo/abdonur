@@ -39,5 +39,10 @@ next-env.d.ts
 # supabase local metadata
 supabase/.temp/
 
+# admin credentials (local only — never push to GitHub)
+docs/CREDENCIALES_ADMIN.md
+**/CREDENCIALES_ADMIN.md
+!docs/CREDENCIALES_ADMIN.example.md
+
 .next-debug.log
 .next-dev.log
