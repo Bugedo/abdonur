@@ -5,13 +5,24 @@ import { useMemo, useState } from 'react';
 import { Product } from '@/types';
 import { useCart } from '@/components/cart/CartProvider';
 
-interface ComboProductCardProps {
-  product: Product;
-  flavorProducts: Product[];
+export interface ComboCartActions {
+  getQuantity: (productId: string) => number;
+  addConfiguredCombo: (payload: {
+    product: Product;
+    displayName: string;
+    comboDetail: string;
+  }) => void;
+  removeItem: (productId: string) => void;
 }
 
-export default function ComboProductCard({ product, flavorProducts }: ComboProductCardProps) {
-  const { addConfiguredCombo, getQuantity, removeItem } = useCart();
+interface ComboProductCardInnerProps {
+  product: Product;
+  flavorProducts: Product[];
+  cartActions: ComboCartActions;
+}
+
+export function ComboProductCardInner({ product, flavorProducts, cartActions }: ComboProductCardInnerProps) {
+  const { addConfiguredCombo, getQuantity, removeItem } = cartActions;
   const [expanded, setExpanded] = useState(false);
   const [selection, setSelection] = useState<Record<string, number>>({});
 
@@ -93,6 +104,7 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
           {quantityInCart > 0 ? (
             <>
               <button
+                type="button"
                 onClick={() => removeItem(product.id)}
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-surface-500 bg-surface-700 text-lg font-bold text-stone-300 transition-[transform,colors] duration-150 ease-out hover:border-red-500 hover:bg-red-900/30 hover:text-red-400 active:scale-95 motion-reduce:active:scale-100"
                 aria-label={`Quitar ${product.name}`}
@@ -103,6 +115,7 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
             </>
           ) : null}
           <button
+            type="button"
             onClick={() => (expanded ? setExpanded(false) : openBuilder())}
             className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-lg font-bold text-white transition-[transform,colors] duration-150 ease-out hover:bg-brand-700 active:scale-95 motion-reduce:active:scale-100"
             aria-label={`Configurar ${product.name}`}
@@ -164,5 +177,22 @@ export default function ComboProductCard({ product, flavorProducts }: ComboProdu
         </div>
       </div>
     </div>
+  );
+}
+
+interface ComboProductCardProps {
+  product: Product;
+  flavorProducts: Product[];
+  cartActions?: ComboCartActions;
+}
+
+export default function ComboProductCard({ product, flavorProducts, cartActions }: ComboProductCardProps) {
+  const cart = useCart();
+  return (
+    <ComboProductCardInner
+      product={product}
+      flavorProducts={flavorProducts}
+      cartActions={cartActions ?? cart}
+    />
   );
 }

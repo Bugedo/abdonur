@@ -4,12 +4,19 @@ import Image from 'next/image';
 import { Product } from '@/types';
 import { useCart } from '@/components/cart/CartProvider';
 
-interface ProductCardProps {
-  product: Product;
+export interface ProductCartActions {
+  getQuantity: (productId: string) => number;
+  addItem: (product: Product) => void;
+  removeItem: (productId: string) => void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
-  const { addItem, removeItem, getQuantity } = useCart();
+interface ProductCardInnerProps {
+  product: Product;
+  cartActions: ProductCartActions;
+}
+
+export function ProductCardInner({ product, cartActions }: ProductCardInnerProps) {
+  const { addItem, removeItem, getQuantity } = cartActions;
   const quantity = getQuantity(product.id);
   const normalizedName = product.name.trim().toLowerCase();
   const normalizedDescription = product.description?.trim().toLowerCase() ?? '';
@@ -23,7 +30,6 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="group flex items-center gap-4 rounded-xl border border-metallic-500/22 bg-surface-800/88 px-4 py-3 shadow-sm shadow-black/25 ring-1 ring-inset ring-metallic-400/[0.07] backdrop-blur-sm transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-metallic-400/40 hover:bg-surface-800/96 hover:shadow-[0_12px_32px_rgba(0,0,0,0.45)] motion-reduce:transition-colors motion-reduce:hover:translate-y-0">
-      {/* Imagen del producto */}
       {product.image_url && (
         <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg">
           <Image
@@ -36,7 +42,6 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       )}
 
-      {/* Info del producto */}
       <div className="min-w-0 flex-1">
         <h3 className="text-base font-semibold text-white">{product.name}</h3>
         {shouldShowDescription && (
@@ -45,23 +50,22 @@ export default function ProductCard({ product }: ProductCardProps) {
         <p className="mt-1 text-lg font-bold text-metallic-400">{formattedPrice}</p>
       </div>
 
-      {/* Controles de cantidad */}
       <div className="flex shrink-0 items-center gap-2">
         {quantity > 0 ? (
           <>
             <button
+              type="button"
               onClick={() => removeItem(product.id)}
               className="flex h-9 w-9 items-center justify-center rounded-full border border-surface-500 bg-surface-700 text-lg font-bold text-stone-300 transition-[transform,colors] duration-150 ease-out hover:border-red-500 hover:bg-red-900/30 hover:text-red-400 active:scale-95 motion-reduce:active:scale-100"
               aria-label={`Quitar ${product.name}`}
             >
               −
             </button>
-            <span className="w-6 text-center text-lg font-bold text-white">
-              {quantity}
-            </span>
+            <span className="w-6 text-center text-lg font-bold text-white">{quantity}</span>
           </>
         ) : null}
         <button
+          type="button"
           onClick={() => addItem(product)}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-lg font-bold text-white transition-[transform,colors] duration-150 ease-out hover:bg-brand-700 active:scale-95 motion-reduce:active:scale-100"
           aria-label={`Agregar ${product.name}`}
@@ -71,4 +75,14 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
     </div>
   );
+}
+
+interface ProductCardProps {
+  product: Product;
+  cartActions?: ProductCartActions;
+}
+
+export default function ProductCard({ product, cartActions }: ProductCardProps) {
+  const cart = useCart();
+  return <ProductCardInner product={product} cartActions={cartActions ?? cart} />;
 }

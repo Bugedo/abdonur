@@ -6,6 +6,7 @@ import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import OrderActions from '@/components/admin/OrderActions';
 import { requireAdminSession } from '@/lib/adminSession';
 import { logout } from '@/actions/auth';
+import { canOperateOrderBranch } from '@/lib/adminOperationalScope';
 
 async function getOrderWithItems(orderId: string) {
   const { data: order, error: orderError } = await supabaseAdmin
@@ -36,8 +37,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
   const { order, items } = result;
 
-  if (session.role === 'branch_admin' && session.branchId !== order.branch_id) {
-    notFound();
+  if (session.role === 'branch_admin') {
+    const allowed = await canOperateOrderBranch(session, order.branch_id);
+    if (!allowed) notFound();
   }
 
   const formattedDate = new Date(order.created_at).toLocaleString('es-AR', {

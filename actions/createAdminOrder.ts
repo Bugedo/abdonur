@@ -29,6 +29,9 @@ export async function createAdminOrder(input: CreateAdminOrderInput): Promise<Cr
   revalidatePath('/admin');
   revalidatePath('/admin/admin');
   revalidatePath('/admin/sucursal/[id]', 'page');
+  revalidatePath('/admin/sucursal/[id]/crear-pedido', 'page');
+  revalidatePath('/admin/admin/crear-pedido', 'page');
+  revalidatePath('/admin/pedido/[id]', 'page');
 
   return result;
 }

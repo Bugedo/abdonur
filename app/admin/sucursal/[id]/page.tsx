@@ -107,7 +107,15 @@ export default async function BranchAdminPage({
 
       {/* Lista de pedidos */}
       <div className="mt-8">
-        <h2 className="text-lg font-bold text-white">Pedidos</h2>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-lg font-bold text-white">Pedidos</h2>
+          <Link
+            href={`/admin/sucursal/${branch.slug}/crear-pedido`}
+            className="inline-flex items-center justify-center rounded-lg border border-brand-600 bg-brand-900/30 px-4 py-2 text-sm font-semibold text-brand-300 hover:bg-brand-900/50"
+          >
+            + Crear pedido manual
+          </Link>
+        </div>
         <BranchOrdersPanel orders={orders} showBranchName={showOrderBranchName} />
       </div>
     </section>

@@ -70,12 +70,20 @@ export default async function SuperAdminPage() {
           </h1>
           <p className="text-sm text-stone-500">Todas las sucursales</p>
         </div>
-        <Link
-          href="/admin/admin/estadisticas"
-          className="rounded-lg border border-brand-600 bg-brand-900/30 px-3 py-2 text-xs font-semibold text-brand-300 hover:bg-brand-900/50"
-        >
-          Ver estadísticas
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/admin/admin/crear-pedido"
+            className="rounded-lg border border-brand-600 bg-brand-900/30 px-3 py-2 text-xs font-semibold text-brand-300 hover:bg-brand-900/50"
+          >
+            + Crear pedido
+          </Link>
+          <Link
+            href="/admin/admin/estadisticas"
+            className="rounded-lg border border-brand-600 bg-brand-900/30 px-3 py-2 text-xs font-semibold text-brand-300 hover:bg-brand-900/50"
+          >
+            Ver estadísticas
+          </Link>
+        </div>
       </div>
 
       {/* Resumen por sucursal */}
