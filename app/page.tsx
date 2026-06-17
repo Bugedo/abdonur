@@ -42,7 +42,7 @@ export default async function HomePage() {
       {/* Fondo fijo del home */}
       <div className="fixed inset-0 -z-10 bg-black">
         <Image
-          src="/images/familia/familia-abdonur.jpg"
+          src="/images/familia/familia-abdonur.jpeg"
           alt="Familia Abdonur preparando empanadas árabes"
           fill
           priority
