@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AdminOrderWithItems, OrderStatus } from '@/types';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
+import CancelOrderDialog from '@/components/admin/CancelOrderDialog';
 import { updateOrderStatus } from '@/actions/updateOrderStatus';
 import { getNextStatuses } from '@/lib/orderStatusWorkflow';
 
@@ -427,6 +428,11 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
                   {loadingOrderId === order.id ? 'Actualizando...' : action.label}
                 </button>
               ))}
+              <CancelOrderDialog
+                orderId={order.id}
+                currentStatus={order.status}
+                disabled={loadingOrderId === order.id || isPast}
+              />
             </div>
 
             {errorsByOrder[order.id] && <p className="mt-2 text-xs text-red-400">{errorsByOrder[order.id]}</p>}

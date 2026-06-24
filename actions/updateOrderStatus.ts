@@ -15,7 +15,8 @@ interface UpdateResult {
 
 export async function updateOrderStatus(
   orderId: string,
-  newStatus: OrderStatus
+  newStatus: OrderStatus,
+  cancellationReason?: string
 ): Promise<UpdateResult> {
   const { data: targetOrder } = await supabaseAdmin
     .from('orders')
@@ -45,11 +46,36 @@ export async function updateOrderStatus(
     }
   }
 
-  // Actualizar estado
-  const { error } = await supabaseAdmin
-    .from('orders')
-    .update({ status: newStatus })
-    .eq('id', orderId);
+  const updatePayload: {
+    status: OrderStatus;
+    cancellation_reason?: string | null;
+    cancelled_at?: string | null;
+  } = { status: newStatus };
+
+  if (newStatus === 'cancelled') {
+    const reason = cancellationReason?.trim();
+    updatePayload.cancellation_reason = reason || null;
+    updatePayload.cancelled_at = new Date().toISOString();
+  }
+
+  let { error } = await supabaseAdmin.from('orders').update(updatePayload).eq('id', orderId);
+
+  if (error && newStatus === 'cancelled' && error.message.includes('cancellation_reason')) {
+    const { data: orderRow } = await supabaseAdmin
+      .from('orders')
+      .select('notes')
+      .eq('id', orderId)
+      .single();
+
+    const reason = cancellationReason?.trim();
+    const cancelLine = reason ? `Cancelado: ${reason}` : 'Cancelado por el local';
+    const mergedNotes = [orderRow?.notes?.trim(), cancelLine].filter(Boolean).join('\n');
+
+    ({ error } = await supabaseAdmin
+      .from('orders')
+      .update({ status: newStatus, notes: mergedNotes })
+      .eq('id', orderId));
+  }
 
   if (error) {
     console.error('Error updating order status:', error.message);

@@ -125,6 +125,28 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                 <span className="font-medium text-stone-400">Observaciones:</span> 📝 {order.notes}
               </p>
             )}
+            {order.status === 'cancelled' && (
+              <div className="mt-2 rounded-lg border border-red-800/50 bg-red-900/20 p-3 text-sm text-red-200">
+                <p className="font-medium text-red-300">Pedido cancelado</p>
+                {order.cancelled_at && (
+                  <p className="mt-1 text-red-200/90">
+                    {new Date(order.cancelled_at).toLocaleString('es-AR', {
+                      timeZone: 'America/Argentina/Buenos_Aires',
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </p>
+                )}
+                {order.cancellation_reason && (
+                  <p className="mt-1">
+                    <span className="font-medium text-red-300">Motivo:</span> {order.cancellation_reason}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

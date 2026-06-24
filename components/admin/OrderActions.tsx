@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { OrderStatus } from '@/types';
 import { updateOrderStatus } from '@/actions/updateOrderStatus';
-import { getNextStatuses } from '@/lib/orderStatusWorkflow';
+import { getNextStatuses, canCancelOrder } from '@/lib/orderStatusWorkflow';
+import CancelOrderDialog from '@/components/admin/CancelOrderDialog';
 
 interface OrderActionsProps {
   orderId: string;
@@ -23,11 +24,14 @@ export default function OrderActions({ orderId, currentStatus }: OrderActionsPro
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const actions = getNextStatuses(currentStatus).map((nextStatus) => ({
-    next: nextStatus,
-    ...actionConfig[nextStatus],
-  }));
-  if (actions.length === 0) return null;
+  const actions = getNextStatuses(currentStatus)
+    .filter((nextStatus) => nextStatus !== 'cancelled')
+    .map((nextStatus) => ({
+      next: nextStatus,
+      ...actionConfig[nextStatus],
+    }));
+
+  if (actions.length === 0 && !canCancelOrder(currentStatus)) return null;
 
   async function handleAction(newStatus: OrderStatus) {
     setLoading(true);
@@ -53,6 +57,12 @@ export default function OrderActions({ orderId, currentStatus }: OrderActionsPro
             {loading ? 'Actualizando...' : action.label}
           </button>
         ))}
+        <CancelOrderDialog
+          orderId={orderId}
+          currentStatus={currentStatus}
+          disabled={loading}
+          buttonClassName="rounded-xl border border-red-700 px-5 py-3 text-sm font-bold text-red-300 transition-colors hover:bg-red-900/30 disabled:opacity-50"
+        />
       </div>
       {error && (
         <p className="text-sm text-red-400">{error}</p>

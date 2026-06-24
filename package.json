@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --experimental-strip-types --test __tests__/unit/deliveryPricing.node.test.ts",
+    "test": "node --experimental-strip-types --test __tests__/unit/deliveryPricing.node.test.ts __tests__/unit/orderStatusWorkflow.node.test.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "db:apply-delivery-migration": "node scripts/apply-delivery-migration.cjs",
     "db:apply-whatsapp-migration": "node scripts/apply-whatsapp-migration.cjs",
+    "db:apply-cancellation-migration": "node scripts/apply-cancellation-migration.cjs",
+    "db:test-cancel-order": "node scripts/test-cancel-order.cjs",
     "db:clear-orders": "node scripts/clear-orders.cjs"
   },
   "repository": {

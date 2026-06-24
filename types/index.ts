@@ -45,6 +45,8 @@ export interface Order {
   delivery_fee?: number | null;
   delivery_distance_km?: number | null;
   status: OrderStatus;
+  cancellation_reason?: string | null;
+  cancelled_at?: string | null;
   created_at: string;
   branch?: Branch;
   branches?: { name: string };
