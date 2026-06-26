@@ -17,14 +17,14 @@ function addProductItem(prev: CartItem[], product: Product): CartItem[] {
 
 function addComboItem(
   prev: CartItem[],
-  payload: { product: Product; displayName: string; comboDetail: string }
+  payload: { product: Product; displayName: string; comboDetail: string; unitPrice?: number }
 ): CartItem[] {
   return [
     ...prev,
     {
       product: payload.product,
       quantity: 1,
-      unitPrice: payload.product.price,
+      unitPrice: payload.unitPrice ?? payload.product.price,
       displayName: payload.displayName,
       comboDetail: payload.comboDetail,
       cartKey: `${payload.product.id}-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
@@ -57,7 +57,7 @@ export function useAdminOrderCart() {
   }, []);
 
   const addConfiguredCombo = useCallback(
-    (payload: { product: Product; displayName: string; comboDetail: string }) => {
+    (payload: { product: Product; displayName: string; comboDetail: string; unitPrice?: number }) => {
       setItems((prev) => addComboItem(prev, payload));
     },
     []

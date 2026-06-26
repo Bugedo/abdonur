@@ -11,6 +11,7 @@ export interface ComboCartActions {
     product: Product;
     displayName: string;
     comboDetail: string;
+    unitPrice?: number;
   }) => void;
   removeItem: (productId: string) => void;
 }
@@ -24,13 +25,11 @@ interface ComboProductCardInnerProps {
 export function ComboProductCardInner({ product, flavorProducts, cartActions }: ComboProductCardInnerProps) {
   const { addConfiguredCombo, getQuantity, removeItem } = cartActions;
   const [expanded, setExpanded] = useState(false);
+  const [dozenCount, setDozenCount] = useState(1);
   const [selection, setSelection] = useState<Record<string, number>>({});
 
-  const normalizedName = product.name
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase();
-  const targetCount = normalizedName.includes('x12') || normalizedName.includes('docena') ? 12 : 8;
+  const empanadasPerCombo = 12;
+  const targetCount = empanadasPerCombo * dozenCount;
   const quantityInCart = getQuantity(product.id);
   const selectedCount = useMemo(
     () => Object.values(selection).reduce((sum, qty) => sum + qty, 0),
@@ -42,13 +41,23 @@ export function ComboProductCardInner({ product, flavorProducts, cartActions }: 
     style: 'currency',
     currency: 'ARS',
     minimumFractionDigits: 0,
-  }).format(product.price);
+  }).format(product.price * dozenCount);
 
-  function openBuilder() {
-    setExpanded(true);
+  function resetSelection() {
     const next: Record<string, number> = {};
     for (const flavor of flavorProducts) next[flavor.id] = 0;
     setSelection(next);
+  }
+
+  function openBuilder() {
+    setExpanded(true);
+    setDozenCount(1);
+    resetSelection();
+  }
+
+  function changeDozenCount(delta: number) {
+    setDozenCount((prev) => Math.min(20, Math.max(1, prev + delta)));
+    resetSelection();
   }
 
   function updateFlavorQty(flavorId: string, delta: number) {
@@ -72,10 +81,13 @@ export function ComboProductCardInner({ product, flavorProducts, cartActions }: 
 
     addConfiguredCombo({
       product,
-      displayName: `${product.name} (${detail})`,
+      displayName:
+        dozenCount > 1 ? `Armá tu Docena (${dozenCount} docenas)` : 'Armá tu Docena',
       comboDetail: detail,
+      unitPrice: product.price * dozenCount,
     });
     setExpanded(false);
+    setDozenCount(1);
     setSelection({});
   }
 
@@ -116,7 +128,15 @@ export function ComboProductCardInner({ product, flavorProducts, cartActions }: 
           ) : null}
           <button
             type="button"
-            onClick={() => (expanded ? setExpanded(false) : openBuilder())}
+            onClick={() => {
+              if (expanded) {
+                setExpanded(false);
+                setDozenCount(1);
+                resetSelection();
+                return;
+              }
+              openBuilder();
+            }}
             className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 text-lg font-bold text-white transition-[transform,colors] duration-150 ease-out hover:bg-brand-700 active:scale-95 motion-reduce:active:scale-100"
             aria-label={`Configurar ${product.name}`}
           >
@@ -132,9 +152,31 @@ export function ComboProductCardInner({ product, flavorProducts, cartActions }: 
       >
         <div className="min-h-0">
           <div className="rounded-lg border border-metallic-500/30 bg-brand-900/20 p-3 shadow-inner shadow-black/25 backdrop-blur-sm">
-            <p className="text-sm text-stone-300">
-              Armá tu combo: faltan <span className="font-bold text-brand-400">{remaining}</span> para completar x
-              {targetCount}.
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm text-stone-300">Cantidad de docenas</p>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => changeDozenCount(-1)}
+                  disabled={dozenCount <= 1}
+                  className="h-7 w-7 rounded-full border border-surface-500 text-white transition-[transform,colors] duration-150 hover:bg-surface-600 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:active:scale-100"
+                >
+                  -
+                </button>
+                <span className="w-6 text-center text-sm font-bold text-white">{dozenCount}</span>
+                <button
+                  type="button"
+                  onClick={() => changeDozenCount(1)}
+                  disabled={dozenCount >= 20}
+                  className="h-7 w-7 rounded-full bg-brand-600 text-white transition-[transform,colors] duration-150 hover:bg-brand-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 motion-reduce:active:scale-100"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <p className="mt-3 text-sm text-stone-300">
+              Elegí <span className="font-bold text-brand-400">{targetCount}</span> empanadas en total. Faltan{' '}
+              <span className="font-bold text-brand-400">{remaining}</span>.
             </p>
             <div className="mt-3 space-y-2">
               {flavorProducts.map((flavor) => (

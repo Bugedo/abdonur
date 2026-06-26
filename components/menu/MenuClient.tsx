@@ -13,9 +13,9 @@ interface MenuClientProps {
 }
 
 const categoryTitles: Record<ProductCategory, string> = {
-  empanadas: '🥟 Empanadas Árabes',
-  comidas: '🍽️ Comidas y Platos',
-  postres: '🍰 Postres Árabes',
+  empanadas: 'Empanadas Árabes',
+  comidas: 'Comidas y Platos',
+  postres: 'Postres Árabes',
 };
 
 const categoryOrder: ProductCategory[] = ['empanadas', 'comidas', 'postres'];
@@ -46,14 +46,14 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
                 {category === 'empanadas' ? (
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      <h3 className="font-display text-base font-semibold tracking-[0.12em] text-brand-500">FATAY</h3>
+                      <h3 className="font-display text-base font-semibold tracking-[0.12em] text-brand-500">Árabes</h3>
                       {fatayRows.map((product) => (
                         <ProductCard key={`${product.id}-${product.name}`} product={product} />
                       ))}
                     </div>
 
                     <div className="space-y-3">
-                      <h3 className="font-display text-base font-semibold tracking-[0.12em] text-brand-500">SFIHAS</h3>
+                      <h3 className="font-display text-base font-semibold tracking-[0.12em] text-brand-500">Sfihas</h3>
                       {sfihasFlavorSections.map((section, index) => (
                         <div key={section.flavorKey} className="space-y-3">
                           {index > 0 && (
@@ -72,7 +72,7 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
                     {comboProducts.length > 0 && (
                       <div className="pt-2">
                         <h3 className="font-display mb-3 border-t border-metallic-500/30 pt-4 text-base font-semibold tracking-wide text-brand-500">
-                          Armá tu Docena / Armá tu x8
+                          Armá tu Docena
                         </h3>
                         <div className="space-y-3">
                           {comboProducts.map((product) => (

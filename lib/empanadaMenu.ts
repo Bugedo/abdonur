@@ -1,7 +1,9 @@
-import { Product } from '@/types';
+import type { Product } from '../types/index.ts';
 
 export type EmpanadaFlavorKey = 'arabes' | 'jyq' | 'cyq' | 'bondiola';
-export type EmpanadaPresentation = 'docena' | 'docena_y_media' | 'dos_docenas' | 'unidad';
+export type EmpanadaPresentation = 'unidad' | 'docena' | 'docena_y_media' | 'dos_docenas';
+
+const presentationOrder: EmpanadaPresentation[] = ['unidad', 'docena', 'docena_y_media'];
 
 export const empanadaFlavorOrder: EmpanadaFlavorKey[] = ['arabes', 'jyq', 'cyq', 'bondiola'];
 
@@ -21,7 +23,8 @@ export function normalizeText(value: string) {
 
 export function isComboBuilderProduct(name: string) {
   const normalized = normalizeText(name);
-  return normalized.includes('arma tu x8') || normalized.includes('arma tu x12') || normalized.includes('arma tu docena');
+  if (normalized.includes('arma tu x8')) return false;
+  return normalized.includes('arma tu x12') || normalized.includes('arma tu docena');
 }
 
 export function getEmpanadaFlavorKey(name: string): EmpanadaFlavorKey | null {
@@ -46,10 +49,24 @@ export function withDisplayName(product: Product, displayName: string): Product 
   return { ...product, name: displayName };
 }
 
-export function canonicalComboDisplayName(product: Product): string {
-  const normalized = normalizeText(product.name);
-  if (normalized.includes('docena') || normalized.includes('x12')) return 'Armá tu Docena';
-  return 'Armá tu x8';
+export function canonicalComboDisplayName(_product: Product): string {
+  return 'Armá tu Docena';
+}
+
+export function flavorPresentationLabel(
+  flavorKey: EmpanadaFlavorKey,
+  presentation: Exclude<EmpanadaPresentation, 'dos_docenas'>
+): string {
+  const flavorName = flavorDisplayNames[flavorKey];
+  if (presentation === 'unidad') {
+    return flavorKey === 'arabes' ? 'Árabe x Unidad' : `${flavorName} x Unidad`;
+  }
+  if (presentation === 'docena') {
+    return flavorKey === 'arabes' ? 'Árabe x 1 Docena' : `${flavorName} x 1 Docena`;
+  }
+  return flavorKey === 'arabes'
+    ? 'Árabe por 1 Docena y Media'
+    : `${flavorName} por 1 Docena y Media`;
 }
 
 export function buildFlavorRows(
@@ -57,24 +74,15 @@ export function buildFlavorRows(
   flavorMatrix: Record<EmpanadaFlavorKey, Partial<Record<EmpanadaPresentation, Product>>>
 ): Product[] {
   return flavorKeys
-    .map((flavorKey) => {
-      const flavorName = flavorDisplayNames[flavorKey];
-      const rowProducts: Product[] = [];
-      const docena = flavorMatrix[flavorKey].docena;
-      const docenaYMedia = flavorMatrix[flavorKey].docena_y_media;
-      const dosDocenas = flavorMatrix[flavorKey].dos_docenas;
-      const unidad = flavorMatrix[flavorKey].unidad;
-
-      if (docena) rowProducts.push(withDisplayName(docena, `1 Docena de ${flavorName}`));
-      if (docenaYMedia) rowProducts.push(withDisplayName(docenaYMedia, `1 Docena y Media de ${flavorName}`));
-      if (dosDocenas) rowProducts.push(withDisplayName(dosDocenas, `2 Docenas de ${flavorName}`));
-      if (unidad) {
-        const unidadLabel = flavorKey === 'arabes' ? 'Árabe por Unidad' : `${flavorName} por Unidad`;
-        rowProducts.push(withDisplayName(unidad, unidadLabel));
-      }
-
-      return rowProducts;
-    })
+    .map((flavorKey) =>
+      presentationOrder
+        .map((presentation) => {
+          const product = flavorMatrix[flavorKey][presentation];
+          if (!product) return null;
+          return withDisplayName(product, flavorPresentationLabel(flavorKey, presentation));
+        })
+        .filter((product): product is Product => product !== null)
+    )
     .flat();
 }
 
@@ -94,15 +102,7 @@ export function buildEmpanadaMenuSections(products: Product[]): EmpanadaMenuSect
 
   const comboProducts = empanadaProducts
     .filter((product) => isComboBuilderProduct(product.name))
-    .sort((a, b) => {
-      const aNorm = normalizeText(a.name);
-      const bNorm = normalizeText(b.name);
-      const aDocena = aNorm.includes('docena') || aNorm.includes('x12');
-      const bDocena = bNorm.includes('docena') || bNorm.includes('x12');
-      if (aDocena && !bDocena) return -1;
-      if (!aDocena && bDocena) return 1;
-      return a.name.localeCompare(b.name);
-    });
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const flavorMatrix: Record<EmpanadaFlavorKey, Partial<Record<EmpanadaPresentation, Product>>> = {
     arabes: {},
@@ -115,7 +115,7 @@ export function buildEmpanadaMenuSections(products: Product[]): EmpanadaMenuSect
     if (isComboBuilderProduct(product.name)) continue;
     const flavorKey = getEmpanadaFlavorKey(product.name);
     const presentation = getEmpanadaPresentation(product.name);
-    if (!flavorKey || !presentation) continue;
+    if (!flavorKey || !presentation || presentation === 'dos_docenas') continue;
     flavorMatrix[flavorKey][presentation] = product;
   }
 

@@ -14,6 +14,7 @@ interface CartContextType {
     product: Product;
     displayName: string;
     comboDetail: string;
+    unitPrice?: number;
   }) => void;
   removeItem: (productId: string) => void;
   removeLineItem: (payload: { productId: string; cartKey?: string }) => void;
@@ -71,13 +72,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addConfiguredCombo = useCallback(
-    ({ product, displayName, comboDetail }: { product: Product; displayName: string; comboDetail: string }) => {
+    ({ product, displayName, comboDetail, unitPrice }: { product: Product; displayName: string; comboDetail: string; unitPrice?: number }) => {
       setItems((prev) => [
         ...prev,
         {
           product,
           quantity: 1,
-          unitPrice: product.price,
+          unitPrice: unitPrice ?? product.price,
           displayName,
           comboDetail,
           cartKey: `${product.id}-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,

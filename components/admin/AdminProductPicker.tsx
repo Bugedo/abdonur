@@ -74,7 +74,7 @@ export default function AdminProductPicker({
                 {category === 'empanadas' ? (
                   <div className="space-y-6">
                     <div className="space-y-3">
-                      <h4 className="text-xs font-semibold uppercase tracking-wide text-brand-500">Fatay</h4>
+                      <h4 className="text-xs font-semibold uppercase tracking-wide text-brand-500">Árabes</h4>
                       {fatayRows.map((product) => (
                         <ProductCardInner
                           key={`${product.id}-${product.name}`}
@@ -106,7 +106,7 @@ export default function AdminProductPicker({
                     {comboProducts.length > 0 && (
                       <div className="space-y-3">
                         <h4 className="text-xs font-semibold uppercase tracking-wide text-brand-500">
-                          Armá tu Docena / Armá tu x8
+                          Armá tu Docena
                         </h4>
                         {comboProducts.map((product) => (
                           <ComboProductCardInner
