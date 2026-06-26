@@ -13,6 +13,7 @@
     "db:apply-whatsapp-migration": "node scripts/apply-whatsapp-migration.cjs",
     "db:apply-cancellation-migration": "node scripts/apply-cancellation-migration.cjs",
     "db:apply-deactivate-empanada-products": "node scripts/apply-deactivate-empanada-products-migration.cjs",
+    "db:apply-deactivate-docena-y-media": "node scripts/apply-deactivate-docena-y-media-migration.cjs",
     "db:test-cancel-order": "node scripts/test-cancel-order.cjs",
     "db:clear-orders": "node scripts/clear-orders.cjs"
   },

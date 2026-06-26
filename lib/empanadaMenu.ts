@@ -2,9 +2,9 @@ import type { Product } from '../types/index.ts';
 
 export type EmpanadaFlavorKey = 'arabes' | 'jyq' | 'cyq' | 'bondiola';
 export type EmpanadaPresentation = 'unidad' | 'docena' | 'docena_y_media' | 'dos_docenas';
-export type ActiveEmpanadaPresentation = Exclude<EmpanadaPresentation, 'dos_docenas'>;
+export type ActiveEmpanadaPresentation = Exclude<EmpanadaPresentation, 'dos_docenas' | 'docena_y_media'>;
 
-const presentationOrder: ActiveEmpanadaPresentation[] = ['unidad', 'docena', 'docena_y_media'];
+const presentationOrder: ActiveEmpanadaPresentation[] = ['unidad', 'docena'];
 
 export const empanadaFlavorOrder: EmpanadaFlavorKey[] = ['arabes', 'jyq', 'cyq', 'bondiola'];
 
@@ -59,15 +59,10 @@ export function flavorPresentationLabel(
   presentation: ActiveEmpanadaPresentation
 ): string {
   const flavorName = flavorDisplayNames[flavorKey];
-  if (presentation === 'unidad') {
-    return flavorKey === 'arabes' ? 'Árabe x Unidad' : `${flavorName} x Unidad`;
-  }
   if (presentation === 'docena') {
     return flavorKey === 'arabes' ? 'Árabe x 1 Docena' : `${flavorName} x 1 Docena`;
   }
-  return flavorKey === 'arabes'
-    ? 'Árabe por 1 Docena y Media'
-    : `${flavorName} por 1 Docena y Media`;
+  return flavorKey === 'arabes' ? 'Árabe x Unidad' : `${flavorName} x Unidad`;
 }
 
 export function buildFlavorRows(
@@ -116,7 +111,9 @@ export function buildEmpanadaMenuSections(products: Product[]): EmpanadaMenuSect
     if (isComboBuilderProduct(product.name)) continue;
     const flavorKey = getEmpanadaFlavorKey(product.name);
     const presentation = getEmpanadaPresentation(product.name);
-    if (!flavorKey || !presentation || presentation === 'dos_docenas') continue;
+    if (!flavorKey || !presentation || presentation === 'dos_docenas' || presentation === 'docena_y_media') {
+      continue;
+    }
     flavorMatrix[flavorKey][presentation] = product;
   }
 
