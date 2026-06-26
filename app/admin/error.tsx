@@ -10,7 +10,6 @@ export default function AdminError({
 }) {
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-      <span className="text-6xl">⚠️</span>
       <h1 className="text-2xl font-extrabold text-white">Error en el panel</h1>
       <p className="max-w-sm text-stone-400">
         Ocurrió un error. Probá reintentar o volvé al acceso admin.

@@ -83,7 +83,7 @@ export default async function SuperAdminStatsPage({
 
       <div className="mt-4">
         <h1 className="text-2xl font-extrabold text-white">
-          👑 Estadísticas Generales <span className="text-brand-500">ABDONUR</span>
+          Estadísticas Generales <span className="text-brand-500">ABDONUR</span>
         </h1>
         <p className="text-sm text-stone-500">Visión consolidada separada por sucursal</p>
       </div>

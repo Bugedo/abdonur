@@ -66,7 +66,7 @@ export default async function SuperAdminPage() {
       <div className="mt-4 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-white">
-            👑 Panel General <span className="text-brand-500">ABDONUR</span>
+            Panel General <span className="text-brand-500">ABDONUR</span>
           </h1>
           <p className="text-sm text-stone-500">Todas las sucursales</p>
         </div>

@@ -93,7 +93,7 @@ export default async function BranchAdminPage({
       <div className="mt-4 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-extrabold text-white">
-            📊 <span className="text-brand-500">{branchPanelTitle}</span>
+            <span className="text-brand-500">{branchPanelTitle}</span>
           </h1>
           <p className="text-sm text-stone-500">Panel de administración</p>
         </div>

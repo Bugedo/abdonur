@@ -13,11 +13,11 @@ interface OrderActionsProps {
 
 const actionConfig: Record<OrderStatus, { label: string; classes: string }> = {
   new: { label: 'Nuevo', classes: '' },
-  confirmed: { label: '✅ Confirmar pedido', classes: 'bg-yellow-600 text-white hover:bg-yellow-700' },
-  on_the_way: { label: '🛵 Marcar en camino', classes: 'bg-emerald-600 text-white hover:bg-emerald-700' },
-  ready: { label: '🍽️ Marcar preparado', classes: 'bg-green-600 text-white hover:bg-green-700' },
-  completed: { label: '🎉 Marcar entregado', classes: 'bg-slate-600 text-white hover:bg-slate-700' },
-  cancelled: { label: '❌ Cancelado', classes: '' },
+  confirmed: { label: 'Confirmar pedido', classes: 'bg-yellow-600 text-white hover:bg-yellow-700' },
+  on_the_way: { label: 'Marcar en camino', classes: 'bg-emerald-600 text-white hover:bg-emerald-700' },
+  ready: { label: 'Marcar preparado', classes: 'bg-green-600 text-white hover:bg-green-700' },
+  completed: { label: 'Marcar entregado', classes: 'bg-slate-600 text-white hover:bg-slate-700' },
+  cancelled: { label: 'Cancelado', classes: '' },
 };
 
 export default function OrderActions({ orderId, currentStatus }: OrderActionsProps) {

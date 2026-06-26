@@ -85,7 +85,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               </p>
               {order.branches?.name && (
                 <p className="mt-1 text-sm font-medium text-brand-400">
-                  🏪 {order.branches.name}
+                  {order.branches.name}
                 </p>
               )}
             </div>
@@ -98,11 +98,11 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <div className="mt-4 space-y-2 text-sm">
             <p className="text-stone-300">
               <span className="font-medium text-stone-400">Entrega:</span>{' '}
-              {order.delivery_method === 'delivery' ? '🛵 Envío a domicilio' : '🏪 Retiro en local'}
+              {order.delivery_method === 'delivery' ? 'Envío a domicilio' : 'Retiro en local'}
             </p>
             {order.delivery_method === 'delivery' && order.address && (
               <p className="text-stone-300">
-                <span className="font-medium text-stone-400">Dirección:</span> 📍 {order.address}
+                <span className="font-medium text-stone-400">Dirección:</span> {order.address}
               </p>
             )}
             {order.delivery_method === 'delivery' && deliveryFeeNum > 0 && (
@@ -118,11 +118,11 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             )}
             <p className="text-stone-300">
               <span className="font-medium text-stone-400">Pago:</span>{' '}
-              {order.payment_method === 'cash' ? '💵 Efectivo' : '📱 Transferencia / MP'}
+              {order.payment_method === 'cash' ? 'Efectivo' : 'Transferencia / MP'}
             </p>
             {order.notes && (
               <p className="text-stone-300">
-                <span className="font-medium text-stone-400">Observaciones:</span> 📝 {order.notes}
+                <span className="font-medium text-stone-400">Observaciones:</span> {order.notes}
               </p>
             )}
             {order.status === 'cancelled' && (

@@ -439,19 +439,19 @@ export default function BranchOrdersPanel({
                   #{order.id.slice(0, 8).toUpperCase()} · {formatDate(order.created_at)}
                 </p>
                 {showBranchName && order.branches?.name && (
-                  <p className="mt-1 text-xs font-medium text-brand-400">🏪 {order.branches.name}</p>
+                  <p className="mt-1 text-xs font-medium text-brand-400">{order.branches.name}</p>
                 )}
                 <p className="mt-1 text-xs text-stone-400">
-                  {order.delivery_method === 'delivery' ? '🛵 Envio a domicilio' : '🏪 Retiro en local'}
+                  {order.delivery_method === 'delivery' ? 'Envío a domicilio' : 'Retiro en local'}
                   {' · '}
-                  {order.payment_method === 'cash' ? '💵 Efectivo' : '📱 Transferencia'}
+                  {order.payment_method === 'cash' ? 'Efectivo' : 'Transferencia'}
                 </p>
-                {order.address && <p className="mt-1 text-xs text-stone-400">📍 {order.address}</p>}
+                {order.address && <p className="mt-1 text-xs text-stone-400">{order.address}</p>}
                 {order.delivery_method === 'delivery' &&
                   order.delivery_fee != null &&
                   Number(order.delivery_fee) > 0 && (
                     <p className="mt-1 text-xs text-stone-400">
-                      📦 Envío {formatPrice(Number(order.delivery_fee))}
+                      Envío {formatPrice(Number(order.delivery_fee))}
                       {order.delivery_distance_km != null && (
                         <span className="text-stone-500">
                           {' '}(~{Number(order.delivery_distance_km).toFixed(1)} km)
@@ -460,7 +460,7 @@ export default function BranchOrdersPanel({
                     </p>
                   )}
                 {order.notes && order.status !== 'cancelled' && (
-                  <p className="mt-1 text-xs text-stone-400">📝 {order.notes}</p>
+                  <p className="mt-1 text-xs text-stone-400">{order.notes}</p>
                 )}
                 {order.status === 'cancelled' && (
                   <p className="mt-2 rounded-md border border-red-800/50 bg-red-950/30 px-2 py-1.5 text-xs text-red-200">

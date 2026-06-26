@@ -73,7 +73,7 @@ export default async function BranchAdminStatsPage({
 
       <div className="mt-4">
         <h1 className="text-2xl font-extrabold text-white">
-          📈 Estadísticas - <span className="text-brand-500">{branchPanelTitle}</span>
+          Estadísticas - <span className="text-brand-500">{branchPanelTitle}</span>
         </h1>
         <p className="text-sm text-stone-500">Análisis de ventas y operación de la sucursal</p>
       </div>
