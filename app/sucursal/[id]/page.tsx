@@ -39,39 +39,30 @@ export default async function BranchPage({ params }: BranchPageProps) {
       {/* Main card */}
       <div className="mt-6 rounded-2xl border border-metallic-500/30 bg-surface-800/90 p-8 shadow-[inset_0_1px_0_rgba(212,175,55,0.08)] backdrop-blur-sm">
         <h1 className="font-display text-3xl font-semibold tracking-wide text-white">{branch.name}</h1>
-        <p className="mt-2 text-sm italic text-metallic-300">Simplemente excepcionales · Lejos... la mejor!!!</p>
+        <p className="mt-2 text-sm italic text-metallic-300">Lejos... la mejor!!!</p>
 
         {/* Branch info */}
         <div className="mt-6 space-y-4">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">📍</span>
-            <div>
-              <p className="text-sm font-medium text-stone-500">Dirección</p>
-              <p className="text-stone-200">{branch.address}</p>
-            </div>
+          <div>
+            <p className="text-sm font-medium text-stone-500">Dirección</p>
+            <p className="text-stone-200">{branch.address}</p>
           </div>
 
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">🕐</span>
-            <div>
-              <p className="text-sm font-medium text-stone-500">Horarios</p>
-              <p className="text-stone-200">{branch.opening_hours}</p>
-            </div>
+          <div>
+            <p className="text-sm font-medium text-stone-500">Horarios</p>
+            <p className="text-stone-200">{branch.opening_hours}</p>
           </div>
 
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">💬</span>
-            <div>
-              <p className="text-sm font-medium text-stone-500">WhatsApp</p>
-              <a
-                href={`https://wa.me/${normalizeWhatsappWaMe(branch.whatsapp_number)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-whatsapp hover:underline"
-              >
-                {displayPhone}
-              </a>
-            </div>
+          <div>
+            <p className="text-sm font-medium text-stone-500">WhatsApp</p>
+            <a
+              href={`https://wa.me/${normalizeWhatsappWaMe(branch.whatsapp_number)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-whatsapp hover:underline"
+            >
+              {displayPhone}
+            </a>
           </div>
         </div>
 
@@ -80,7 +71,7 @@ export default async function BranchPage({ params }: BranchPageProps) {
           href={`/sucursal/${branch.slug}/menu`}
           className="mt-8 block w-full rounded-xl bg-brand-600 py-4 text-center text-lg font-bold text-white shadow-[0_4px_20px_rgba(192,32,38,0.25)] transition-[transform,box-shadow,background-color] hover:bg-brand-500 hover:shadow-[0_6px_28px_rgba(192,32,38,0.35)] active:scale-[0.99] motion-reduce:active:scale-100"
         >
-          🛒 Pedir ahora
+          Pedir ahora
         </Link>
       </div>
     </section>
