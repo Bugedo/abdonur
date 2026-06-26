@@ -19,7 +19,7 @@ function product(overrides: Partial<Product> & Pick<Product, 'name'>): Product {
   };
 }
 
-test('buildFlavorRows orders unidad and docena, skips docena y media and dos docenas', () => {
+test('buildFlavorRows orders unidad, docena, docena y media and skips dos docenas', () => {
   const rows = buildFlavorRows(['arabes'], {
     arabes: {
       docena: product({ id: 'd', name: 'FATAY - Árabes (Docena)', price: 20000 }),
@@ -32,10 +32,13 @@ test('buildFlavorRows orders unidad and docena, skips docena y media and dos doc
     bondiola: {},
   });
 
-  assert.deepEqual(rows.map((row) => row.name), ['Árabe x Unidad', 'Árabe x 1 Docena']);
+  assert.deepEqual(
+    rows.map((row) => row.name),
+    ['Árabe x Unidad', 'Árabe x 1 Docena', 'Árabe por 1 Docena y Media']
+  );
 });
 
-test('buildEmpanadaMenuSections excludes x8 combo, docena y media, and dos docenas rows', () => {
+test('buildEmpanadaMenuSections excludes x8 combo and dos docenas rows', () => {
   const sections = buildEmpanadaMenuSections([
     product({ id: 'u', name: 'FATAY - Árabes (Unidad)' }),
     product({ id: 'd', name: 'FATAY - Árabes (Docena)' }),
@@ -45,7 +48,7 @@ test('buildEmpanadaMenuSections excludes x8 combo, docena y media, and dos docen
     product({ id: 'doc', name: 'Armá tu Docena', price: 22000 }),
   ]);
 
-  assert.equal(sections.fatayRows.length, 2);
+  assert.equal(sections.fatayRows.length, 3);
   assert.equal(sections.comboProducts.length, 1);
   assert.equal(sections.comboProducts[0]?.name, 'Armá tu Docena');
   assert.equal(isComboBuilderProduct('Armá tu x8'), false);
