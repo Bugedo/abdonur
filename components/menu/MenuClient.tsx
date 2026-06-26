@@ -78,7 +78,7 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
                           {comboProducts.map((product) => (
                             <ComboProductCard
                               key={product.id}
-                              product={withDisplayName(product, canonicalComboDisplayName(product))}
+                              product={withDisplayName(product, canonicalComboDisplayName())}
                               flavorProducts={comboFlavorProducts}
                             />
                           ))}

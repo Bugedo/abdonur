@@ -49,7 +49,7 @@ export function withDisplayName(product: Product, displayName: string): Product 
   return { ...product, name: displayName };
 }
 
-export function canonicalComboDisplayName(_product: Product): string {
+export function canonicalComboDisplayName(): string {
   return 'Armá tu Docena';
 }
 

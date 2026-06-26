@@ -111,7 +111,7 @@ export default function AdminProductPicker({
                         {comboProducts.map((product) => (
                           <ComboProductCardInner
                             key={product.id}
-                            product={withDisplayName(product, canonicalComboDisplayName(product))}
+                            product={withDisplayName(product, canonicalComboDisplayName())}
                             flavorProducts={comboFlavorProducts}
                             cartActions={comboCartActions}
                           />
