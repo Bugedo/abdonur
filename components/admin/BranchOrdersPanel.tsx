@@ -52,6 +52,35 @@ function getTimerLevel(elapsedMs: number): TimerLevel {
   return 'red';
 }
 
+function getOrderElapsedMs(
+  order: AdminOrderWithItems,
+  nowMs: number,
+  frozenTimerMsByOrder: Record<string, number>
+): number {
+  if (order.status === 'cancelled' && order.cancelled_at) {
+    return getElapsedMs(order.created_at, new Date(order.cancelled_at).getTime());
+  }
+
+  const shouldFreezeTimer =
+    order.status === 'on_the_way' ||
+    order.status === 'ready' ||
+    order.status === 'completed' ||
+    order.status === 'cancelled';
+
+  if (shouldFreezeTimer) {
+    if (frozenTimerMsByOrder[order.id] === undefined) {
+      frozenTimerMsByOrder[order.id] = getElapsedMs(order.created_at, nowMs);
+    }
+    return frozenTimerMsByOrder[order.id];
+  }
+
+  if (frozenTimerMsByOrder[order.id] !== undefined) {
+    delete frozenTimerMsByOrder[order.id];
+  }
+
+  return getElapsedMs(order.created_at, nowMs);
+}
+
 function formatElapsed(elapsedMs: number) {
   const totalSeconds = Math.floor(elapsedMs / 1000);
   const hours = Math.floor(totalSeconds / 3600);
@@ -280,6 +309,9 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
           <span className="rounded-full border border-slate-700 bg-slate-900/40 px-2.5 py-1 font-semibold text-slate-300">
             Entregado (pasado)
           </span>
+          <span className="rounded-full border border-red-700 bg-red-900/40 px-2.5 py-1 font-semibold text-red-300">
+            Cancelado (pasado)
+          </span>
         </div>
       </div>
 
@@ -331,16 +363,11 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
               ? 'border-yellow-700/60 bg-yellow-900/25'
               : order.status === 'on_the_way' || order.status === 'ready'
                 ? 'border-green-700/60 bg-green-900/25'
-                : 'border-surface-600 bg-surface-800';
+                : order.status === 'cancelled'
+                  ? 'border-red-700/60 bg-red-900/25'
+                  : 'border-surface-600 bg-surface-800';
 
-        const shouldFreezeTimer =
-          order.status === 'on_the_way' || order.status === 'ready' || order.status === 'completed';
-        if (shouldFreezeTimer && frozenTimerMsByOrderRef.current[order.id] === undefined) {
-          frozenTimerMsByOrderRef.current[order.id] = getElapsedMs(order.created_at, nowMs);
-        }
-        if (!shouldFreezeTimer && frozenTimerMsByOrderRef.current[order.id] !== undefined) {
-          delete frozenTimerMsByOrderRef.current[order.id];
-        }
+        const elapsedMs = getOrderElapsedMs(order, nowMs, frozenTimerMsByOrderRef.current);
 
         return (
           <article
@@ -385,7 +412,20 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
                       )}
                     </p>
                   )}
-                {order.notes && <p className="mt-1 text-xs text-stone-400">📝 {order.notes}</p>}
+                {order.notes && order.status !== 'cancelled' && (
+                  <p className="mt-1 text-xs text-stone-400">📝 {order.notes}</p>
+                )}
+                {order.status === 'cancelled' && (
+                  <p className="mt-2 rounded-md border border-red-800/50 bg-red-950/30 px-2 py-1.5 text-xs text-red-200">
+                    <span className="font-semibold text-red-300">Cancelado</span>
+                    {order.cancelled_at && (
+                      <span className="text-red-200/80"> · {formatDate(order.cancelled_at)}</span>
+                    )}
+                    {order.cancellation_reason && (
+                      <span className="mt-0.5 block text-red-100">{order.cancellation_reason}</span>
+                    )}
+                  </p>
+                )}
               </div>
 
                 <div className="text-right">
@@ -395,15 +435,15 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
               </div>
 
             {(() => {
-              const frozenElapsedMs = frozenTimerMsByOrderRef.current[order.id];
-              const elapsedMs = frozenElapsedMs ?? getElapsedMs(order.created_at, nowMs);
               const level = getTimerLevel(elapsedMs);
               const timerClasses =
-                level === 'green'
-                  ? 'border-emerald-700 bg-emerald-900/30 text-emerald-300'
-                  : level === 'yellow'
-                    ? 'border-yellow-700 bg-yellow-900/30 text-yellow-300'
-                    : 'border-red-700 bg-red-900/30 text-red-300';
+                order.status === 'cancelled'
+                  ? 'border-red-700 bg-red-900/30 text-red-300'
+                  : level === 'green'
+                    ? 'border-emerald-700 bg-emerald-900/30 text-emerald-300'
+                    : level === 'yellow'
+                      ? 'border-yellow-700 bg-yellow-900/30 text-yellow-300'
+                      : 'border-red-700 bg-red-900/30 text-red-300';
               return (
                 <div className="pointer-events-none absolute left-1/2 top-2 -translate-x-1/2">
                   <p className={`inline-flex rounded-lg border px-5 py-1.5 text-xl font-extrabold tracking-wide shadow-lg ${timerClasses}`}>
