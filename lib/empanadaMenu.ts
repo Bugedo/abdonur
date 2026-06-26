@@ -2,8 +2,9 @@ import type { Product } from '../types/index.ts';
 
 export type EmpanadaFlavorKey = 'arabes' | 'jyq' | 'cyq' | 'bondiola';
 export type EmpanadaPresentation = 'unidad' | 'docena' | 'docena_y_media' | 'dos_docenas';
+export type ActiveEmpanadaPresentation = Exclude<EmpanadaPresentation, 'dos_docenas'>;
 
-const presentationOrder: EmpanadaPresentation[] = ['unidad', 'docena', 'docena_y_media'];
+const presentationOrder: ActiveEmpanadaPresentation[] = ['unidad', 'docena', 'docena_y_media'];
 
 export const empanadaFlavorOrder: EmpanadaFlavorKey[] = ['arabes', 'jyq', 'cyq', 'bondiola'];
 
@@ -55,7 +56,7 @@ export function canonicalComboDisplayName(): string {
 
 export function flavorPresentationLabel(
   flavorKey: EmpanadaFlavorKey,
-  presentation: Exclude<EmpanadaPresentation, 'dos_docenas'>
+  presentation: ActiveEmpanadaPresentation
 ): string {
   const flavorName = flavorDisplayNames[flavorKey];
   if (presentation === 'unidad') {
