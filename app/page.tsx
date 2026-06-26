@@ -86,25 +86,6 @@ export default async function HomePage() {
           </div>
         )}
 
-        {/* Extra info */}
-        <div className="max-w-md rounded-xl border border-metallic-500/30 bg-surface-800/90 p-5 text-center text-sm shadow-[inset_0_1px_0_rgba(212,175,55,0.08)] backdrop-blur-md">
-          <p className="font-medium text-metallic-300">
-            Venta por mayor y franquicia:{' '}
-            <a href="tel:+543513224810" className="text-metallic-200 underline-offset-2 hover:underline">
-              351 322 4810
-            </a>
-          </p>
-          <p className="mt-2 text-xs text-stone-500">
-            <a
-              href="https://www.instagram.com/abdonurempanadasarabes/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-metallic-400 hover:text-metallic-300"
-            >
-              @abdonurempanadasarabes
-            </a>
-          </p>
-        </div>
       </div>
     </section>
   );

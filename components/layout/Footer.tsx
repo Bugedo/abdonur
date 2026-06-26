@@ -1,9 +1,7 @@
 export default function Footer() {
   return (
     <footer className="mt-auto border-t border-metallic-500/30 bg-surface-900/95 py-8 text-center shadow-[0_-8px_32px_rgba(0,0,0,0.35)] backdrop-blur-sm">
-      <p className="font-display text-sm font-semibold tracking-wide text-brand-500">Empanadas Árabes Abdonur®</p>
-      <p className="mt-1 text-xs italic text-metallic-300">Simplemente excepcionales</p>
-      <p className="mt-3 text-xs text-stone-500">
+      <p className="text-xs text-stone-500">
         © {new Date().getFullYear()} Todos los derechos reservados
       </p>
       <p className="mt-2 text-xs text-stone-400">
