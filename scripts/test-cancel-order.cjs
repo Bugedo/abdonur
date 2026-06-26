@@ -59,7 +59,7 @@ async function main() {
     .from('orders')
     .insert({
       branch_id: branch.id,
-      customer_name: 'Test Cancelación',
+      customer_name: 'Test Cancellation',
       notes: '',
       delivery_method: 'pickup',
       address: '',
@@ -79,7 +79,7 @@ async function main() {
   });
   if (itemError) throw new Error(`Order item insert failed: ${itemError.message}`);
 
-  const reason = 'Pedido de prueba automatizado';
+  const reason = 'Automated cancellation test';
   const cancelledAt = new Date().toISOString();
 
   const { error: cancelError } = await supabase

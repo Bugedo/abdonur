@@ -1,0 +1,32 @@
+---
+description: English for code, commits, and repo docs; Spanish only for user-facing UI
+alwaysApply: true
+---
+
+# Language policy
+
+## English (required)
+
+- Git commit messages and PR descriptions
+- Code: identifiers, types, functions, variables, file names
+- Comments and JSDoc in source files
+- Scripts: CLI output intended for developers, migration comments, README for developers
+- SQL migrations: comments and constraint names
+
+Use conventional commits in English, e.g. `feat(admin): allow branches to cancel orders`.
+
+## Spanish (allowed)
+
+- User-facing copy only: labels, buttons, errors, placeholders, emails, marketing text
+- Keep in React components/pages shown to customers and branch staff UI strings
+- `es-AR` locale formatting is fine
+
+## Do not
+
+- Mix Spanish in commit messages or code comments going forward
+- Rename user-visible Spanish strings to English unless explicitly requested
+
+## When touching legacy Spanish in code
+
+- Translate comments and script logs to English as part of the same change
+- Do not change customer-facing Spanish UI unless the task requires it

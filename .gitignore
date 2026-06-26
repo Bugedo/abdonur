@@ -44,5 +44,9 @@ docs/CREDENCIALES_ADMIN.md
 **/CREDENCIALES_ADMIN.md
 !docs/CREDENCIALES_ADMIN.example.md
 
-.next-debug.log
-.next-dev.log
+# Local scratch / debug output
+out.txt
+
+# Unsorted asset drops (add to public/ when ready)
+logo (1).png
+nuevafotoabdonur.jpeg

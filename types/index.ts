@@ -1,5 +1,5 @@
 // ─────────────────────────────────────
-// Tipos globales — Empanadas Árabes Abdonur
+// Global types — Abdonur Arabic empanadas
 // ─────────────────────────────────────
 
 // ── Sucursales ──

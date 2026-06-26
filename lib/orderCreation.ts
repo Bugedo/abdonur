@@ -10,10 +10,10 @@ export interface BaseCreateOrderInput {
   address: string;
   paymentMethod: PaymentMethod;
   items: CartItem[];
-  /** Cotización ya validada (flujo público) */
+  /** Pre-validated quote (public checkout flow) */
   deliveryFee?: number;
   deliveryDistanceKm?: number | null;
-  /** Si no hay cotización previa y hay coords, se calcula (ej. admin) */
+  /** When no prior quote and coords exist, compute server-side (e.g. admin) */
   deliveryDestinationLat?: number | null;
   deliveryDestinationLng?: number | null;
 }

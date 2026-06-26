@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * Aplica la migración 011 (coords sucursales + delivery_fee en pedidos).
+ * Apply migration 011 (branch coords + delivery_fee on orders).
  *
- * Obtener URI: Supabase Dashboard → Project Settings → Database → Connection string (Postgres).
+ * Get URI: Supabase Dashboard → Project Settings → Database → Connection string.
  *
  *   DATABASE_URL='postgresql://...' npm run db:apply-delivery-migration
  */
@@ -16,7 +16,7 @@ async function main() {
   const url = process.env.DATABASE_URL;
   if (!url || !/^postgres(ql)?:\/\//i.test(url)) {
     console.error(
-      'Definí DATABASE_URL con la cadena Postgres del proyecto.'
+      'Set DATABASE_URL to the project Postgres connection string.'
     );
     process.exit(1);
   }
@@ -28,7 +28,7 @@ async function main() {
   await client.connect();
   try {
     await client.query(sql);
-    console.log('Migración 011 aplicada correctamente.');
+    console.log('Migration 011 applied successfully.');
   } finally {
     await client.end();
   }

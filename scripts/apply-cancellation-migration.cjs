@@ -1,12 +1,12 @@
 'use strict';
 
 /**
- * Aplica la migración 013 (cancellation_reason, cancelled_at, status CHECK).
+ * Apply migration 013 (cancellation_reason, cancelled_at, status CHECK).
  *
- * Preferido (proyecto linkeado):
+ * Preferred (linked project):
  *   supabase db push --linked
  *
- * Alternativa con Postgres directo:
+ * Alternative (direct Postgres):
  *   DATABASE_URL='postgresql://...' node scripts/apply-cancellation-migration.cjs
  */
 
@@ -34,7 +34,7 @@ async function main() {
 
   const url = process.env.DATABASE_URL;
   if (!url || !/^postgres(ql)?:\/\//i.test(url)) {
-    console.error('Definí DATABASE_URL con la cadena Postgres del proyecto.');
+    console.error('Set DATABASE_URL to the project Postgres connection string.');
     process.exit(1);
   }
 
@@ -45,7 +45,7 @@ async function main() {
   await client.connect();
   try {
     await client.query(sql);
-    console.log('Migración 013 aplicada correctamente.');
+    console.log('Migration 013 applied successfully.');
   } finally {
     await client.end();
   }

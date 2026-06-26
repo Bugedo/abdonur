@@ -1,6 +1,5 @@
--- WhatsApp móvil por sucursal (formato wa.me 549351…).
--- Fuentes: Circuito Gastronómico, directorios y listados públicos (2021–2026).
--- Usar celular (15X-XXXXXXX), no línea fija: wa.me no funciona con fijos.
+-- Branch mobile WhatsApp numbers (wa.me format 549351…).
+-- Use mobile lines (15X-XXXXXXX), not landlines — wa.me does not work with landlines.
 
 UPDATE branches
 SET whatsapp_number = '5493517061970'

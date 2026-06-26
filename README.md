@@ -1,83 +1,26 @@
-# Abdonur - Acceso Admin
+# Abdonur — Online Ordering
 
-## URL de acceso
+Arabic empanada ordering system for Abdonur branches in Córdoba, Argentina.
 
-- Login admin: `https://abdonur.vercel.app/admin`
+- **Production:** https://abdonur.vercel.app
+- **Admin login:** https://abdonur.vercel.app/admin
 
-## Credenciales
+## Branches
 
-Ver `docs/CREDENCIALES_ADMIN.md` (archivo local, ignorado por git). Plantilla: `docs/CREDENCIALES_ADMIN.example.md`.
-
-## Comportamiento
-
-- Se entra siempre por `/admin`.
-- `admin` entra al panel general.
-- Cada usuario de sucursal entra a su panel y solo puede operar sus pedidos.
-# Abdonur - Acceso Admin
-
-## URL de acceso
-
-- Login admin: `https://abdonur.vercel.app/admin`
-
-## Credenciales
-
-Ver `docs/CREDENCIALES_ADMIN.md` (archivo local, ignorado por git). Plantilla: `docs/CREDENCIALES_ADMIN.example.md`.
-
-## Comportamiento
-
-- Se entra siempre por `/admin`.
-- `admin` entra al panel general.
-- Cada usuario de sucursal entra a su panel y solo puede operar sus pedidos.
-# Abdonur - Accesos Admin
-
-## URLs
-
-- Sitio publico: `https://abdonur.vercel.app`
-- Login admin: `https://abdonur.vercel.app/admin`
-
-## Como funciona el login
-
-- Se entra siempre por `/admin`.
-- Si el usuario es de sucursal, entra a su panel de sucursal.
-- Si el usuario es `admin`, entra al panel general (superadmin).
-
-## Credenciales
-
-Ver `docs/CREDENCIALES_ADMIN.md` (archivo local, ignorado por git). Plantilla: `docs/CREDENCIALES_ADMIN.example.md`.
-
-## Modo testing (opcional)
-
-- Variable: `ADMIN_TESTING_MODE=true`
-- Efecto: permite entrar a rutas admin sin login.
-# Empanadas Árabes Abdonur — Sistema de Pedidos Online
-
-## URLs
-
-- **Sitio público:** https://abdonur.vercel.app
-- **Panel admin (hub):** https://abdonur.vercel.app/admin
-
----
-
-## Paneles de Administración
-
-### 🔐 Modo Producción (actual)
-
-El panel admin funciona con login en **`/admin`**. Según el usuario ingresado, redirige automáticamente al panel correspondiente.
-
-| Panel | URL | Descripción |
+| Branch | Address | Orders WhatsApp |
 |---|---|---|
-| **Login Admin** | `/admin` | Acceso con usuario y contraseña |
-| **Super Admin** | `/admin/admin` | Ve TODAS las sucursales y todos los pedidos |
-| **San Vicente** | `/admin/sucursal/san-vicente` | Pedidos de Abdonur San Vicente |
-| **Alta Córdoba** | `/admin/sucursal/alta-cordoba` | Pedidos de Abdonur Alta Córdoba |
-| **Alberdi** | `/admin/sucursal/alberdi` | Pedidos de Abdonur Alberdi |
-| **Nueva Córdoba** | `/admin/sucursal/nueva-cordoba` | Pedidos de Abdonur Nueva Córdoba |
-| **Marqués** | `/admin/sucursal/marques` | Pedidos de Abdonur Marqués |
-| **Gral. Pueyrredón** | `/admin/sucursal/pueyrredon` | Pedidos de Abdonur Gral. Pueyrredón |
+| **San Vicente** | Ambrosio Funes 1241, San Vicente, Córdoba | +54 9 351 706-1970 |
+| **Alta Córdoba** | Fragueiro 2118, Alta Córdoba | +54 9 351 761-9358 |
+| **Alberdi** | Av. Colón 3228, Alberdi, Córdoba | +54 9 351 205-2055 |
+| **Nueva Córdoba** | Nueva Córdoba (delivery only) | +54 9 351 761-9358 |
+| **Marqués** | Luciano de Figueroa 305, esq Pimentel | +54 9 351 240-4046 |
+| **Gral. Pueyrredón** | Av. Patria 920, esquina Armenia | +54 9 351 817-6818 |
 
-### URLs públicas por sucursal
+Wholesale & franchise: **3513224810**
 
-| Sucursal | URL |
+### Public URLs
+
+| Branch | Path |
 |---|---|
 | San Vicente | `/sucursal/san-vicente` |
 | Alta Córdoba | `/sucursal/alta-cordoba` |
@@ -86,73 +29,58 @@ El panel admin funciona con login en **`/admin`**. Según el usuario ingresado, 
 | Marqués | `/sucursal/marques` |
 | Gral. Pueyrredón | `/sucursal/pueyrredon` |
 
-### Cómo usar los paneles
+## Admin
 
-1. Ir a **`/admin`** e ingresar usuario + contraseña.
-2. Si el usuario es de sucursal, redirige a **`/admin/sucursal/[slug]`**.
-3. Si el usuario es `admin`, redirige a **`/admin/admin`**.
-4. Desde el listado se puede abrir cada pedido y cambiar estado: Nuevo → Confirmado → Completado / Cancelado.
+Login at `/admin`. Branch users are redirected to their panel; `admin` goes to the super-admin dashboard.
 
-### Activar modo testing (opcional)
+| Panel | URL |
+|---|---|
+| Login | `/admin` |
+| Super admin | `/admin/admin` |
+| Branch panel | `/admin/sucursal/[slug]` |
 
-Definir variable de entorno:
-- `ADMIN_TESTING_MODE=true`
+Order flow: **New → Confirmed → On the way / Ready → Completed** (or **Cancelled** from New/Confirmed).
 
-Con eso:
-- `middleware.ts` deja pasar rutas `/admin/*` sin login
-- `actions/updateOrderStatus.ts` omite validación de sesión admin
+Credentials: local `docs/CREDENCIALES_ADMIN.md` (gitignored). Template: `docs/CREDENCIALES_ADMIN.example.md`.
 
-Sin esa variable (o en `false`), el sistema exige login en `/admin`.
+### Testing mode (optional)
 
----
+Set `ADMIN_TESTING_MODE=true` to allow `/admin/*` without login and skip session checks in `updateOrderStatus`.
 
-## Sucursales
+## Development
 
-| Sucursal | Dirección | WhatsApp Pedidos |
-|---|---|---|
-| **Abdonur San Vicente** | Ambrosio Funes 1241, San Vicente, Córdoba | +54 9 351 706-1970 |
-| **Abdonur Alta Córdoba** | Fragueiro 2118, Alta Córdoba | +54 9 351 761-9358 |
-| **Abdonur Alberdi** | Av. Colón 3228, Alberdi, Córdoba | +54 9 351 205-2055 |
-| **Abdonur Nueva Córdoba** | Nueva Córdoba (Solo Delivery) | +54 9 351 761-9358 |
-| **Abdonur Marqués** | Luciano de Figueroa 305, esq Pimentel | +54 9 351 240-4046 |
-| **Abdonur Gral. Pueyrredón** | Av. Patria 920, esquina Armenia | +54 9 351 817-6818 |
+```bash
+npm install
+npm run dev
+```
 
-Venta por mayor y franquicia: **3513224810**
+### Scripts
 
----
+| Command | Description |
+|---|---|
+| `npm test` | Unit tests |
+| `npm run db:clear-orders` | Delete all orders (Supabase API) |
+| `npm run db:apply-whatsapp-migration` | Update branch WhatsApp numbers |
+| `npm run db:apply-cancellation-migration` | Apply cancellation migration (Postgres URL) |
+| `npm run db:test-cancel-order` | Smoke test order cancellation |
 
-## Credenciales de Administración
+Apply SQL migrations to the linked Supabase project:
 
-Ver `docs/CREDENCIALES_ADMIN.md` (archivo local, ignorado por git). Plantilla: `docs/CREDENCIALES_ADMIN.example.md`.
+```bash
+supabase db push --linked
+```
 
----
+Requires `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in `.env.local`.
 
-## Menú
-
-### Empanadas Árabes
-- Empanada Árabe (unidad): $1.600
-- Docena de Empanadas Árabes: $18.000
-
-### Comidas
-- Picada p 2 (comen 2, pican 3): $19.500
-- Quebbe (1 Kg): $18.400 / (Porción): $4.500
-- Niños Envueltos (1 Kg): $27.000 / (Porción): $7.000
-- Puré de Garbanzos (1 Kg): $11.900 / (Porción): $2.600
-- Laben (250 cm3): $2.400
-- Aceitunas a la Árabe (1 Kg): $21.000 / (Porción): $4.000
-
-### Postres
-- Namura (Porción): $1.600
-- Backlawa (Porción): $2.500
-
-> Nuestros productos NO son aptos para Celíacos.
-> Todos nuestros productos SÍ son aptos para APLV, excepto los postres.
-
----
-
-## Stack Técnico
+## Stack
 
 - **Frontend:** Next.js 15 (App Router), TypeScript, Tailwind CSS
-- **Backend/DB:** Supabase (Auth, PostgreSQL, RLS)
+- **Database:** Supabase (PostgreSQL, RLS)
 - **Hosting:** Vercel
-- **Instagram:** @abdonurcomidasarabes
+
+## Language policy
+
+- **English:** code, commits, migrations, developer docs, scripts
+- **Spanish:** customer- and staff-facing UI copy only
+
+See `.cursor/rules/english-codebase.mdc`.

@@ -1,11 +1,11 @@
 'use strict';
 
 /**
- * Borra todos los pedidos de prueba (orders + order_items por CASCADE).
+ * Deletes all test orders (order_items removed via CASCADE).
  *
  *   npm run db:clear-orders
  *
- * Requiere NEXT_PUBLIC_SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en .env.local
+ * Requires NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local
  */
 
 const fs = require('fs');
@@ -33,7 +33,7 @@ async function main() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !serviceKey) {
-    console.error('Faltan NEXT_PUBLIC_SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY en .env.local');
+    console.error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env.local');
     process.exit(1);
   }
 
@@ -49,11 +49,11 @@ async function main() {
     .select('*', { count: 'exact', head: true });
   if (itemsCountError) throw itemsCountError;
 
-  console.log(`Pedidos actuales: ${ordersBefore ?? 0}`);
-  console.log(`Ítems actuales: ${itemsBefore ?? 0}`);
+  console.log(`Current orders: ${ordersBefore ?? 0}`);
+  console.log(`Current items: ${itemsBefore ?? 0}`);
 
   if (!ordersBefore) {
-    console.log('No hay pedidos para borrar.');
+    console.log('No orders to delete.');
     return;
   }
 
@@ -70,7 +70,7 @@ async function main() {
     .from('order_items')
     .select('*', { count: 'exact', head: true });
 
-  console.log(`Listo. Pedidos: ${ordersAfter ?? 0}, ítems: ${itemsAfter ?? 0}`);
+  console.log(`Done. Orders: ${ordersAfter ?? 0}, items: ${itemsAfter ?? 0}`);
 }
 
 main().catch((err) => {

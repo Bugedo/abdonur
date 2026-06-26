@@ -1,30 +1,30 @@
-# Acceso al panel de administración — Abdonur
+# Admin panel access — Abdonur
 
-Copiá este archivo a `CREDENCIALES_ADMIN.md` en la misma carpeta y completá los valores reales.
+Copy this file to `CREDENCIALES_ADMIN.md` in the same folder and fill in real values.
 
-**Este archivo de ejemplo sí puede versionarse. El archivo con contraseñas reales está en `.gitignore`.**
+**This example file can be committed. The file with real passwords is in `.gitignore`.**
 
 ---
 
-## URL de entrada
+## Entry URL
 
-- Producción: https://abdonur.vercel.app/admin
+- Production: https://abdonur.vercel.app/admin
 - Local: http://localhost:3000/admin
 
 ## Super Admin
 
-| Campo | Valor |
+| Field | Value |
 |-------|-------|
-| Usuario | `admin` |
-| Contraseña | *(completar localmente)* |
+| Username | `admin` |
+| Password | *(fill in locally)* |
 
-## Sucursales
+## Branches
 
-| Sucursal | Usuario | Contraseña |
+| Branch | Username | Password |
 |----------|---------|------------|
-| San Vicente | `sanvicente` | *(completar)* |
-| Alta Córdoba | `altacordoba` | *(completar)* |
-| Alberdi | `alberdi` | *(completar)* |
-| Nueva Córdoba | `nuevacordoba` | *(completar — redirige a panel Alta Córdoba)* |
-| Marqués | `marques` | *(completar)* |
-| Gral. Pueyrredón | `pueyrredon` | *(completar)* |
+| San Vicente | `sanvicente` | *(fill in)* |
+| Alta Córdoba | `altacordoba` | *(fill in)* |
+| Alberdi | `alberdi` | *(fill in)* |
+| Nueva Córdoba | `nuevacordoba` | *(fill in — redirects to Alta Córdoba panel)* |
+| Marqués | `marques` | *(fill in)* |
+| Gral. Pueyrredón | `pueyrredon` | *(fill in)* |

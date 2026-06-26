@@ -1,0 +1,35 @@
+"""Commit message rewrites for git-filter-repo --message-callback."""
+
+from __future__ import annotations
+
+# Exact first-line replacements (Spanish → English) and polish passes.
+SUBJECT_MAP: dict[str, str] = {
+    "feat(ui): menú con vidrio, transiciones y micro-animaciones": "feat(ui): glass menu, transitions and micro-animations",
+    "chore(db): migración empandas pack sizes y precios menú abril 2026": "chore(db): empanada pack sizes and April 2026 menu price migration",
+    "feat: WhatsApp oficial por sucursal + marca visual dorada/roja": "feat: official branch WhatsApp numbers and gold/red branding",
+    "chore: imágenes públicas del menú en public/images/menu": "chore: add public menu images under public/images/menu",
+    "chore: checkpoint antes de delivery OSM (distancia/precio)": "chore: checkpoint before OSM delivery distance pricing",
+    "feat(delivery): envío por Haversine, Photon OSM y migración DB": "feat(delivery): Haversine delivery, Photon OSM and DB migration",
+    "chore(test): npm test rápido con Node y suite delivery": "chore(test): add fast Node npm test script and delivery suite",
+    "feat(confirm): dirección sin cotización automática de envío": "feat(confirm): address input without automatic delivery quote",
+    "feat(home): actualizar foto de familia en el hero": "feat(home): update family photo in hero section",
+    "feat(admin): habilitar pedidos manuales desde el panel de sucursales": "feat(admin): enable manual orders from branch panels",
+    "chore: ignorar credenciales admin y sacarlas del README": "chore: gitignore admin credentials and remove them from README",
+    "fix(whatsapp): corregir números móviles de sucursales y links wa.me": "fix(whatsapp): correct branch mobile numbers and wa.me links",
+    "wip: merge nueva cordoba operations into alta scope": "refactor(admin): merge nueva cordoba operations into alta cordoba scope",
+    "update home branch cards ordering and visual emphasis": "feat(home): update branch card ordering and visual emphasis",
+    "chore: english developer docs, scripts and codebase policy": "chore: english developer docs, scripts and codebase policy",
+}
+
+
+def message(commit_message: bytes) -> bytes:
+    text = commit_message.decode("utf-8", errors="replace")
+    lines = text.splitlines()
+    if not lines:
+        return commit_message
+
+    first = lines[0].strip()
+    if first in SUBJECT_MAP:
+        lines[0] = SUBJECT_MAP[first]
+
+    return "\n".join(lines).encode("utf-8")
