@@ -127,7 +127,7 @@ export default async function SuperAdminPage() {
       {/* All orders */}
       <div className="mt-8">
         <h2 className="text-lg font-bold text-white">Todos los pedidos</h2>
-        <BranchOrdersPanel orders={allOrders} showBranchName />
+        <BranchOrdersPanel orders={allOrders} showBranchName enableSounds={false} />
       </div>
     </section>
   );

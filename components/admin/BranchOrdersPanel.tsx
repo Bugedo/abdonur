@@ -13,6 +13,8 @@ type OrdersFilter = 'all' | 'new' | 'confirmed' | 'on_the_way' | 'ready' | 'past
 interface BranchOrdersPanelProps {
   orders: AdminOrderWithItems[];
   showBranchName?: boolean;
+  /** Branch panels: true. Super-admin all-branches view: false. */
+  enableSounds?: boolean;
 }
 
 const actionMetaByStatus: Record<OrderStatus, { label: string; classes: string }> = {
@@ -94,16 +96,19 @@ function formatElapsed(elapsedMs: number) {
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
-export default function BranchOrdersPanel({ orders, showBranchName = false }: BranchOrdersPanelProps) {
+export default function BranchOrdersPanel({
+  orders,
+  showBranchName = false,
+  enableSounds = true,
+}: BranchOrdersPanelProps) {
   const router = useRouter();
-  const soundsAllowed = !showBranchName;
   const frozenTimerMsByOrderRef = useRef<Record<string, number>>({});
   const [expandedOrderIds, setExpandedOrderIds] = useState<Set<string>>(new Set());
   const [loadingOrderId, setLoadingOrderId] = useState<string | null>(null);
   const [errorsByOrder, setErrorsByOrder] = useState<Record<string, string>>({});
   const [activeFilter, setActiveFilter] = useState<OrdersFilter>('all');
   const [nowMs, setNowMs] = useState(() => Date.now());
-  const [soundEnabled, setSoundEnabled] = useState(soundsAllowed);
+  const [soundEnabled, setSoundEnabled] = useState(enableSounds);
   const audioContextRef = useRef<AudioContext | null>(null);
   const lastBeepKeyRef = useRef<string | null>(null);
   const knownOrderIdsRef = useRef<Set<string>>(new Set());
@@ -114,24 +119,30 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
     return () => window.clearInterval(timer);
   }, []);
 
-  const getAudioContext = useCallback(() => {
-    if (!soundEnabled || !soundsAllowed) return null;
-    const AudioCtx = window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  const unlockAudioContext = useCallback(async (): Promise<AudioContext | null> => {
+    if (!enableSounds) return null;
+    const AudioCtx =
+      window.AudioContext ||
+      (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!AudioCtx) return null;
     const ctx = audioContextRef.current ?? new AudioCtx();
     audioContextRef.current = ctx;
     if (ctx.state === 'suspended') {
-      void ctx.resume();
+      try {
+        await ctx.resume();
+      } catch {
+        return null;
+      }
     }
-    return ctx;
-  }, [soundEnabled, soundsAllowed]);
+    return ctx.state === 'running' ? ctx : null;
+  }, [enableSounds]);
 
-  const playTimerBeep = useCallback(() => {
-    if (!soundEnabled || !soundsAllowed) return;
+  const getAudioContext = useCallback(async (): Promise<AudioContext | null> => {
+    if (!soundEnabled || !enableSounds) return null;
+    return unlockAudioContext();
+  }, [soundEnabled, enableSounds, unlockAudioContext]);
 
-    const ctx = getAudioContext();
-    if (!ctx) return;
-
+  const playTimerBeepOn = useCallback((ctx: AudioContext) => {
     const oscillator = ctx.createOscillator();
     const gain = ctx.createGain();
 
@@ -140,20 +151,23 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
 
     const startAt = ctx.currentTime;
     gain.gain.setValueAtTime(0.0001, startAt);
-    gain.gain.exponentialRampToValueAtTime(0.08, startAt + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.16, startAt + 0.01);
     gain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.18);
 
     oscillator.connect(gain);
     gain.connect(ctx.destination);
     oscillator.start(startAt);
     oscillator.stop(startAt + 0.18);
-  }, [getAudioContext, soundEnabled, soundsAllowed]);
+  }, []);
 
-  const playNewOrderSound = useCallback(() => {
-    if (!soundEnabled || !soundsAllowed) return;
-    const ctx = getAudioContext();
+  const playTimerBeep = useCallback(async () => {
+    if (!soundEnabled || !enableSounds) return;
+    const ctx = await getAudioContext();
     if (!ctx) return;
+    playTimerBeepOn(ctx);
+  }, [getAudioContext, soundEnabled, enableSounds, playTimerBeepOn]);
 
+  const playNewOrderSoundOn = useCallback((ctx: AudioContext) => {
     const notes = [1046, 1318];
     const base = ctx.currentTime;
 
@@ -166,7 +180,7 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
 
       const startAt = base + index * 0.2;
       gain.gain.setValueAtTime(0.0001, startAt);
-      gain.gain.exponentialRampToValueAtTime(0.09, startAt + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.18, startAt + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.16);
 
       oscillator.connect(gain);
@@ -174,7 +188,34 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
       oscillator.start(startAt);
       oscillator.stop(startAt + 0.16);
     });
-  }, [getAudioContext, soundEnabled, soundsAllowed]);
+  }, []);
+
+  const playNewOrderSound = useCallback(async () => {
+    if (!soundEnabled || !enableSounds) return;
+    const ctx = await getAudioContext();
+    if (!ctx) return;
+    playNewOrderSoundOn(ctx);
+  }, [getAudioContext, soundEnabled, enableSounds, playNewOrderSoundOn]);
+
+  const enablePanelSound = useCallback(async () => {
+    const ctx = await unlockAudioContext();
+    if (!ctx) return;
+    setSoundEnabled(true);
+    playTimerBeepOn(ctx);
+  }, [unlockAudioContext, playTimerBeepOn]);
+
+  useEffect(() => {
+    if (!enableSounds || !soundEnabled) return;
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        void unlockAudioContext();
+      }
+    };
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+  }, [enableSounds, soundEnabled, unlockAudioContext]);
 
   const sortedOrders = useMemo(
     () => [...orders].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()),
@@ -208,7 +249,7 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
   }, [activeFilter, sortedOrders]);
 
   useEffect(() => {
-    if (!soundEnabled || !soundsAllowed) return;
+    if (!soundEnabled || !enableSounds) return;
 
     // Alarm only while order is not yet "on_the_way" or "ready".
     const monitoredOrders = sortedOrders.filter((o) => o.status === 'new' || o.status === 'confirmed');
@@ -233,8 +274,8 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
     const beepKey = `${highestLevel}-${minuteBucket}-${slot}`;
     if (lastBeepKeyRef.current === beepKey) return;
     lastBeepKeyRef.current = beepKey;
-    playTimerBeep();
-  }, [nowMs, sortedOrders, soundEnabled, playTimerBeep, soundsAllowed]);
+    void playTimerBeep();
+  }, [nowMs, sortedOrders, soundEnabled, playTimerBeep, enableSounds]);
 
   // Auto-refresh so new orders enter without manual F5.
   useEffect(() => {
@@ -255,7 +296,7 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
 
     const hasNewOrder = sortedOrders.some((order) => !knownOrderIdsRef.current.has(order.id));
     if (hasNewOrder) {
-      playNewOrderSound();
+      void playNewOrderSound();
     }
     knownOrderIdsRef.current = currentIds;
   }, [sortedOrders, playNewOrderSound]);
@@ -332,10 +373,16 @@ export default function BranchOrdersPanel({ orders, showBranchName = false }: Br
           </button>
         ))}
         </div>
-        {soundsAllowed && (
+        {enableSounds && (
           <button
             type="button"
-            onClick={() => setSoundEnabled((prev) => !prev)}
+            onClick={() => {
+              if (soundEnabled) {
+                setSoundEnabled(false);
+                return;
+              }
+              void enablePanelSound();
+            }}
             className={`rounded-md border px-2.5 py-1 text-xs font-semibold ${
               soundEnabled
                 ? 'border-emerald-700 bg-emerald-900/30 text-emerald-300'
