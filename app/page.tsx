@@ -57,7 +57,6 @@ export default async function HomePage() {
         <h1 className="font-display text-3xl font-bold tracking-[0.02em] text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.85)] sm:text-4xl md:text-5xl md:tracking-[0.04em]">
           Empanadas Árabes <span className="text-brand-500 drop-shadow-[0_0_20px_rgba(192,32,38,0.35)]">Abdonur</span>
         </h1>
-        <p className="mt-3 max-w-md text-metallic-300 italic drop-shadow sm:text-lg">Simplemente excepcionales</p>
         <GoldDivider className="my-6 max-w-xs sm:max-w-md" />
         <p className="text-sm font-medium italic text-metallic-200 drop-shadow sm:text-base">Lejos... la mejor!!!</p>
         <p className="mt-4 max-w-lg text-sm text-[#e0e0e0]/95 drop-shadow sm:text-base">
