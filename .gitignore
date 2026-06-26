@@ -46,6 +46,7 @@ docs/CREDENCIALES_ADMIN.md
 
 # Local scratch / debug output
 out.txt
+scripts/__pycache__/
 
 # Unsorted asset drops (add to public/ when ready)
 logo (1).png
