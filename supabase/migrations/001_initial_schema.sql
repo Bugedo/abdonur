@@ -1,13 +1,13 @@
 -- ═══════════════════════════════════════════════════════════════
--- EMPANADAS ÁRABES ABDONUR — Migración inicial
--- Tablas, relaciones, RLS y seeds
+-- EMPANADAS ÁRABES ABDONUR — Initial migration
+-- Tables, relationships, RLS, and seeds
 -- ═══════════════════════════════════════════════════════════════
 
 -- ─────────────────────────────────────
--- 1. TABLAS
+-- 1. TABLES
 -- ─────────────────────────────────────
 
--- Sucursales
+-- Branches
 CREATE TABLE IF NOT EXISTS branches (
   id         UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   slug       TEXT UNIQUE,
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS branches (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Productos
+-- Products
 CREATE TABLE IF NOT EXISTS products (
   id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name        TEXT NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS products (
   created_at  TIMESTAMPTZ DEFAULT now()
 );
 
--- Pedidos
+-- Orders
 CREATE TABLE IF NOT EXISTS orders (
   id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   branch_id       UUID NOT NULL REFERENCES branches(id) ON DELETE CASCADE,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS orders (
   created_at      TIMESTAMPTZ DEFAULT now()
 );
 
--- Items del pedido
+-- Order line items
 CREATE TABLE IF NOT EXISTS order_items (
   id         UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   order_id   UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
@@ -54,9 +54,9 @@ CREATE TABLE IF NOT EXISTS order_items (
   unit_price NUMERIC(10,2) NOT NULL
 );
 
--- Admins vinculados a sucursales (usa auth.users de Supabase)
--- role: 'branch_admin' (ve solo su sucursal) | 'super_admin' (ve todo)
--- branch_id es NULL para super_admin
+-- Admins linked to branches (uses Supabase auth.users)
+-- role: 'branch_admin' (own branch only) | 'super_admin' (all branches)
+-- branch_id is NULL for super_admin
 CREATE TABLE IF NOT EXISTS admin_users (
   id         UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id    UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
 );
 
 -- ─────────────────────────────────────
--- 2. ÍNDICES
+-- 2. INDEXES
 -- ─────────────────────────────────────
 
 CREATE INDEX IF NOT EXISTS idx_orders_branch_id ON orders(branch_id);
@@ -87,31 +87,31 @@ ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 
--- BRANCHES: cualquiera puede leer las activas
+-- BRANCHES: anyone can read active branches
 CREATE POLICY "branches_public_read" ON branches
   FOR SELECT USING (is_active = true);
 
--- BRANCHES: admins pueden ver todas
+-- BRANCHES: admins can read all branches
 CREATE POLICY "branches_admin_read" ON branches
   FOR SELECT USING (
     auth.uid() IN (SELECT user_id FROM admin_users)
   );
 
--- PRODUCTS: cualquiera puede leer los activos
+-- PRODUCTS: anyone can read active products
 CREATE POLICY "products_public_read" ON products
   FOR SELECT USING (is_active = true);
 
--- PRODUCTS: admins pueden ver todos
+-- PRODUCTS: admins can read all products
 CREATE POLICY "products_admin_read" ON products
   FOR SELECT USING (
     auth.uid() IN (SELECT user_id FROM admin_users)
   );
 
--- ORDERS: cualquiera puede crear pedidos (anon insert)
+-- ORDERS: anyone can create orders (anon insert)
 CREATE POLICY "orders_public_insert" ON orders
   FOR INSERT WITH CHECK (true);
 
--- ORDERS: admins ven pedidos de SU sucursal o todos si es super_admin
+-- ORDERS: admins read orders for their branch or all if super_admin
 CREATE POLICY "orders_admin_read" ON orders
   FOR SELECT USING (
     EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid() AND role = 'super_admin')
@@ -121,7 +121,7 @@ CREATE POLICY "orders_admin_read" ON orders
     )
   );
 
--- ORDERS: admins pueden actualizar pedidos de SU sucursal o todos si es super_admin
+-- ORDERS: admins update orders for their branch or all if super_admin
 CREATE POLICY "orders_admin_update" ON orders
   FOR UPDATE USING (
     EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid() AND role = 'super_admin')
@@ -131,11 +131,11 @@ CREATE POLICY "orders_admin_update" ON orders
     )
   );
 
--- ORDER_ITEMS: cualquiera puede insertar
+-- ORDER_ITEMS: anyone can insert
 CREATE POLICY "order_items_public_insert" ON order_items
   FOR INSERT WITH CHECK (true);
 
--- ORDER_ITEMS: solo admins de la sucursal o super_admin pueden leer
+-- ORDER_ITEMS: branch admins or super_admin can read
 CREATE POLICY "order_items_admin_read" ON order_items
   FOR SELECT USING (
     EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid() AND role = 'super_admin')
@@ -147,7 +147,7 @@ CREATE POLICY "order_items_admin_read" ON order_items
     )
   );
 
--- ADMIN_USERS: solo el propio admin puede leer su registro, y super_admin puede leer todos
+-- ADMIN_USERS: own row or super_admin reads all
 CREATE POLICY "admin_users_self_read" ON admin_users
   FOR SELECT USING (
     user_id = auth.uid()
@@ -156,10 +156,10 @@ CREATE POLICY "admin_users_self_read" ON admin_users
   );
 
 -- ─────────────────────────────────────
--- 4. SEEDS — Datos iniciales
+-- 4. SEEDS — Initial data
 -- ─────────────────────────────────────
 
--- 6 Sucursales reales de Córdoba
+-- 6 real Córdoba branches
 INSERT INTO branches (slug, name, address, whatsapp_number, opening_hours, is_active) VALUES
   ('san-vicente',   'Abdonur San Vicente',       'Ambrosio Funes 1241, San Vicente, Córdoba',                  '5493512705825',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
   ('alta-cordoba',  'Abdonur Alta Córdoba',      'Fragueiro 2118, Alta Córdoba',                               '5493517189630',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
@@ -168,7 +168,7 @@ INSERT INTO branches (slug, name, address, whatsapp_number, opening_hours, is_ac
   ('marques',       'Abdonur Marqués',           'Luciano de Figueroa 305, esq Pimentel, Marqués, Córdoba',    '5493517017209',  '11:30 a 14:30 | 19:30 a 23:30 hs', true),
   ('pueyrredon',    'Abdonur Gral. Pueyrredón',  'Av. Patria 920, esquina Armenia, Gral. Pueyrredón, Córdoba', '5493516519006',  '11:30 a 14:30 | 19:30 a 23:30 hs', true);
 
--- Productos reales
+-- Real product catalog
 INSERT INTO products (name, description, price, category, image_url, is_active) VALUES
   -- Empanadas
   ('FATAY - Árabes',              'Empanada árabe tradicional',                                                                    1800.00, 'empanadas', '/images/menu/empanadas/fatay-arabe.jpeg', true),

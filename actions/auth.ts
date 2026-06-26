@@ -54,7 +54,7 @@ export async function login(formData: FormData) {
     return { error: 'Usuario inválido. Usá el usuario corto de sucursal (ej: sanvicente).' };
   }
 
-  // Nueva Córdoba opera en el panel de Alta Córdoba.
+  // Nueva Cordoba orders are managed from the Alta Cordoba panel.
   const altaCordobaBranch = branches.find((b) => b.slug === 'alta-cordoba');
   const effectiveBranch =
     matchedBranch.slug === 'nueva-cordoba' && altaCordobaBranch ? altaCordobaBranch : matchedBranch;

@@ -75,7 +75,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       </form>
 
       <div className="mt-6 space-y-6">
-        {/* Header del pedido */}
+        {/* Order header */}
         <div className="rounded-xl border border-surface-600 bg-surface-800 p-6">
           <div className="flex items-start justify-between">
             <div>
@@ -94,7 +94,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             </div>
           </div>
 
-          {/* Info de entrega y pago */}
+          {/* Delivery and payment info */}
           <div className="mt-4 space-y-2 text-sm">
             <p className="text-stone-300">
               <span className="font-medium text-stone-400">Entrega:</span>{' '}
@@ -150,7 +150,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
         </div>
 
-        {/* Items del pedido */}
+        {/* Order items */}
         <div className="rounded-xl border border-surface-600 bg-surface-800 p-6">
           <h2 className="text-lg font-bold text-white">Detalle del pedido</h2>
           <div className="mt-4 space-y-2">
@@ -196,7 +196,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           </div>
         </div>
 
-        {/* Acciones */}
+        {/* Actions */}
         <OrderActions orderId={order.id} currentStatus={order.status} />
       </div>
     </section>

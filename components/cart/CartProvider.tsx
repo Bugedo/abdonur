@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useCallback, ReactNode, useEffect 
 import { useParams } from 'next/navigation';
 import { Product, CartItem } from '@/types';
 
-// ─── Mínimo de items para pedir ───
+// ─── Minimum items required to place an order ───
 export const MIN_ITEMS = 1;
 
 interface CartContextType {

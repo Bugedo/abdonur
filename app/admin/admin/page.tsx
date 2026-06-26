@@ -44,7 +44,7 @@ export default async function SuperAdminPage() {
 
   return (
     <section className="py-4">
-      {/* Volver */}
+      {/* Back link */}
       <div className="flex items-center justify-between">
         <Link
           href="/admin"
@@ -86,7 +86,7 @@ export default async function SuperAdminPage() {
         </div>
       </div>
 
-      {/* Resumen por sucursal */}
+      {/* Branch summary */}
       <div className="mt-8">
         <h2 className="text-lg font-bold text-white">Sucursales</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -124,7 +124,7 @@ export default async function SuperAdminPage() {
         </div>
       </div>
 
-      {/* Todos los pedidos */}
+      {/* All orders */}
       <div className="mt-8">
         <h2 className="text-lg font-bold text-white">Todos los pedidos</h2>
         <BranchOrdersPanel orders={allOrders} showBranchName />

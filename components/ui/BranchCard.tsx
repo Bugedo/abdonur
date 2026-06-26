@@ -21,18 +21,18 @@ export default function BranchCard({ branch, displayName }: BranchCardProps) {
         }}
       />
       <div className="relative z-10">
-        {/* Nombre */}
+        {/* Name */}
         <h2 className="font-display text-3xl font-semibold text-white group-hover:text-metallic-300 sm:text-4xl">
           {displayName ?? branch.name}
         </h2>
 
-        {/* Dirección */}
+        {/* Address */}
         <p className="mt-2 flex items-start gap-2 text-sm text-stone-400">
           <span className="mt-0.5">📍</span>
           <span>{branch.address}</span>
         </p>
 
-        {/* Horarios */}
+        {/* Hours */}
         <p className="mt-1 flex items-start gap-2 text-sm text-stone-500">
           <span className="mt-0.5">🕐</span>
           <span>{branch.opening_hours}</span>

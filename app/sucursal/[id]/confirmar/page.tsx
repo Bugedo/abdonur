@@ -15,7 +15,7 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
 
   return (
     <section className="mx-auto max-w-2xl py-8">
-      {/* Volver */}
+      {/* Back link */}
       <Link
         href={`/sucursal/${branch.slug}/menu`}
         className="inline-flex items-center gap-1 text-sm text-stone-500 transition-colors hover:text-metallic-400"
@@ -23,13 +23,13 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
         ← Volver al menú
       </Link>
 
-      {/* Título */}
+      {/* Title */}
       <div className="mt-6">
         <h1 className="font-display text-3xl font-semibold tracking-wide text-white">Confirmar pedido</h1>
         <p className="mt-2 text-sm text-stone-400">{branch.name} — Últimos detalles</p>
       </div>
 
-      {/* Parte interactiva */}
+      {/* Interactive section */}
       <ConfirmClient branch={branch} />
     </section>
   );

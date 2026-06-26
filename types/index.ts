@@ -2,7 +2,7 @@
 // Global types — Abdonur Arabic empanadas
 // ─────────────────────────────────────
 
-// ── Sucursales ──
+// ── Branches ──
 export interface Branch {
   id: string;
   slug: string;
@@ -15,7 +15,7 @@ export interface Branch {
   longitude?: number | null;
 }
 
-// ── Productos ──
+// ── Products ──
 export type ProductCategory = 'empanadas' | 'comidas' | 'postres';
 
 export interface Product {
@@ -28,7 +28,7 @@ export interface Product {
   is_active: boolean;
 }
 
-// ── Pedidos ──
+// ── Orders ──
 export type OrderStatus = 'new' | 'confirmed' | 'on_the_way' | 'ready' | 'completed' | 'cancelled';
 export type DeliveryMethod = 'pickup' | 'delivery';
 export type PaymentMethod = 'cash' | 'transfer';
@@ -53,7 +53,7 @@ export interface Order {
   order_items?: OrderItem[];
 }
 
-// ── Items del pedido ──
+// ── Order items ──
 export interface OrderItem {
   id: string;
   order_id: string;
@@ -63,7 +63,7 @@ export interface OrderItem {
   product?: Product;
 }
 
-// ── Carrito (estado local, no se guarda en DB) ──
+// ── Cart (local state, not persisted) ──
 export interface CartItem {
   cartKey?: string;
   product: Product;
@@ -88,7 +88,7 @@ export type AdminOrderWithItems = Omit<Order, 'order_items'> & {
   branches?: { name: string };
 };
 
-// ── Formulario de pedido ──
+// ── Order form ──
 export interface OrderFormData {
   customer_name: string;
   notes: string;

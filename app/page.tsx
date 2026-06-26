@@ -39,7 +39,7 @@ export default async function HomePage() {
 
   return (
     <section className="relative">
-      {/* Fondo fijo del home */}
+      {/* Fixed home background */}
       <div className="fixed inset-0 -z-10 bg-black">
         <Image
           src="/images/familia/familia-abdonur.jpeg"
@@ -52,7 +52,7 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-black/45" />
       </div>
 
-      {/* Hero visible al abrir */}
+      {/* Hero on first paint */}
       <div className="flex min-h-[100svh] flex-col items-center justify-center px-4 text-center">
         <h1 className="font-display text-3xl font-bold tracking-[0.02em] text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.85)] sm:text-4xl md:text-5xl md:tracking-[0.04em]">
           Empanadas Árabes <span className="text-brand-500 drop-shadow-[0_0_20px_rgba(192,32,38,0.35)]">Abdonur</span>
@@ -65,16 +65,16 @@ export default async function HomePage() {
         </p>
       </div>
 
-      {/* Contenido que scrollea sobre la imagen */}
+      {/* Scrollable content over hero image */}
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-12 px-4 pb-16">
-        {/* Título sucursales */}
+        {/* Branch list title */}
         <div className="text-center">
           <h2 className="font-display text-2xl font-semibold tracking-wide text-white sm:text-3xl">Elegí tu sucursal</h2>
           <GoldDivider className="mx-auto mt-4 max-w-xs" />
           <p className="mt-3 text-sm text-stone-400">Seleccioná la más cercana y hacé tu pedido</p>
         </div>
 
-        {/* Lista de sucursales */}
+        {/* Branch list */}
         {orderedBranches.length > 0 ? (
           <div className="flex w-full max-w-2xl flex-col gap-4">
             {orderedBranches.map(({ branch, displayName }) => (
@@ -87,7 +87,7 @@ export default async function HomePage() {
           </div>
         )}
 
-        {/* Info adicional */}
+        {/* Extra info */}
         <div className="max-w-md rounded-xl border border-metallic-500/30 bg-surface-800/90 p-5 text-center text-sm shadow-[inset_0_1px_0_rgba(212,175,55,0.08)] backdrop-blur-md">
           <p className="font-medium text-metallic-300">
             Venta por mayor y franquicia:{' '}

@@ -6,7 +6,7 @@ interface OpenStatusBadgeProps {
   openingHours: string; // e.g. "Lun a Dom 10:00 - 23:00"
 }
 
-// Mapeo de días en español a JS getDay() (0=Dom, 1=Lun, ..., 6=Sáb)
+// Spanish weekday abbreviations → JS getDay() (0=Sun, 1=Mon, …, 6=Sat)
 const dayMap: Record<string, number> = {
   dom: 0,
   lun: 1,
@@ -129,7 +129,7 @@ export default function OpenStatusBadge({ openingHours }: OpenStatusBadgeProps) 
     // Calcular estado inicial
     setOpen(isOpenNow(openingHours));
 
-    // Recalcular cada minuto
+    // Recompute every minute
     const interval = setInterval(() => {
       setOpen(isOpenNow(openingHours));
     }, 60_000);
@@ -137,7 +137,7 @@ export default function OpenStatusBadge({ openingHours }: OpenStatusBadgeProps) 
     return () => clearInterval(interval);
   }, [openingHours]);
 
-  // Mientras hidrata, no mostrar nada para evitar mismatch
+  // Hide badge until hydrated to avoid SSR mismatch
   if (open === null) {
     return (
       <span className="inline-flex items-center gap-1 text-xs font-medium text-stone-500">

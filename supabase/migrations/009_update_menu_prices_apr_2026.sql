@@ -2,7 +2,7 @@
 -- Keeps product logic and naming untouched; only updates prices.
 
 -- ─────────────────────────────────────
--- Empanadas por unidad (all flavors)
+-- Empanadas per unit (all flavors)
 -- ─────────────────────────────────────
 UPDATE products
 SET price = 2000.00
@@ -22,7 +22,7 @@ WHERE name IN (
 );
 
 -- ─────────────────────────────────────
--- Empanadas por docena / presentaciones proporcionales
+-- Empanadas per dozen / proportional pack sizes
 -- ─────────────────────────────────────
 UPDATE products
 SET price = 22000.00
@@ -77,7 +77,7 @@ SET price = 16000.00
 WHERE name IN ('Armá tu x8', 'Arma tu x8 de empanadas', 'Arma tu x6 de empanadas', 'Arma tu x6');
 
 -- ─────────────────────────────────────
--- Comidas y postres
+-- Meals and desserts
 -- ─────────────────────────────────────
 UPDATE products
 SET price = 24000.00

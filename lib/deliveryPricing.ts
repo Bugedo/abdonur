@@ -1,4 +1,4 @@
-/** Distancia geodésica (km), no km de calle */
+/** Geodesic distance (km), not driving distance */
 
 const EARTH_RADIUS_KM = 6371;
 

@@ -28,7 +28,7 @@ export default async function BranchPage({ params }: BranchPageProps) {
 
   return (
     <section className="mx-auto max-w-2xl py-8">
-      {/* Volver */}
+      {/* Back link */}
       <Link
         href="/"
         className="inline-flex items-center gap-1 text-sm text-stone-500 transition-colors hover:text-metallic-400"
@@ -36,12 +36,12 @@ export default async function BranchPage({ params }: BranchPageProps) {
         ← Volver a sucursales
       </Link>
 
-      {/* Card principal */}
+      {/* Main card */}
       <div className="mt-6 rounded-2xl border border-metallic-500/30 bg-surface-800/90 p-8 shadow-[inset_0_1px_0_rgba(212,175,55,0.08)] backdrop-blur-sm">
         <h1 className="font-display text-3xl font-semibold tracking-wide text-white">{branch.name}</h1>
         <p className="mt-2 text-sm italic text-metallic-300">Simplemente excepcionales · Lejos... la mejor!!!</p>
 
-        {/* Info */}
+        {/* Branch info */}
         <div className="mt-6 space-y-4">
           <div className="flex items-start gap-3">
             <span className="text-2xl">📍</span>
@@ -75,7 +75,7 @@ export default async function BranchPage({ params }: BranchPageProps) {
           </div>
         </div>
 
-        {/* CTA — Pedir ahora */}
+        {/* CTA — order now */}
         <Link
           href={`/sucursal/${branch.slug}/menu`}
           className="mt-8 block w-full rounded-xl bg-brand-600 py-4 text-center text-lg font-bold text-white shadow-[0_4px_20px_rgba(192,32,38,0.25)] transition-[transform,box-shadow,background-color] hover:bg-brand-500 hover:shadow-[0_6px_28px_rgba(192,32,38,0.35)] active:scale-[0.99] motion-reduce:active:scale-100"

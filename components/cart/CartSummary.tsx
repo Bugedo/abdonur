@@ -60,7 +60,7 @@ export default function CartSummary({ branchSlug }: CartSummaryProps) {
         </div>
 
         <div className="flex items-center justify-between">
-        {/* Info del carrito */}
+        {/* Cart info */}
         <div>
           <p className="text-sm font-medium text-stone-400">
             {totalItems} {totalItems === 1 ? 'producto' : 'productos'}
@@ -68,7 +68,7 @@ export default function CartSummary({ branchSlug }: CartSummaryProps) {
           <p className="text-xl font-extrabold text-white">{formattedTotal}</p>
         </div>
 
-        {/* Botón confirmar */}
+        {/* Confirm button */}
         {isMinimumMet ? (
           <Link
             href={`/sucursal/${branchSlug}/confirmar`}
