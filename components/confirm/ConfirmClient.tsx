@@ -7,6 +7,7 @@ import { createOrder } from '@/actions/createOrder';
 import { Branch, DeliveryMethod, PaymentMethod } from '@/types';
 import AddressPhotonAutocomplete from '@/components/confirm/AddressPhotonAutocomplete';
 import { normalizeWhatsappWaMe } from '@/lib/formatWhatsappDisplay';
+import { buildWhatsappOrderMessage } from '@/lib/buildWhatsappOrderMessage';
 
 interface ConfirmClientProps {
   branch: Branch;
@@ -32,35 +33,18 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
   const paymentLabel = paymentMethod === 'cash' ? 'Efectivo al recibir' : 'Transferencia / MercadoPago';
 
   function buildWhatsAppMessage(orderId: string): string {
-    const lines = [
-      `🥟 *Nuevo pedido — ${branch.name}*`,
-      `📋 Pedido: #${orderId.slice(0, 8).toUpperCase()}`,
-      `👤 Cliente: ${customerName.trim()}`,
-      '',
-      '*Detalle:*',
-      ...items.map(
-        (i) =>
-          `• ${i.quantity}x ${i.displayName ?? i.product.name} — $${(
-            (i.unitPrice ?? i.product.price) * i.quantity
-          ).toLocaleString('es-AR')}`
-      ),
-      '',
-      `*Total: ${formattedTotal}*`,
-      '',
-      `🚚 Entrega: ${deliveryLabel}`,
-    ];
-
-    if (deliveryMethod === 'delivery') {
-      lines.push(`📍 Dirección: ${address.trim()}`);
-    }
-
-    lines.push(`💳 Pago: ${paymentLabel}`);
-
-    if (notes.trim()) {
-      lines.push('', `📝 Observaciones: ${notes.trim()}`);
-    }
-
-    return lines.join('\n');
+    return buildWhatsappOrderMessage({
+      branchName: branch.name,
+      orderId,
+      customerName: customerName.trim(),
+      items,
+      formattedTotal,
+      deliveryMethod,
+      deliveryLabel,
+      address: address.trim(),
+      paymentLabel,
+      notes: notes.trim(),
+    });
   }
 
   async function handleSubmit(e: React.FormEvent) {
