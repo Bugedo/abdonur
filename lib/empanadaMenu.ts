@@ -46,6 +46,22 @@ export function getEmpanadaPresentation(name: string): EmpanadaPresentation | nu
   return 'unidad';
 }
 
+export function stripPresentationFromFlavorName(name: string): string {
+  return name
+    .replace(/\s+por\s+unidad$/i, '')
+    .replace(/\s+x\s+unidad$/i, '')
+    .trim();
+}
+
+/** Formats a combo line such as "3x Árabe por Unidad" → "3x Árabe". */
+export function formatComboDetailPart(part: string): string {
+  const trimmed = part.trim();
+  if (!trimmed) return trimmed;
+  const match = trimmed.match(/^(\d+x)\s+(.+)$/i);
+  if (!match) return stripPresentationFromFlavorName(trimmed);
+  return `${match[1]} ${stripPresentationFromFlavorName(match[2])}`;
+}
+
 export function withDisplayName(product: Product, displayName: string): Product {
   return { ...product, name: displayName };
 }

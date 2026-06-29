@@ -1,3 +1,4 @@
+import { formatComboDetailPart } from '../lib/empanadaMenu.ts';
 import type { CartItem } from '../types/index.ts';
 
 export interface WhatsappOrderMessageInput {
@@ -21,7 +22,7 @@ export function formatWhatsappOrderItemLines(item: CartItem): string[] {
     const lines = [`${item.quantity}x ${item.product.name} — $${formattedPrice}`];
     for (const part of item.comboDetail.split(', ')) {
       const trimmed = part.trim();
-      if (trimmed) lines.push(`   ${trimmed}`);
+      if (trimmed) lines.push(`   ${formatComboDetailPart(trimmed)}`);
     }
     return lines;
   }

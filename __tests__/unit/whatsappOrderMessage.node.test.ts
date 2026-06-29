@@ -38,6 +38,20 @@ test('formatWhatsappOrderItemLines expands combo flavors on separate lines', () 
   assert.equal(lines[2], '   8x SFIHAS - jamón y queso');
 });
 
+test('formatWhatsappOrderItemLines strips por Unidad from combo flavor lines', () => {
+  const item: CartItem = {
+    product: baseProduct,
+    quantity: 1,
+    comboDetail:
+      '3x Árabe por Unidad, 3x Jamón y Queso por Unidad, 3x Cebolla y Queso por Unidad, 3x Bondiola al Disco por Unidad',
+  };
+  const lines = formatWhatsappOrderItemLines(item);
+  assert.equal(lines[1], '   3x Árabe');
+  assert.equal(lines[2], '   3x Jamón y Queso');
+  assert.equal(lines[3], '   3x Cebolla y Queso');
+  assert.equal(lines[4], '   3x Bondiola al Disco');
+});
+
 test('buildWhatsappOrderMessage has no emojis and grouped sections', () => {
   const message = buildWhatsappOrderMessage({
     branchName: 'Abdonur San Vicente',

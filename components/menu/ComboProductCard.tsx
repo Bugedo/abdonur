@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { Product } from '@/types';
 import { useCart } from '@/components/cart/CartProvider';
+import { stripPresentationFromFlavorName } from '@/lib/empanadaMenu';
 
 export interface ComboCartActions {
   getQuantity: (productId: string) => number;
@@ -76,7 +77,7 @@ export function ComboProductCardInner({ product, flavorProducts, cartActions }: 
     const detail = flavorProducts
       .map((flavor) => ({ name: flavor.name, qty: selection[flavor.id] ?? 0 }))
       .filter((entry) => entry.qty > 0)
-      .map((entry) => `${entry.qty}x ${entry.name}`)
+      .map((entry) => `${entry.qty}x ${stripPresentationFromFlavorName(entry.name)}`)
       .join(', ');
 
     addConfiguredCombo({
@@ -184,7 +185,7 @@ export function ComboProductCardInner({ product, flavorProducts, cartActions }: 
                   key={flavor.id}
                   className="flex items-center justify-between rounded-md border border-white/5 bg-surface-700/80 px-3 py-2 backdrop-blur-sm transition-colors hover:bg-surface-700"
                 >
-                  <span className="text-sm text-stone-200">{flavor.name}</span>
+                  <span className="text-sm text-stone-200">{stripPresentationFromFlavorName(flavor.name)}</span>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
