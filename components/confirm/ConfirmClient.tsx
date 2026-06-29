@@ -8,6 +8,11 @@ import { Branch, DeliveryMethod, PaymentMethod } from '@/types';
 import AddressPhotonAutocomplete from '@/components/confirm/AddressPhotonAutocomplete';
 import { normalizeWhatsappWaMe } from '@/lib/formatWhatsappDisplay';
 import { buildWhatsappOrderMessage } from '@/lib/buildWhatsappOrderMessage';
+import {
+  buildWhatsappSendUrl,
+  isInAppBrowser,
+  openWhatsappSendUrl,
+} from '@/lib/openWhatsapp';
 
 interface ConfirmClientProps {
   branch: Branch;
@@ -22,6 +27,8 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cash');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
+  const [showInAppHint, setShowInAppHint] = useState(false);
 
   const formattedTotal = new Intl.NumberFormat('es-AR', {
     style: 'currency',
@@ -50,7 +57,8 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
-    let whatsappWindow: Window | null = null;
+    setWhatsappUrl(null);
+    setShowInAppHint(false);
 
     if (!customerName.trim()) {
       setError('Ingresá tu nombre.');
@@ -70,8 +78,6 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
     setLoading(true);
 
     try {
-      whatsappWindow = window.open('', '_blank');
-
       const result = await createOrder({
         branchId: branch.id,
         customerName: customerName.trim(),
@@ -83,29 +89,62 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
       });
 
       if (!result.success) {
-        if (whatsappWindow) whatsappWindow.close();
         setError(result.error ?? 'Error al crear el pedido.');
-        setLoading(false);
         return;
       }
 
       const message = buildWhatsAppMessage(result.orderId!);
-      const waUrl = `https://wa.me/${normalizeWhatsappWaMe(branch.whatsapp_number)}?text=${encodeURIComponent(message)}`;
+      const waUrl = buildWhatsappSendUrl(normalizeWhatsappWaMe(branch.whatsapp_number), message);
 
       clearCart();
-      if (whatsappWindow) {
-        whatsappWindow.location.href = waUrl;
-      } else {
-        window.open(waUrl, '_blank');
+      setWhatsappUrl(waUrl);
+
+      const inApp = isInAppBrowser();
+      setShowInAppHint(inApp);
+
+      if (!inApp) {
+        openWhatsappSendUrl(waUrl);
       }
     } catch {
-      if (whatsappWindow) whatsappWindow.close();
       setError('Error inesperado. Intentá de nuevo.');
+    } finally {
       setLoading(false);
     }
   }
 
   const deliveryBlocked = deliveryMethod === 'delivery' && !address.trim();
+
+  if (whatsappUrl) {
+    return (
+      <div className="mt-8 space-y-4 rounded-xl border border-metallic-500/25 bg-surface-800/92 p-8 text-center shadow-[inset_0_1px_0_rgba(212,175,55,0.06)] backdrop-blur-sm">
+        <p className="font-display text-xl font-semibold text-white">¡Pedido registrado!</p>
+        <p className="text-sm text-stone-400">
+          Tocá el botón para abrir WhatsApp y enviar el mensaje al local.
+        </p>
+        {showInAppHint && (
+          <p className="rounded-lg border border-amber-700/50 bg-amber-900/25 px-4 py-3 text-left text-sm text-amber-200">
+            Si ves &quot;Descargar WhatsApp&quot;, abrí el menú del navegador (⋮) y elegí{' '}
+            <strong>Abrir en Chrome</strong> o <strong>Abrir en Safari</strong>. Después volvé a tocar
+            el botón verde.
+          </p>
+        )}
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex w-full items-center justify-center rounded-xl bg-whatsapp py-4 text-lg font-bold text-white shadow-[0_4px_22px_rgba(37,211,102,0.25)] transition-[transform,box-shadow,background-color] hover:bg-whatsapp-dark hover:shadow-[0_6px_28px_rgba(37,211,102,0.35)]"
+        >
+          💬 Abrir WhatsApp y enviar pedido
+        </a>
+        <Link
+          href={`/sucursal/${branch.slug}/menu`}
+          className="inline-block text-sm text-metallic-400 transition-colors hover:text-metallic-300 hover:underline"
+        >
+          Volver al menú
+        </Link>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
