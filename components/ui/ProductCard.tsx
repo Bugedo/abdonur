@@ -3,6 +3,10 @@
 import Image from 'next/image';
 import { Product } from '@/types';
 import { useCart } from '@/components/cart/CartProvider';
+import {
+  parseProductIncludes,
+  shouldRenderIncludesList,
+} from '@/lib/formatProductIncludes';
 
 export interface ProductCartActions {
   getQuantity: (productId: string) => number;
@@ -21,6 +25,8 @@ export function ProductCardInner({ product, cartActions }: ProductCardInnerProps
   const normalizedName = product.name.trim().toLowerCase();
   const normalizedDescription = product.description?.trim().toLowerCase() ?? '';
   const shouldShowDescription = Boolean(product.description) && normalizedDescription !== normalizedName;
+  const includesList = shouldShowDescription ? parseProductIncludes(product.description) : [];
+  const showIncludesList = shouldShowDescription && shouldRenderIncludesList(product.description);
 
   const formattedPrice = new Intl.NumberFormat('es-AR', {
     style: 'currency',
@@ -44,8 +50,19 @@ export function ProductCardInner({ product, cartActions }: ProductCardInnerProps
 
       <div className="min-w-0 flex-1">
         <h3 className="text-base font-semibold text-white">{product.name}</h3>
-        {shouldShowDescription && (
-          <p className="mt-0.5 truncate text-sm text-stone-500">{product.description}</p>
+        {showIncludesList ? (
+          <div className="mt-1">
+            <p className="text-xs font-semibold uppercase tracking-wide text-stone-500">Incluye:</p>
+            <ul className="mt-1 list-disc space-y-0.5 pl-4 text-sm text-stone-400">
+              {includesList.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          shouldShowDescription && (
+            <p className="mt-0.5 text-sm text-stone-500">{product.description}</p>
+          )
         )}
         <p className="mt-1 text-lg font-bold text-metallic-400">{formattedPrice}</p>
       </div>
