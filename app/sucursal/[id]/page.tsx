@@ -11,9 +11,9 @@ interface BranchPageProps {
 export async function generateMetadata({ params }: BranchPageProps): Promise<Metadata> {
   const { id } = await params;
   const branch = await getActiveBranchByIdOrSlug(id);
-  if (!branch) return { title: 'Sucursal no encontrada' };
+  if (!branch) return { title: 'Abdonur' };
   return {
-    title: `${branch.name} — Empanadas Árabes Abdonur`,
+    title: 'Abdonur',
     description: `Pedí empanadas árabes en ${branch.name}. ${branch.address}.`,
   };
 }

@@ -17,7 +17,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: 'Empanadas Árabes Abdonur — Pedí Online',
+  title: 'Abdonur',
   description:
     'Hacé tu pedido de empanadas árabes online y recibilo por WhatsApp. Elegí tu sucursal y armá tu pedido. Simplemente excepcionales.',
   icons: {

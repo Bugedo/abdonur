@@ -13,9 +13,9 @@ interface MenuPageProps {
 export async function generateMetadata({ params }: MenuPageProps): Promise<Metadata> {
   const { id } = await params;
   const branch = await getActiveBranchByIdOrSlug(id);
-  if (!branch) return { title: 'Menú no encontrado' };
+  if (!branch) return { title: 'Abdonur' };
   return {
-    title: `Menú — ${branch.name} — Empanadas Árabes Abdonur`,
+    title: 'Abdonur',
     description: `Elegí tus empanadas y comidas árabes en ${branch.name}.`,
   };
 }
