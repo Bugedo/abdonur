@@ -1,5 +1,5 @@
-import { formatComboDetailPart } from '../lib/empanadaMenu.ts';
-import type { CartItem } from '../types/index.ts';
+import { formatComboDetailPart } from '@/lib/empanadaMenu';
+import type { CartItem } from '@/types';
 
 export interface WhatsappOrderMessageInput {
   branchName: string;
