@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --experimental-strip-types --test __tests__/unit/deliveryPricing.node.test.ts __tests__/unit/orderStatusWorkflow.node.test.ts __tests__/unit/whatsappOrderMessage.node.test.ts __tests__/unit/empanadaMenu.node.test.ts __tests__/unit/formatProductIncludes.node.test.ts",
+    "test": "node --experimental-strip-types --test __tests__/unit/deliveryPricing.node.test.ts __tests__/unit/orderStatusWorkflow.node.test.ts __tests__/unit/whatsappOrderMessage.node.test.ts __tests__/unit/empanadaMenu.node.test.ts __tests__/unit/formatProductIncludes.node.test.ts __tests__/unit/adminOperationalScope.node.test.ts __tests__/unit/branchCustomerContact.node.test.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

@@ -15,7 +15,7 @@ const { createClient } = require('@supabase/supabase-js');
 const BRANCH_NUMBERS = {
   'san-vicente': '5493517061970',
   'alta-cordoba': '5493517619358',
-  'nueva-cordoba': '5493517619358',
+  'nueva-cordoba': '5493517061970',
   alberdi: '5493512052055',
   marques: '5493512404046',
   pueyrredon: '5493518176818',

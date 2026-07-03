@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import ConfirmClient from '@/components/confirm/ConfirmClient';
-import { getActiveBranchByIdOrSlug } from '@/lib/branches';
+import { getCustomerFacingBranch } from '@/lib/branches';
 
 interface ConfirmPageProps {
   params: Promise<{ id: string }>;
@@ -9,7 +9,7 @@ interface ConfirmPageProps {
 
 export default async function ConfirmPage({ params }: ConfirmPageProps) {
   const { id } = await params;
-  const branch = await getActiveBranchByIdOrSlug(id);
+  const branch = await getCustomerFacingBranch(id);
 
   if (!branch) notFound();
 

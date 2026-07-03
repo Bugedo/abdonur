@@ -5,6 +5,11 @@ import { Branch } from '@/types';
 import { supabaseAdmin } from '@/lib/supabaseServer';
 import { getAdminStatsData, parseAdminStatsFilters } from '@/lib/adminStats';
 import AdminStatsDashboard from '@/components/admin/AdminStatsDashboard';
+import {
+  getMergedPanelTitle,
+  isNuevaCordobaMergedOperator,
+  NUEVA_CORDOBA_SLUG,
+} from '@/lib/adminOperationalScope';
 
 async function getAllBranches(): Promise<Branch[]> {
   const { data } = await supabaseAdmin
@@ -24,19 +29,24 @@ export default async function SuperAdminStatsPage({
   const parsedFilters = parseAdminStatsFilters(query);
 
   const branches = await getAllBranches();
-  const altaCordoba = branches.find((b) => b.slug === 'alta-cordoba');
-  const nuevaCordoba = branches.find((b) => b.slug === 'nueva-cordoba');
-  const visibleBranches = branches.filter((b) => b.slug !== 'nueva-cordoba');
+  const sanVicente = branches.find((b) => isNuevaCordobaMergedOperator(b.slug));
+  const nuevaCordoba = branches.find((b) => b.slug === NUEVA_CORDOBA_SLUG);
+  const visibleBranches = branches.filter((b) => b.slug !== NUEVA_CORDOBA_SLUG);
 
   const statsBranchIds =
-    parsedFilters.branchId && altaCordoba && nuevaCordoba &&
-    (parsedFilters.branchId === altaCordoba.id || parsedFilters.branchId === nuevaCordoba.id)
-      ? [altaCordoba.id, nuevaCordoba.id]
+    parsedFilters.branchId &&
+    sanVicente &&
+    nuevaCordoba &&
+    (parsedFilters.branchId === sanVicente.id || parsedFilters.branchId === nuevaCordoba.id)
+      ? [sanVicente.id, nuevaCordoba.id]
       : undefined;
 
   const filtersForView =
-    parsedFilters.branchId && altaCordoba && nuevaCordoba && parsedFilters.branchId === nuevaCordoba.id
-      ? { ...parsedFilters, branchId: altaCordoba.id }
+    parsedFilters.branchId &&
+    sanVicente &&
+    nuevaCordoba &&
+    parsedFilters.branchId === nuevaCordoba.id
+      ? { ...parsedFilters, branchId: sanVicente.id }
       : parsedFilters;
 
   const stats = await getAdminStatsData(filtersForView, {
@@ -46,15 +56,17 @@ export default async function SuperAdminStatsPage({
 
   const mergedBranchRows = stats.branchRows
     ? (() => {
-        if (!altaCordoba || !nuevaCordoba) return stats.branchRows;
-        const alta = stats.branchRows.find((r) => r.branchId === altaCordoba.id);
+        if (!sanVicente || !nuevaCordoba) return stats.branchRows;
+        const operator = stats.branchRows.find((r) => r.branchId === sanVicente.id);
         const nueva = stats.branchRows.find((r) => r.branchId === nuevaCordoba.id);
-        const others = stats.branchRows.filter((r) => r.branchId !== altaCordoba.id && r.branchId !== nuevaCordoba.id);
+        const others = stats.branchRows.filter(
+          (r) => r.branchId !== sanVicente.id && r.branchId !== nuevaCordoba.id
+        );
         const merged = {
-          branchId: altaCordoba.id,
-          branchName: `${altaCordoba.name} + Nueva Córdoba`,
-          orders: (alta?.orders ?? 0) + (nueva?.orders ?? 0),
-          sales: (alta?.sales ?? 0) + (nueva?.sales ?? 0),
+          branchId: sanVicente.id,
+          branchName: getMergedPanelTitle(sanVicente.name),
+          orders: (operator?.orders ?? 0) + (nueva?.orders ?? 0),
+          sales: (operator?.sales ?? 0) + (nueva?.sales ?? 0),
         };
         return [merged, ...others];
       })()

@@ -25,6 +25,6 @@ Copy this file to `CREDENCIALES_ADMIN.md` in the same folder and fill in real va
 | San Vicente | `sanvicente` | *(fill in)* |
 | Alta Córdoba | `altacordoba` | *(fill in)* |
 | Alberdi | `alberdi` | *(fill in)* |
-| Nueva Córdoba | `nuevacordoba` | *(fill in — redirects to Alta Córdoba panel)* |
+| Nueva Córdoba | `nuevacordoba` | *(fill in — admin panel + WhatsApp customer orders route to San Vicente)* |
 | Marqués | `marques` | *(fill in)* |
 | Gral. Pueyrredón | `pueyrredon` | *(fill in)* |

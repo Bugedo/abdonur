@@ -5,6 +5,11 @@ import { requireAdminSession } from '@/lib/adminSession';
 import { logout } from '@/actions/auth';
 import { getBranchByIdOrSlugAdmin } from '@/lib/branches';
 import { getActiveProducts, getBranchOptionsForSession } from '@/lib/adminCreateOrderPage';
+import {
+  canAccessMergedOperatorPanel,
+  getNuevaCordobaOperatorSlug,
+  NUEVA_CORDOBA_SLUG,
+} from '@/lib/adminOperationalScope';
 
 export default async function BranchCreateOrderPage({
   params,
@@ -16,17 +21,12 @@ export default async function BranchCreateOrderPage({
 
   const branch = await getBranchByIdOrSlugAdmin(id);
   if (!branch) notFound();
-  if (branch.slug === 'nueva-cordoba') {
-    redirect('/admin/sucursal/alta-cordoba/crear-pedido');
+  if (branch.slug === NUEVA_CORDOBA_SLUG) {
+    redirect(`/admin/sucursal/${getNuevaCordobaOperatorSlug()}/crear-pedido`);
   }
 
-  if (session.role === 'branch_admin') {
-    const canAccessAltaMerged =
-      branch.slug === 'alta-cordoba' &&
-      (session.branchId === branch.id || session.branchSlug === 'nueva-cordoba');
-    if (!canAccessAltaMerged && session.branchId !== branch.id) {
-      notFound();
-    }
+  if (session.role === 'branch_admin' && !canAccessMergedOperatorPanel(session, branch.slug)) {
+    notFound();
   }
 
   const [products, branchOptions] = await Promise.all([

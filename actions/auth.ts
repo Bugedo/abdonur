@@ -54,10 +54,10 @@ export async function login(formData: FormData) {
     return { error: 'Usuario inválido. Usá el usuario corto de sucursal (ej: sanvicente).' };
   }
 
-  // Nueva Cordoba orders are managed from the Alta Cordoba panel.
-  const altaCordobaBranch = branches.find((b) => b.slug === 'alta-cordoba');
+  // Nueva Cordoba orders are managed from the San Vicente panel.
+  const sanVicenteBranch = branches.find((b) => b.slug === 'san-vicente');
   const effectiveBranch =
-    matchedBranch.slug === 'nueva-cordoba' && altaCordobaBranch ? altaCordobaBranch : matchedBranch;
+    matchedBranch.slug === 'nueva-cordoba' && sanVicenteBranch ? sanVicenteBranch : matchedBranch;
 
   await createAdminSession({
     role: 'branch_admin',

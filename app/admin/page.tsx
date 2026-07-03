@@ -11,7 +11,7 @@ export default async function AdminHubPage() {
   }
   if (session?.role === 'branch_admin') {
     if (session.branchSlug === 'nueva-cordoba') {
-      redirect('/admin/sucursal/alta-cordoba');
+      redirect('/admin/sucursal/san-vicente');
     }
     redirect(`/admin/sucursal/${session.branchSlug}`);
   }

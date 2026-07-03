@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { getActiveBranchByIdOrSlug } from '@/lib/branches';
+import { getCustomerFacingBranch } from '@/lib/branches';
 import { formatWhatsappArgentinaDisplay, normalizeWhatsappWaMe } from '@/lib/formatWhatsappDisplay';
 
 interface BranchPageProps {
@@ -10,7 +10,7 @@ interface BranchPageProps {
 
 export async function generateMetadata({ params }: BranchPageProps): Promise<Metadata> {
   const { id } = await params;
-  const branch = await getActiveBranchByIdOrSlug(id);
+  const branch = await getCustomerFacingBranch(id);
   if (!branch) return { title: 'Abdonur' };
   return {
     title: 'Abdonur',
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: BranchPageProps): Promise<Met
 
 export default async function BranchPage({ params }: BranchPageProps) {
   const { id } = await params;
-  const branch = await getActiveBranchByIdOrSlug(id);
+  const branch = await getCustomerFacingBranch(id);
 
   if (!branch) notFound();
 

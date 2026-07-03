@@ -5,7 +5,14 @@ import { logout } from '@/actions/auth';
 import { getBranchByIdOrSlugAdmin } from '@/lib/branches';
 import { getAdminStatsData, parseAdminStatsFilters } from '@/lib/adminStats';
 import AdminStatsDashboard from '@/components/admin/AdminStatsDashboard';
-import { getOperationalBranchIdsForSession } from '@/lib/adminOperationalScope';
+import {
+  canAccessMergedOperatorPanel,
+  getMergedPanelTitle,
+  getNuevaCordobaOperatorSlug,
+  getOperationalBranchIdsForSession,
+  isNuevaCordobaMergedOperator,
+  NUEVA_CORDOBA_SLUG,
+} from '@/lib/adminOperationalScope';
 
 export default async function BranchAdminStatsPage({
   params,
@@ -20,14 +27,14 @@ export default async function BranchAdminStatsPage({
 
   const branch = await getBranchByIdOrSlugAdmin(id);
   if (!branch) notFound();
-  if (branch.slug === 'nueva-cordoba') {
-    redirect('/admin/sucursal/alta-cordoba/estadisticas');
+  if (branch.slug === NUEVA_CORDOBA_SLUG) {
+    redirect(`/admin/sucursal/${getNuevaCordobaOperatorSlug()}/estadisticas`);
   }
 
   let statsBranchIds = [branch.id];
   let branchPanelTitle = branch.name;
 
-  if (branch.slug === 'alta-cordoba') {
+  if (isNuevaCordobaMergedOperator(branch.slug)) {
     const operationalIds = await getOperationalBranchIdsForSession({
       role: 'branch_admin',
       username: branch.name,
@@ -36,17 +43,12 @@ export default async function BranchAdminStatsPage({
     });
     statsBranchIds = operationalIds;
     if (operationalIds.length > 1) {
-      branchPanelTitle = `${branch.name} + Nueva Córdoba`;
+      branchPanelTitle = getMergedPanelTitle(branch.name);
     }
   }
 
-  if (session.role === 'branch_admin') {
-    const canAccessAltaMerged =
-      branch.slug === 'alta-cordoba' &&
-      (session.branchId === branch.id || session.branchSlug === 'nueva-cordoba');
-    if (!canAccessAltaMerged && session.branchId !== branch.id) {
-      notFound();
-    }
+  if (session.role === 'branch_admin' && !canAccessMergedOperatorPanel(session, branch.slug)) {
+    notFound();
   }
 
   const filters = parseAdminStatsFilters(query, { branchId: branch.id });

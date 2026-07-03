@@ -4,6 +4,11 @@ import { Branch, AdminOrderWithItems } from '@/types';
 import { requireSuperAdmin } from '@/lib/adminSession';
 import { logout } from '@/actions/auth';
 import BranchOrdersPanel from '@/components/admin/BranchOrdersPanel';
+import {
+  getMergedPanelTitle,
+  isNuevaCordobaMergedOperator,
+  NUEVA_CORDOBA_SLUG,
+} from '@/lib/adminOperationalScope';
 
 // ── Helpers ──
 
@@ -38,9 +43,9 @@ export default async function SuperAdminPage() {
     getAllBranches(),
   ]);
 
-  const altaCordoba = allBranches.find((b) => b.slug === 'alta-cordoba');
-  const nuevaCordoba = allBranches.find((b) => b.slug === 'nueva-cordoba');
-  const visibleBranches = allBranches.filter((b) => b.slug !== 'nueva-cordoba');
+  const sanVicente = allBranches.find((b) => isNuevaCordobaMergedOperator(b.slug));
+  const nuevaCordoba = allBranches.find((b) => b.slug === NUEVA_CORDOBA_SLUG);
+  const visibleBranches = allBranches.filter((b) => b.slug !== NUEVA_CORDOBA_SLUG);
 
   return (
     <section className="py-4">
@@ -91,9 +96,12 @@ export default async function SuperAdminPage() {
         <h2 className="text-lg font-bold text-white">Sucursales</h2>
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {visibleBranches.map((branch) => {
-            const isAltaMergedCard = branch.slug === 'alta-cordoba' && altaCordoba && nuevaCordoba;
-            const branchOrders = isAltaMergedCard
-              ? allOrders.filter((o) => o.branch_id === altaCordoba.id || o.branch_id === nuevaCordoba.id)
+            const isMergedCard =
+              isNuevaCordobaMergedOperator(branch.slug) && sanVicente && nuevaCordoba;
+            const branchOrders = isMergedCard
+              ? allOrders.filter(
+                  (o) => o.branch_id === sanVicente.id || o.branch_id === nuevaCordoba.id
+                )
               : allOrders.filter((o) => o.branch_id === branch.id);
             const newCount = branchOrders.filter((o) => o.status === 'new').length;
             return (
@@ -105,7 +113,7 @@ export default async function SuperAdminPage() {
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="font-bold text-white">
-                      {isAltaMergedCard ? `${branch.name} + Nueva Córdoba` : branch.name}
+                      {isMergedCard ? getMergedPanelTitle(branch.name) : branch.name}
                     </h3>
                     <p className="mt-1 text-xs text-stone-500">{branch.address}</p>
                   </div>
@@ -132,5 +140,3 @@ export default async function SuperAdminPage() {
     </section>
   );
 }
-
-

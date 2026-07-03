@@ -6,7 +6,14 @@ import { requireAdminSession } from '@/lib/adminSession';
 import { logout } from '@/actions/auth';
 import BranchOrdersPanel from '@/components/admin/BranchOrdersPanel';
 import { getBranchByIdOrSlugAdmin } from '@/lib/branches';
-import { getOperationalBranchIdsForSession } from '@/lib/adminOperationalScope';
+import {
+  canAccessMergedOperatorPanel,
+  getMergedPanelTitle,
+  getNuevaCordobaOperatorSlug,
+  getOperationalBranchIdsForSession,
+  isNuevaCordobaMergedOperator,
+  NUEVA_CORDOBA_SLUG,
+} from '@/lib/adminOperationalScope';
 
 // ── Helpers ──
 
@@ -36,15 +43,15 @@ export default async function BranchAdminPage({
 
   const branch = await getBranchByIdOrSlugAdmin(id);
   if (!branch) notFound();
-  if (branch.slug === 'nueva-cordoba') {
-    redirect('/admin/sucursal/alta-cordoba');
+  if (branch.slug === NUEVA_CORDOBA_SLUG) {
+    redirect(`/admin/sucursal/${getNuevaCordobaOperatorSlug()}`);
   }
 
   let branchIds = [branch.id];
   let branchPanelTitle = branch.name;
   let showOrderBranchName = false;
 
-  if (branch.slug === 'alta-cordoba') {
+  if (isNuevaCordobaMergedOperator(branch.slug)) {
     const operationalIds = await getOperationalBranchIdsForSession({
       role: 'branch_admin',
       username: branch.name,
@@ -53,18 +60,13 @@ export default async function BranchAdminPage({
     });
     branchIds = operationalIds;
     if (operationalIds.length > 1) {
-      branchPanelTitle = `${branch.name} + Nueva Córdoba`;
+      branchPanelTitle = getMergedPanelTitle(branch.name);
       showOrderBranchName = true;
     }
   }
 
-  if (session.role === 'branch_admin') {
-    const canAccessAltaMerged =
-      branch.slug === 'alta-cordoba' &&
-      (session.branchId === branch.id || session.branchSlug === 'nueva-cordoba');
-    if (!canAccessAltaMerged && session.branchId !== branch.id) {
-      notFound();
-    }
+  if (session.role === 'branch_admin' && !canAccessMergedOperatorPanel(session, branch.slug)) {
+    notFound();
   }
 
   const orders = await getBranchOrders(branchIds);
@@ -121,5 +123,3 @@ export default async function BranchAdminPage({
     </section>
   );
 }
-
-
