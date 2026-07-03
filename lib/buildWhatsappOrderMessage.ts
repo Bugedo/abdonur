@@ -1,5 +1,19 @@
-import { formatComboDetailPart } from '@/lib/empanadaMenu';
-import type { CartItem } from '@/types';
+import type { CartItem, PaymentMethod } from '@/types';
+
+function stripPresentationFromFlavorName(name: string): string {
+  return name
+    .replace(/\s+por\s+unidad$/i, '')
+    .replace(/\s+x\s+unidad$/i, '')
+    .trim();
+}
+
+function formatComboDetailPart(part: string): string {
+  const trimmed = part.trim();
+  if (!trimmed) return trimmed;
+  const match = trimmed.match(/^(\d+x)\s+(.+)$/i);
+  if (!match) return stripPresentationFromFlavorName(trimmed);
+  return `${match[1]} ${stripPresentationFromFlavorName(match[2])}`;
+}
 
 export interface WhatsappOrderMessageInput {
   branchName: string;
@@ -10,6 +24,7 @@ export interface WhatsappOrderMessageInput {
   deliveryMethod: 'pickup' | 'delivery';
   deliveryLabel: string;
   address: string;
+  paymentMethod: PaymentMethod;
   paymentLabel: string;
   notes: string;
 }
@@ -52,6 +67,16 @@ export function buildWhatsappOrderMessage(input: WhatsappOrderMessageInput): str
     '',
     '────────────────',
     `*TOTAL: ${input.formattedTotal}*`,
+  );
+
+  if (input.deliveryMethod === 'delivery') {
+    lines.push(
+      'Al total se suma el costo de envío.',
+      'El local confirmará el precio del delivery por WhatsApp.',
+    );
+  }
+
+  lines.push(
     '────────────────',
     '',
     'ENTREGA',
@@ -63,6 +88,10 @@ export function buildWhatsappOrderMessage(input: WhatsappOrderMessageInput): str
   }
 
   lines.push('', 'PAGO', input.paymentLabel);
+
+  if (input.paymentMethod === 'transfer') {
+    lines.push('Antes de transferir, esperá la confirmación del local.');
+  }
 
   if (input.notes.trim()) {
     lines.push('', 'OBSERVACIONES', input.notes.trim());

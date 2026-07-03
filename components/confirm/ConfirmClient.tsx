@@ -49,6 +49,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
       deliveryMethod,
       deliveryLabel,
       address: address.trim(),
+      paymentMethod,
       paymentLabel,
       notes: notes.trim(),
     });

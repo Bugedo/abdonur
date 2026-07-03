@@ -69,6 +69,7 @@ test('buildWhatsappOrderMessage has no emojis and grouped sections', () => {
     deliveryMethod: 'delivery',
     deliveryLabel: 'Envío a domicilio',
     address: 'Av. Colón 1234, Córdoba',
+    paymentMethod: 'cash',
     paymentLabel: 'Efectivo al recibir',
     notes: 'Sin picante',
   });
@@ -80,5 +81,26 @@ test('buildWhatsappOrderMessage has no emojis and grouped sections', () => {
   assert.match(message, /2x FATAY - Árabes — \$4\.000/);
   assert.match(message, /ENTREGA/);
   assert.match(message, /Dirección: Av\. Colón 1234/);
+  assert.match(message, /Al total se suma el costo de envío\./);
+  assert.match(message, /El local confirmará el precio del delivery por WhatsApp\./);
   assert.match(message, /OBSERVACIONES\nSin picante/);
+});
+
+test('buildWhatsappOrderMessage adds transfer confirmation note', () => {
+  const message = buildWhatsappOrderMessage({
+    branchName: 'Abdonur San Vicente',
+    orderId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+    customerName: 'Juan Pérez',
+    items: [{ product: flavorProduct, quantity: 1 }],
+    formattedTotal: '$ 2.000',
+    deliveryMethod: 'pickup',
+    deliveryLabel: 'Retira en local',
+    address: '',
+    paymentMethod: 'transfer',
+    paymentLabel: 'Transferencia / MercadoPago',
+    notes: '',
+  });
+
+  assert.match(message, /Antes de transferir, esperá la confirmación del local\./);
+  assert.doesNotMatch(message, /Al total se suma el costo de envío\./);
 });
