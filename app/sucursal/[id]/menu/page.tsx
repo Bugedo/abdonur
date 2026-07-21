@@ -58,7 +58,12 @@ export default async function MenuPage({ params }: MenuPageProps) {
       </div>
 
       {/* Interactive section */}
-      <MenuClient products={products} branchId={branch.id} branchSlug={branch.slug} />
+      <MenuClient
+        products={products}
+        branchId={branch.id}
+        branchSlug={branch.slug}
+        openingHours={branch.opening_hours}
+      />
     </section>
   );
 }

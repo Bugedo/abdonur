@@ -1,17 +1,28 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCart } from '@/components/cart/CartProvider';
+import { isBranchOpenNow } from '@/lib/branchOpenStatus';
 
 interface CartSummaryProps {
   branchId: string;
   branchSlug: string;
+  openingHours: string;
 }
 
-export default function CartSummary({ branchSlug }: CartSummaryProps) {
+export default function CartSummary({ branchSlug, openingHours }: CartSummaryProps) {
   const { items, totalItems, totalPrice, isMinimumMet, removeLineItem } = useCart();
   const [showItems, setShowItems] = useState(false);
+  const [branchOpen, setBranchOpen] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setBranchOpen(isBranchOpenNow(openingHours));
+    const interval = setInterval(() => {
+      setBranchOpen(isBranchOpenNow(openingHours));
+    }, 60_000);
+    return () => clearInterval(interval);
+  }, [openingHours]);
 
   if (items.length === 0) return null;
 
@@ -21,9 +32,17 @@ export default function CartSummary({ branchSlug }: CartSummaryProps) {
     minimumFractionDigits: 0,
   }).format(totalPrice);
 
+  const isClosed = branchOpen === false;
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-metallic-500/35 bg-surface-900/93 shadow-[0_-12px_40px_rgba(0,0,0,0.55)] backdrop-blur-md">
       <div className="mx-auto max-w-2xl px-4 py-4">
+        {isClosed && (
+          <p className="mb-3 text-xs text-amber-200">
+            Local cerrado — podés armar el pedido; el envío por WhatsApp estará disponible al abrir.
+          </p>
+        )}
+
         <button
           type="button"
           onClick={() => setShowItems((prev) => !prev)}
@@ -68,13 +87,13 @@ export default function CartSummary({ branchSlug }: CartSummaryProps) {
           <p className="text-xl font-extrabold text-white">{formattedTotal}</p>
         </div>
 
-        {/* Confirm button */}
+        {/* Confirm button — still navigates when closed so customer can prepare the form */}
         {isMinimumMet ? (
           <Link
             href={`/sucursal/${branchSlug}/confirmar`}
             className="rounded-xl bg-whatsapp px-6 py-3 text-base font-bold text-white transition-[transform,colors] duration-200 ease-out hover:bg-whatsapp-dark active:scale-[0.98] motion-reduce:active:scale-100"
           >
-            Confirmar pedido →
+            {isClosed ? 'Ver pedido →' : 'Confirmar pedido →'}
           </Link>
         ) : (
           <button

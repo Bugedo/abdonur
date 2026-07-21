@@ -3,6 +3,11 @@
 import { validateCreateOrderInput, createOrderRecord, type BaseCreateOrderInput } from '@/lib/orderCreation';
 import { CartItem, DeliveryMethod, PaymentMethod } from '@/types';
 import { revalidatePath } from 'next/cache';
+import { supabaseAdmin } from '@/lib/supabaseServer';
+import {
+  getBranchClosedCustomerMessage,
+  isBranchOpenNow,
+} from '@/lib/branchOpenStatus';
 
 export interface CreateOrderInput {
   branchId: string;
@@ -26,6 +31,23 @@ export interface CreateOrderResult {
 
 export async function createOrder(input: CreateOrderInput): Promise<CreateOrderResult> {
   const { branchId, customerName, notes, deliveryMethod, address, paymentMethod, items } = input;
+
+  const { data: branch, error: branchError } = await supabaseAdmin
+    .from('branches')
+    .select('opening_hours')
+    .eq('id', branchId)
+    .single();
+
+  if (branchError || !branch) {
+    return { success: false, error: 'Sucursal no encontrada.' };
+  }
+
+  if (!isBranchOpenNow(branch.opening_hours)) {
+    return {
+      success: false,
+      error: getBranchClosedCustomerMessage(branch.opening_hours),
+    };
+  }
 
   const base: BaseCreateOrderInput = {
     branchId,

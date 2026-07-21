@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/components/cart/CartProvider';
 import { createOrder } from '@/actions/createOrder';
@@ -13,6 +13,11 @@ import {
   isInAppBrowser,
   openWhatsappSendUrl,
 } from '@/lib/openWhatsapp';
+import {
+  getBranchClosedCustomerMessage,
+  isBranchOpenNow,
+} from '@/lib/branchOpenStatus';
+import BranchClosedNotice from '@/components/ui/BranchClosedNotice';
 
 interface ConfirmClientProps {
   branch: Branch;
@@ -29,6 +34,15 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
   const [error, setError] = useState('');
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
   const [showInAppHint, setShowInAppHint] = useState(false);
+  const [branchOpen, setBranchOpen] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setBranchOpen(isBranchOpenNow(branch.opening_hours));
+    const interval = setInterval(() => {
+      setBranchOpen(isBranchOpenNow(branch.opening_hours));
+    }, 60_000);
+    return () => clearInterval(interval);
+  }, [branch.opening_hours]);
 
   const formattedTotal = new Intl.NumberFormat('es-AR', {
     style: 'currency',
@@ -38,6 +52,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
 
   const deliveryLabel = deliveryMethod === 'pickup' ? 'Retira en local' : 'Envío a domicilio';
   const paymentLabel = paymentMethod === 'cash' ? 'Efectivo al recibir' : 'Transferencia / MercadoPago';
+  const isClosed = branchOpen === false;
 
   function buildWhatsAppMessage(orderId: string): string {
     return buildWhatsappOrderMessage({
@@ -60,6 +75,12 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
     setError('');
     setWhatsappUrl(null);
     setShowInAppHint(false);
+
+    if (!isBranchOpenNow(branch.opening_hours)) {
+      setBranchOpen(false);
+      setError(getBranchClosedCustomerMessage(branch.opening_hours));
+      return;
+    }
 
     if (!customerName.trim()) {
       setError('Ingresá tu nombre.');
@@ -114,6 +135,7 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
   }
 
   const deliveryBlocked = deliveryMethod === 'delivery' && !address.trim();
+  const submitDisabled = loading || !isMinimumMet || deliveryBlocked || isClosed || branchOpen === null;
 
   if (whatsappUrl) {
     return (
@@ -163,6 +185,8 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
 
   return (
     <form onSubmit={handleSubmit} className="mt-6 space-y-6">
+      {isClosed && <BranchClosedNotice openingHours={branch.opening_hours} />}
+
       <div className="rounded-xl border border-metallic-500/25 bg-surface-800/92 p-6 shadow-[inset_0_1px_0_rgba(212,175,55,0.06)] backdrop-blur-sm">
         <h2 className="font-display text-lg font-semibold tracking-wide text-white">Tu pedido</h2>
         <div className="mt-4 space-y-2">
@@ -330,10 +354,14 @@ export default function ConfirmClient({ branch }: ConfirmClientProps) {
 
       <button
         type="submit"
-        disabled={loading || !isMinimumMet || deliveryBlocked}
+        disabled={submitDisabled}
         className="w-full rounded-xl bg-whatsapp py-4 text-lg font-bold text-white shadow-[0_4px_22px_rgba(37,211,102,0.25)] transition-[transform,box-shadow,background-color] hover:bg-whatsapp-dark hover:shadow-[0_6px_28px_rgba(37,211,102,0.35)] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {loading ? 'Enviando...' : '💬 Confirmar y enviar por WhatsApp'}
+        {loading
+          ? 'Enviando...'
+          : isClosed
+            ? 'Local cerrado — no se puede enviar'
+            : '💬 Confirmar y enviar por WhatsApp'}
       </button>
     </form>
   );

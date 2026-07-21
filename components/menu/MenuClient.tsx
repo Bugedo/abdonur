@@ -1,15 +1,19 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Product, ProductCategory } from '@/types';
 import CartSummary from '@/components/cart/CartSummary';
 import ProductCard from '@/components/ui/ProductCard';
 import ComboProductCard from '@/components/menu/ComboProductCard';
+import BranchClosedNotice from '@/components/ui/BranchClosedNotice';
 import { buildEmpanadaMenuSections, canonicalComboDisplayName, withDisplayName } from '@/lib/empanadaMenu';
+import { isBranchOpenNow } from '@/lib/branchOpenStatus';
 
 interface MenuClientProps {
   products: Product[];
   branchId: string;
   branchSlug: string;
+  openingHours: string;
 }
 
 const categoryTitles: Record<ProductCategory, string> = {
@@ -20,9 +24,18 @@ const categoryTitles: Record<ProductCategory, string> = {
 
 const categoryOrder: ProductCategory[] = ['empanadas', 'comidas', 'postres'];
 
-export default function MenuClient({ products, branchId, branchSlug }: MenuClientProps) {
+export default function MenuClient({ products, branchId, branchSlug, openingHours }: MenuClientProps) {
+  const [branchOpen, setBranchOpen] = useState<boolean | null>(null);
   const { fatayRows, sfihasFlavorSections, comboProducts, comboFlavorProducts } =
     buildEmpanadaMenuSections(products);
+
+  useEffect(() => {
+    setBranchOpen(isBranchOpenNow(openingHours));
+    const interval = setInterval(() => {
+      setBranchOpen(isBranchOpenNow(openingHours));
+    }, 60_000);
+    return () => clearInterval(interval);
+  }, [openingHours]);
 
   const productsByCategory = products.reduce(
     (acc, product) => {
@@ -34,6 +47,10 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
 
   return (
     <>
+      {branchOpen === false && (
+        <BranchClosedNotice openingHours={openingHours} className="mt-6" />
+      )}
+
       {products.length > 0 ? (
         <div className="menu-category-stack mt-6 space-y-10 pb-44">
           {categoryOrder
@@ -102,7 +119,7 @@ export default function MenuClient({ products, branchId, branchSlug }: MenuClien
         </div>
       )}
 
-      <CartSummary branchId={branchId} branchSlug={branchSlug} />
+      <CartSummary branchId={branchId} branchSlug={branchSlug} openingHours={openingHours} />
     </>
   );
 }
